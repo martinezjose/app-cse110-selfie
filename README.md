@@ -5,6 +5,7 @@
 1. [Setting up the environment](#setup) <br/>
    * [Ubuntu set-up](#ubuntusetup) <br/>
    * [Windows set-up](#windowssetup) <br/>
+   * [MUST-DO](#mustdo) <br/>
 
 ---
 
@@ -95,3 +96,17 @@ Do the same for JDK (might be more difficult, you will have to find the installa
 
 Once you're done with this, open your command prompt (Windows-key+R, type cmd and ENTER) and test. Write "git" and hit ENTER. Write "javac" and hit ENTER. If either doesn't work, retrace your steps and see if you can find out your mistake.
 
+
+<a name="mustdo"></a>
+[>>> Go Top](#top)
+##Must do:
+
+To check that everyone has their environment set up correctly, I will ask that everyone (except the UX people, who are busy getting Use Cases and User Stories done by Friday) to do the following:
+
+1. Clone a repository from my github account: [My Github](https://github.com/edwinmosong) 
+   * The repository name is Setting-Up. That is all the information I am giving you. You will need to find out what the URL is to clone from!!!
+2. Find a file called "modifyme.txt" and add a line with your name.
+3. I want you to PUSH this change to the repository. Make sure that you put your name!
+
+
+### Make sure that your push is reflected in the repository by going to https://github.com/edwinmosong/Setting-Up in the file modifyme.txt. I ask that EVERYONE (again, EXCEPT UX people) put their names in this file by SATURDAY 19 APRIL 2014, 8:00pm. This is so that we know that people can work on Sunday's meeting. If you have any questions, you can ask Jose, Dilraj, or me (Edwin). Good luck!
