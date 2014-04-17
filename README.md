@@ -90,7 +90,7 @@ Click on "Advanced System Settings" and then click on Environment Variables (at 
 
 Now, you will have to do these steps for both Git and the JDK. 
 
-Go to the folder where you installed Git (C:\Program Files(x86)\Git is default I THINK) and copy this url. Go back to the window where you can edit the PATH variable. Add a semicolon at the end of its value (if not already there) and paste the path for Git.
+Go to the folder where you installed Git (C:\Program Files(x86)\Git\bin is default I THINK) and copy this url. Go back to the window where you can edit the PATH variable. Add a semicolon at the end of its value (if not already there) and paste the path for Git.
 
 Do the same for JDK (might be more difficult, you will have to find the installation folder for JDK and go to /bin/ folder. This is the entire path you will want to put in the PATH variable.
 
