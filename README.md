@@ -1,7 +1,10 @@
 <a name="top"></a>
 
 ## Index
-0. Application Features
+0. [Application Features](#features) <br/>
+   * [Current features](#current) <br/>
+   * [Features being implemented](#coming) <br/>
+   * [Future/planned features](#future) <br/>
 1. [Setting up the environment](#setup) <br/>
    * [Ubuntu set-up](#ubuntusetup) <br/>
    * [Windows set-up](#windowssetup) <br/>
@@ -9,9 +12,22 @@
 
 ---
 
+[>>> Go Top](#top)
+<a name="features"></a>
+# Application Features (subject to change)
+In this section, I will try to keep an updated list of current features, features being implemented, and future features. If there is something missing, message me on Facebook or by email emosong@ucsd.edu.
 
+<a name="current"></a>
+##Current features
+
+<a name="coming"></a>
+##Features being implemented
+
+<a name="future"></a>
+##Future/Planned Features
+
+[>>> Go Top](#top)
 <a name="setup"></a>
-
 #Guide to setting up environment for Android Development (for our purposes)
 
 Hey guys, since last meeting showed that most of us aren't ready to develop in android, I thought I'd set up a quick tutorial on getting the ESSENTIALS going so that everyone can start coding. This tutorial will be broken up in two parts: Windows and Ubuntu 13.10
