@@ -4,4 +4,16 @@
     <string name="app_name">Selfie</string>
     <string name="title_category_detail">Category Detail</string>
 
+    <!-- category -->
+    <string-array name="cat_list">
+        <item>Appetizers</item>
+        <item>Entrees</item>
+        <item>Desserts</item>
+        <item>Drinks</item>
+    </string-array>
+
+    <!-- tab -->
+    <string name="classic_button">Classic</string>
+    <string name="interactive_button">Interactive</string>
+    <string name="checkout_button">Checkout</string>
 </resources>

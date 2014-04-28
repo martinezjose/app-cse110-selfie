@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ListView
+        android:id="@+id/CS_selectedItems"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="8"
+        android:divider="#000000"
+        android:dividerHeight="3dp">
+    </ListView>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2">
+
+        <TextView
+            android:id="@+id/CS_totalBeforeTax"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0.0"
+            android:layout_alignParentTop="true"
+            android:layout_alignLeft="@+id/CS_tax"
+            android:layout_alignStart="@+id/CS_tax" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sub-total: "
+            android:layout_marginRight="37dp"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/CS_totalBeforeTax" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tax: "
+            android:layout_centerVertical="true"
+            android:layout_alignLeft="@+id/textView2"
+            android:layout_alignStart="@+id/textView2" />
+
+        <TextView
+            android:id="@+id/CS_tax"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0.0"
+            android:layout_alignTop="@+id/textView3"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="71dp" />
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Total: "
+            android:layout_alignParentBottom="true"
+            android:layout_alignLeft="@+id/textView3"
+            android:layout_alignStart="@+id/textView3" />
+
+        <TextView
+            android:id="@+id/CS_total"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0.0"
+            android:layout_alignParentBottom="true"
+            android:layout_toRightOf="@+id/textView2" />
+    </RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/CS_summitOrder"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Submit Order"/>
+        <Button
+            android:id="@+id/CS_removeSelected"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Remove Selected"/>
+    </LinearLayout>
+</LinearLayout>

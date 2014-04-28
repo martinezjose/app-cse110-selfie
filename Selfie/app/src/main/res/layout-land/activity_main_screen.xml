@@ -1,0 +1,56 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/full_content"
+    tools:context="com.cse110sp14.myrest1.app.MainScreen">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:fitsSystemWindows="true">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="#034">
+            <Button
+                android:id="@+id/MS_view_button"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
+                android:padding="@dimen/component_padding"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:background="#FFFFFF"
+                android:text="@string/classic_button" />
+            <Button
+                android:id="@+id/MS_checkout_button"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
+                android:padding="@dimen/component_padding"
+                android:layout_marginRight="36dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:background="#FFFFFF"
+                android:text="@string/checkout_button" />
+            <ImageView
+                android:id="@+id/MS_back_button"
+                android:layout_width="70dp"
+                android:layout_height="60dp"
+                android:src="@drawable/ic_launcher"/>
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/mainScreen_fragmentContainer"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="11"
+            android:layout_gravity="bottom|center_horizontal"
+            android:orientation="horizontal"
+            tools:ignore="UselessParent">
+        </LinearLayout>
+    </LinearLayout>
+
+</FrameLayout>
