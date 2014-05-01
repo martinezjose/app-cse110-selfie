@@ -24,7 +24,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:id="@+id/imageView3" />
+            android:id="@+id/itemDetail_pic3" />
     </LinearLayout>
     <RelativeLayout
         android:layout_width="match_parent"
@@ -61,11 +61,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/itemDetail_addToOrder"
-            android:layout_marginLeft="129dp"
-            android:layout_alignBottom="@+id/itemDetail_quantityDisplay"
+            android:layout_marginLeft="51dp"
+            android:layout_below="@+id/itemDetail_quantityUpOne"
             android:layout_toRightOf="@+id/itemDetail_description" />
 
-        <ImageButton
+        ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/itemDetail_thumbUp"
@@ -79,10 +79,10 @@
             android:layout_height="wrap_content"
             android:text="New Text"
             android:id="@+id/itemDetail_thumbDisplay"
-            android:layout_marginLeft="38dp"
-            android:layout_alignTop="@+id/itemDetail_thumbUp"
-            android:layout_alignLeft="@+id/itemDetail_thumbUp"
-            android:layout_alignStart="@+id/itemDetail_thumbUp" />
+            android:layout_above="@+id/itemDetail_thumbup"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="76dp" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -105,35 +105,32 @@
             android:layout_alignLeft="@+id/itemDetail_description"
             android:layout_alignStart="@+id/itemDetail_description" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Large Text"
+            android:id="@+id/itemDetail_itemName"
+            android:layout_alignBottom="@+id/itemDetail_quantityUpOne"
+            android:layout_centerHorizontal="true" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/itemDetail_thumbup"
+            android:layout_above="@+id/itemDetail_description"
+            android:layout_toLeftOf="@+id/itemDetail_thumbDisplay"
+            android:layout_alignTop="@+id/itemDetail_quantityDownOne" />
+
     </RelativeLayout>
     <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1.5">
         <LinearLayout
+            android:id="@+id/itemDetail_recommendedGallery"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal">
-            <ImageView
-                android:layout_width="200dp"
-                android:layout_height="match_parent"
-                android:id="@+id/itemDetail_recommendation1"/>
-            <ImageView
-                android:layout_width="200dp"
-                android:layout_height="match_parent"
-                android:id="@+id/itemDetail_recommendation2"/>
-            <ImageView
-                android:layout_width="200dp"
-                android:layout_height="match_parent"
-                android:id="@+id/itemDetail_recommendation3"/>
-            <ImageView
-                android:layout_width="200dp"
-                android:layout_height="match_parent"
-                android:id="@+id/itemDetail_recommendation4"/>
-            <ImageView
-                android:layout_width="200dp"
-                android:layout_height="match_parent"
-                android:id="@+id/itemDetail_recommendation5"/>
-        </LinearLayout>
+            android:orientation="horizontal" />
     </HorizontalScrollView>
 </LinearLayout>

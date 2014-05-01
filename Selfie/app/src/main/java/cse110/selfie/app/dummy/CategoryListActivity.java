@@ -1,11 +1,10 @@
-package cse110.selfie.app;
+package cse110.selfie.app.dummy;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 
-
-
+import cse110.selfie.app.R;
 
 /**
  * An activity representing a list of Categories. This activity
@@ -16,11 +15,11 @@ import android.support.v4.app.FragmentActivity;
  * item details side-by-side using two vertical panes.
  * <p>
  * The activity makes heavy use of fragments. The list of items is a
- * {@link CategoryListFragment} and the item details
+ * {@link cse110.selfie.app.dummy.CategoryListFragment} and the item details
  * (if present) is a {@link CategoryDetailFragment}.
  * <p>
  * This activity also implements the required
- * {@link CategoryListFragment.Callbacks} interface
+ * {@link cse110.selfie.app.dummy.CategoryListFragment.Callbacks} interface
  * to listen for item selections.
  */
 public class CategoryListActivity extends FragmentActivity

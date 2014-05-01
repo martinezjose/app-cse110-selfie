@@ -6,7 +6,7 @@
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/checkBox"
+        android:id="@+id/checkout_checkBox"
         android:singleLine="false"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
@@ -18,18 +18,19 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Small Text"
-        android:id="@+id/textView2"
-        android:layout_alignTop="@+id/textView"
-        android:layout_toLeftOf="@+id/textView3"
-        android:layout_marginRight="40dp" />
+        android:id="@+id/checkout_quantityCounter"
+        android:layout_alignTop="@+id/checkout_itemName"
+        android:layout_toLeftOf="@+id/checkout_itemPrice"
+        android:layout_marginRight="40dp"
+        android:enabled="false" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Small Text"
-        android:id="@+id/textView3"
-        android:layout_alignTop="@+id/textView2"
+        android:id="@+id/checkout_itemPrice"
+        android:layout_alignTop="@+id/checkout_quantityCounter"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
@@ -38,7 +39,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Medium Text"
-        android:id="@+id/textView"
-        android:layout_alignTop="@+id/checkBox"
-        android:layout_toRightOf="@+id/checkBox" />
+        android:id="@+id/checkout_itemName"
+        android:layout_alignTop="@+id/checkout_checkBox"
+        android:layout_toRightOf="@+id/checkout_checkBox" />
 </RelativeLayout>

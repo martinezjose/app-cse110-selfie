@@ -1,4 +1,4 @@
-package cse110.selfie.app;
+package cse110.selfie.app.dummy;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,12 +6,14 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 
+import cse110.selfie.app.R;
+
 
 /**
  * An activity representing a single Category detail screen. This
  * activity is only used on handset devices. On tablet-size devices,
  * item details are presented side-by-side with a list of items
- * in a {@link CategoryListActivity}.
+ * in a {@link cse110.selfie.app.dummy.CategoryListActivity}.
  * <p>
  * This activity is mostly just a 'shell' activity containing nothing
  * more than a {@link CategoryDetailFragment}.
@@ -21,7 +23,8 @@ public class CategoryDetailActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_category_detail);
+        //REMOVE COMMENT
+        //setContentView(R.layout.activity_category_detail);
 
         // Show the Up button in the action bar.
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

@@ -1,4 +1,4 @@
-package cse110.selfie.app;
+package cse110.selfie.app.dummy;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -8,12 +8,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 
+import cse110.selfie.app.R;
 import cse110.selfie.app.dummy.DummyContent;
 
 /**
  * A fragment representing a single Category detail screen.
- * This fragment is either contained in a {@link CategoryListActivity}
- * in two-pane mode (on tablets) or a {@link CategoryDetailActivity}
+ * This fragment is either contained in a {@link cse110.selfie.app.dummy.CategoryListActivity}
+ * in two-pane mode (on tablets) or a {@link cse110.selfie.app.dummy.CategoryDetailActivity}
  * on handsets.
  */
 public class CategoryDetailFragment extends Fragment {
@@ -50,6 +51,7 @@ public class CategoryDetailFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
+        /*REMOVE COMMENTS
         View rootView = inflater.inflate(R.layout.fragment_category_detail, container, false);
 
         // Show the dummy content as text in a TextView.
@@ -58,5 +60,7 @@ public class CategoryDetailFragment extends Fragment {
         }
 
         return rootView;
+        */
+        return null;
     }
 }

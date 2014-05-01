@@ -43,13 +43,24 @@
         </RelativeLayout>
 
         <LinearLayout
-            android:id="@+id/mainScreen_fragmentContainer"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="11"
             android:layout_gravity="bottom|center_horizontal"
             android:orientation="horizontal"
             tools:ignore="UselessParent">
+            <FrameLayout
+                android:id="@+id/MSfragment_listContainer"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+                </FrameLayout>
+            <FrameLayout
+                android:id="@+id/MSfragment_detailContainer"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+            </FrameLayout>
         </LinearLayout>
     </LinearLayout>
 

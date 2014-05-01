@@ -1,4 +1,4 @@
-package cse110.selfie.app;
+package cse110.selfie.app.dummy;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -6,9 +6,6 @@ import android.support.v4.app.ListFragment;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-
-
-import cse110.selfie.app.dummy.DummyContent;
 
 /**
  * A list fragment representing a list of Categories. This fragment

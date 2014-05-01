@@ -3,5 +3,5 @@
     android:id="@+id/category_detail_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="cse110.selfie.app.CategoryDetailActivity"
+    tools:context="cse110.selfie.app.dummy.CategoryDetailActivity"
     tools:ignore="MergeRootFrame" />
