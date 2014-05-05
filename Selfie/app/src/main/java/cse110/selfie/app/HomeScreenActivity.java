@@ -73,11 +73,6 @@ public class HomeScreenActivity extends FragmentActivity implements CategoryFrag
                         fm.popBackStack();
                     }
                 }
-                if(fm.getBackStackEntryCount() > 10) {
-                    fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                    ft.add(R.id.MSfragment_listContainer, cl).addToBackStack(null);
-                }
-
             }
         });
 
