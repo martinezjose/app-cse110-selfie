@@ -1,11 +1,16 @@
 package cse110.selfie.app;
 
+import android.app.ActionBar;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -14,10 +19,20 @@ import android.widget.TextView;
  */
 public class MenuItemList extends ListFragment {
 
+
+
+    final static String ARG_ITEM_ID = "ARG_ITEM_ID";
     public String [] menuItems = {"Nachos", "Chicken Wings", "Mozarella Sticks"};
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        FrameLayout list = (FrameLayout) getActivity().findViewById(R.id.MSfragment_listContainer);
+        list.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1.0f));
+
+        FrameLayout detail = (FrameLayout) getActivity().findViewById(R.id.MSfragment_detailContainer);
+        detail.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1.0f));
 
         myListAdapter myAdapter = new myListAdapter(menuItems);
         setListAdapter(myAdapter);
@@ -45,7 +60,26 @@ public class MenuItemList extends ListFragment {
             return convertView;
         }
     }
+
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
+        Bundle arguments = new Bundle();
+        arguments.putInt(DetailFragment.ARG_ITEM_ID, (int)id);
+        DetailFragment fragment = new DetailFragment();
+        fragment.setArguments(arguments);
+
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.MSfragment_detailContainer, fragment)
+                .addToBackStack(null)
+                .commit();
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if(getFragmentManager().findFragmentById(R.id.MSfragment_listContainer) != null) {
+            getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        }
+    }
+
 }
