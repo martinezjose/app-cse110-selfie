@@ -2,6 +2,7 @@ package cse110.selfie.app;
 
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -11,12 +12,12 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 /**
  * Created by JuanJ on 4/29/2014.
  */
 public class MenuItemList extends ListFragment {
-
-
 
     final static String ARG_ITEM_ID = "ARG_ITEM_ID";
     public String [] menuItems = {"Nachos", "Chicken Wings", "Mozarella Sticks"};
@@ -33,11 +34,12 @@ public class MenuItemList extends ListFragment {
 
         myListAdapter myAdapter = new myListAdapter(menuItems);
         setListAdapter(myAdapter);
+
     }
 
     //custom adapter for custom individual item display
     private class myListAdapter extends ArrayAdapter <String> {
-        public myListAdapter(String [] array) {
+        public myListAdapter(String[] array) {
             super(getActivity(), android.R.layout.simple_list_item_1, array);
         }
 
@@ -54,6 +56,9 @@ public class MenuItemList extends ListFragment {
             ImageView imageView = (ImageView) convertView.findViewById(R.id.imageView);
             imageView.setImageResource(R.drawable.ic_launcher);
 
+            ImageView imageView1 = (ImageView) convertView.findViewById(R.id.imageView2);
+            imageView1.setImageResource(R.drawable.yellow_star);
+
             return convertView;
         }
     }
@@ -61,7 +66,7 @@ public class MenuItemList extends ListFragment {
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         Bundle arguments = new Bundle();
-        arguments.putInt(DetailFragment.ARG_ITEM_ID, (int)id);
+        arguments.putInt(DetailFragment.ARG_ITEM_ID, position);
         DetailFragment fragment = new DetailFragment();
         fragment.setArguments(arguments);
 
@@ -78,5 +83,4 @@ public class MenuItemList extends ListFragment {
             getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         }
     }
-
 }

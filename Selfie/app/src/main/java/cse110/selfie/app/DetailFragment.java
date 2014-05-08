@@ -17,7 +17,7 @@ import android.widget.Toast;
  */
 public class DetailFragment extends Fragment {
 
-    final static String ARG_ITEM_ID = "ARG_ITEM_ID";
+    final static String ARG_ITEM_ID = "0";
     public String test = "test";
     public String des = "This is a description of the item. It is a test and it should be long enough that it will require two lines to show.\n" + " hopefully it works";
     //Top Layout

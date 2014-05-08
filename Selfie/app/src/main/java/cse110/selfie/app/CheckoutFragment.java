@@ -1,20 +1,21 @@
 package cse110.selfie.app;
 
 import android.os.Bundle;
-import android.support.v4.app.ListFragment;
+import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.ListView;
 import android.widget.TextView;
 
 /**
  * Created by JuanJ on 4/30/2014.
  */
 
-//not intended to be a listfragment
-public class CheckoutFragment extends ListFragment {
+public class CheckoutFragment extends Fragment {
 
     public String[] name_placeholders = {"One", "Two", "Three"};
     public String[] price_placeholders = {"1", "2", "3"};
@@ -23,8 +24,9 @@ public class CheckoutFragment extends ListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_checkout_screen, container, false);
 
+        ListView lv = (ListView)  view.findViewById(R.id.CS_selectedItems);
         checkoutAdapter myAdapter = new checkoutAdapter(name_placeholders);
-        setListAdapter(myAdapter);
+        lv.setAdapter(myAdapter);
         return view;
     }
 

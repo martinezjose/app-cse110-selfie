@@ -30,11 +30,6 @@ public class CategoryFragment extends ListFragment{
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-    }
-
-    @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
