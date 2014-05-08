@@ -16,7 +16,8 @@ import java.util.Locale;
  *      int Shares
  *      boolean Active
  *      int Calories
- *      Date LastUpdated --
+ *      String Created
+ *      String LastUpdated
  *      String Description
  *      boolean DailySpecial
  *      String ImagePath
@@ -190,11 +191,15 @@ public class Item {
         Created = created;
     }
 
-    /*
-     * getDateTime
-     * Returns a formatted String in datetime format
+    /* getDateTime()
+     * Description: returns a formatted String in datetime format yyyy-MM-dd HH:mm:ss
+     * PRECONDITION: none
+     * POSTCONDITION: a String in the format "yyyy-MM-dd HH:mm:ss" of the current time is returned.
+     * RETURNS: String in the format "yyyy-MM-dd HH:mm:ss" of the current time
+     * Status: works. tested (not thoroughly)
+     * Keywords: date, get date, getdate, getdatetime, current time, now
      */
-    static private String getDateTime(){
+    static public String getDateTime(){
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",
                 Locale.getDefault());
         Date date = new Date();

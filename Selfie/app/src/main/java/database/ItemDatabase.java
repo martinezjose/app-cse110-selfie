@@ -9,6 +9,11 @@ import android.database.sqlite.SQLiteOpenHelper;
  * This is ONLY for the table "items"
  * Created by edwin on 4/25/14.
  *
+ * BASIC INFO:
+ *
+ * DATABASE_NAME = "selfieDB"   -- data/data/cse110.selfie.app/databases/selfieDB
+ * TABLE_ALL_ITEMS = "items"    -- basic table "items"
+ *
  *  TABLE_ALL_ITEMS
  * ----------*-----------*-------*-------------*-------*--------*--------*----------*---------*-------------*-------------*---------------*------------*
  * | item_id | item_name | price | category_id | likes | shares | active | calories | created |last_updated | description | daily_special | image_path |
@@ -55,7 +60,7 @@ public class ItemDatabase extends SQLiteOpenHelper {
                 + KEY_ACTIVE + " INTEGER,"
                 + KEY_CALORIES + " INTEGER,"
                 + KEY_CREATED + " TEXT,"
-                + KEY_LAST_UPDATED + " TEXT,"           //might change to datetime
+                + KEY_LAST_UPDATED + " TEXT,"
                 + KEY_DESCRIPTION + " TEXT,"
                 + KEY_DAILY_SPECIAL + " INTEGER,"
                 + KEY_IMAGE_PATH + " TEXT"
