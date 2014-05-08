@@ -114,7 +114,7 @@ public class ItemDataSource {
                 new String[] {String.valueOf(item.getItemID())});
     }
 
-    /* deleteItem()
+    /* deleteItem() -- Delete
      * Description: Deletes 'item' from the database.
      * PRECONDITION: item was obtained through getItem() -- guarantees that item has an ItemID
      * POSTCONDITION: item has been deleted from the database.
