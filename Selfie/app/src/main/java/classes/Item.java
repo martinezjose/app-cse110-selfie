@@ -1,5 +1,9 @@
 package classes;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 /**
  * Created by edwinmo on 5/6/14.
  * Class: Item
@@ -15,6 +19,7 @@ package classes;
  *      Date LastUpdated --
  *      String Description
  *      boolean DailySpecial
+ *      String ImagePath
  */
 public class Item {
     public int ItemID;
@@ -25,15 +30,28 @@ public class Item {
     public int Shares;
     public boolean Active;
     public int Calories;
+    public String Created;
     public String LastUpdated;
     public String Description;
     public boolean DailySpecial;
+    public String ImagePath;
+
 
     /*
-     * Constructor
-     * :: All fields
+     * Default constructor
      */
-    public Item(int itemID, String itemName, float price, int categoryID, int likes, int shares, boolean active, int calories, String lastUpdated, String description, boolean dailySpecial) {
+    public Item() {
+    }
+
+    /*
+         * Getter Constructor
+         * :: All fields -- for retrieval
+         * Description: Used to retrieve information from the database. All fields have been
+         * populated.
+         */
+    public Item(int itemID, String itemName, float price, int categoryID, int likes, int shares,
+                boolean active, int calories,String created, String lastupdated,String description,
+                boolean dailySpecial, String imagePath) {
         ItemID = itemID;
         ItemName = itemName;
         Price = price;
@@ -42,16 +60,22 @@ public class Item {
         Shares = shares;
         Active = active;
         Calories = calories;
-        LastUpdated = lastUpdated;
+        Created = created;
+        LastUpdated = lastupdated;
         Description = description;
         DailySpecial = dailySpecial;
+        ImagePath = imagePath;
     }
 
     /*
-     * Constructor
-     * :: No ItemID (to be incremented by SQLiteDatabase)
+     * Setter/inserting Constructor
+     * :: No ItemID -- for insertion
+     * Description: Used to insert new Item to database.
+     * Missing: ItemID, Created, LastUpdated
      */
-    public Item(String itemName, float price, int categoryID, int likes, int shares, boolean active, int calories, String lastUpdated, String description, boolean dailySpecial) {
+    public Item(String itemName, float price, int categoryID, int likes, int shares, boolean active,
+                int calories,String description, boolean dailySpecial,
+                String imagePath) {
         ItemName = itemName;
         Price = price;
         CategoryID = categoryID;
@@ -59,9 +83,11 @@ public class Item {
         Shares = shares;
         Active = active;
         Calories = calories;
-        LastUpdated = lastUpdated;
+        Created = getDateTime();        //set current time
+        LastUpdated = Created;          //set current time
         Description = description;
         DailySpecial = dailySpecial;
+        ImagePath = imagePath;
     }
 
     public int getItemID() {
@@ -150,5 +176,28 @@ public class Item {
 
     public void setDailySpecial(boolean dailySpecial) {
         DailySpecial = dailySpecial;
+    }
+
+    public String getImagePath() { return ImagePath; }
+
+    public void setImagePath(String imagePath) { ImagePath = imagePath; }
+
+    public String getCreated() {
+        return Created;
+    }
+
+    public void setCreated(String created) {
+        Created = created;
+    }
+
+    /*
+     * getDateTime
+     * Returns a formatted String in datetime format
+     */
+    static private String getDateTime(){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",
+                Locale.getDefault());
+        Date date = new Date();
+        return dateFormat.format(date);
     }
 }

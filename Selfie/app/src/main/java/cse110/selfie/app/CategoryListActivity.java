@@ -4,7 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 
-
+import classes.Item;
+import database.ItemDataSource;
 
 
 /**
@@ -36,6 +37,20 @@ public class CategoryListActivity extends FragmentActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_category_list);
+
+        ItemDataSource datasource = new ItemDataSource(this);
+        datasource.open();
+        //call Setter/insert constructor
+        Item testItem = new Item("Garlic Lobsters",39,1,1,1,true,3000,
+                "Delicious lobster with garlic and butter",true,"N/A");
+
+        //add testItem
+        datasource.addItem(testItem);
+
+        Item foundItem = datasource.getItem(1);
+
+        datasource.close();
+
 
         if (findViewById(R.id.category_detail_container) != null) {
             // The detail container view will be present only in the
