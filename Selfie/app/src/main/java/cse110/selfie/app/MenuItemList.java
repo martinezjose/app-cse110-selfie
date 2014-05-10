@@ -14,6 +14,7 @@ import java.util.ArrayList;
 /**
  * Created by JuanJ on 4/29/2014.
  */
+//this is a comment
 public class MenuItemList extends ListFragment {
 
     final static String ARG_CATEGORY_ID = "ARG_CATEGORY_ID";
@@ -98,6 +99,18 @@ public class MenuItemList extends ListFragment {
     //for my (Juan's) testing only
     public void init() {
         myTest = new Test();
+        myTest.addMenu(new item("Triple Dipper", 10.79f, true ));
+        myTest.addMenu(new item("Southwestern Eggrolls", 8.29f, true ));
+        myTest.addMenu(new item("Loaded Potato Skins", 7.09f, false));
+        myTest.addMenu(new item("Classic Nachos", 7.69f, true));
+        myTest.addMenu(new item("Triple Dipper", 10.79f, true ));
+        myTest.addMenu(new item("Southwestern Eggrolls", 8.29f, true ));
+        myTest.addMenu(new item("Loaded Potato Skins", 7.09f, false));
+        myTest.addMenu(new item("Classic Nachos", 7.69f, true));
+        myTest.addMenu(new item("Triple Dipper", 10.79f, true ));
+        myTest.addMenu(new item("Southwestern Eggrolls", 8.29f, true ));
+        myTest.addMenu(new item("Loaded Potato Skins", 7.09f, false));
+        myTest.addMenu(new item("Classic Nachos", 7.69f, true));
         myTest.addMenu(new item("Triple Dipper", 10.79f, true ));
         myTest.addMenu(new item("Southwestern Eggrolls", 8.29f, true ));
         myTest.addMenu(new item("Loaded Potato Skins", 7.09f, false));

@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.preference.DialogPreference;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import android.widget.Toast;
  */
 public class DetailFragment extends Fragment {
 
+    public WeightController myController;
     final static String ARG_ITEM_ID = "ARG_ITEM_ID";
     public String test = "test";
     public String des = "This is a description of the item. It is a test and it should be long enough that it will require two lines to show.\n" + " hopefully it works";
@@ -42,6 +44,7 @@ public class DetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_description_screen, container, false);
 
+        myController = new WeightController(getActivity());
         //Top Layout
         iv1 = (ImageView) view.findViewById(R.id.itemDetail_pic1);
         iv2 = (ImageView) view.findViewById(R.id.itemDetail_pic2);
@@ -90,6 +93,16 @@ public class DetailFragment extends Fragment {
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
+                            FragmentTransaction fTransaction = getActivity()
+                                    .getSupportFragmentManager()
+                                    .beginTransaction();
+                            CheckoutFragment checkoutFragment = new CheckoutFragment();
+
+                            fTransaction.replace(R.id.MSfragment_listContainer, checkoutFragment)
+                                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                                    .addToBackStack("Checkout")
+                                    .commit();
+                            myController.changeLayoutWeight(2);
                         }
                     })
                     .setNegativeButton("No", new DialogInterface.OnClickListener() {
