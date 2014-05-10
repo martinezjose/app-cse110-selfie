@@ -13,7 +13,5 @@
     </string-array>
 
     <!-- tab -->
-    <string name="classic_button">Classic</string>
-    <string name="interactive_button">Interactive</string>
     <string name="checkout_button">Checkout</string>
 </resources>

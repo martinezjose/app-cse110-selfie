@@ -2,13 +2,10 @@ package cse110.selfie.app;
 
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -19,28 +16,37 @@ import java.util.ArrayList;
  */
 public class MenuItemList extends ListFragment {
 
-    final static String ARG_ITEM_ID = "ARG_ITEM_ID";
-    public String [] menuItems = {"Nachos", "Chicken Wings", "Mozarella Sticks"};
+    final static String ARG_CATEGORY_ID = "ARG_CATEGORY_ID";
+    Test myTest, myTest1, myTest2, myTest3;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        myListAdapter myAdapter;
 
-        FrameLayout list = (FrameLayout) getActivity().findViewById(R.id.MSfragment_listContainer);
-        list.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1.0f));
+        Bundle args = getArguments();
+        int myNum = args.getInt(ARG_CATEGORY_ID);
 
-        FrameLayout detail = (FrameLayout) getActivity().findViewById(R.id.MSfragment_detailContainer);
-        detail.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1.0f));
+        init(); //for my (Juan's) testing only
+        if(myNum == 0)
+            myAdapter = new myListAdapter(myTest);
+        else if(myNum == 1)
+            myAdapter = new myListAdapter(myTest1);
+        else if(myNum == 2)
+            myAdapter = new myListAdapter(myTest2);
+        else
+            myAdapter = new myListAdapter(myTest3);
 
-        myListAdapter myAdapter = new myListAdapter(menuItems);
+        //myAdapter = new myListAdapter(appetizers);
         setListAdapter(myAdapter);
-
     }
 
     //custom adapter for custom individual item display
     private class myListAdapter extends ArrayAdapter <String> {
-        public myListAdapter(String[] array) {
-            super(getActivity(), android.R.layout.simple_list_item_1, array);
+        Test menu;
+        public myListAdapter(Test menu) {
+            super(getActivity(), android.R.layout.simple_list_item_1, menu.getNames());
+            this.menu = menu;
         }
 
         //Gets individual list items
@@ -51,36 +57,66 @@ public class MenuItemList extends ListFragment {
             }
 
             TextView textView = (TextView) convertView.findViewById(R.id.textView);
-            textView.setText(menuItems[position]);
+            textView.setText(menu.getMenu().get(position).getName());
 
             ImageView imageView = (ImageView) convertView.findViewById(R.id.imageView);
             imageView.setImageResource(R.drawable.ic_launcher);
 
-            ImageView imageView1 = (ImageView) convertView.findViewById(R.id.imageView2);
-            imageView1.setImageResource(R.drawable.yellow_star);
+            if(menu.getMenu().get(position).getSpecial()) {
+                ImageView imageView1 = (ImageView) convertView.findViewById(R.id.imageView2);
+                imageView1.setImageResource(R.drawable.yellow_star);
+            }
 
             return convertView;
         }
     }
 
     @Override
+    //list's listener
     public void onListItemClick(ListView l, View v, int position, long id) {
         Bundle arguments = new Bundle();
         arguments.putInt(DetailFragment.ARG_ITEM_ID, position);
         DetailFragment fragment = new DetailFragment();
         fragment.setArguments(arguments);
 
+        //renders details fragment
         getActivity().getSupportFragmentManager().beginTransaction()
                 .replace(R.id.MSfragment_detailContainer, fragment)
-                .addToBackStack(null)
+                .addToBackStack("Menu " + ARG_CATEGORY_ID)
                 .commit();
     }
 
     @Override
+    //highlights the item selected
     public void onStart() {
         super.onStart();
         if(getFragmentManager().findFragmentById(R.id.MSfragment_listContainer) != null) {
             getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         }
+    }
+
+    //for my (Juan's) testing only
+    public void init() {
+        myTest = new Test();
+        myTest.addMenu(new item("Triple Dipper", 10.79f, true ));
+        myTest.addMenu(new item("Southwestern Eggrolls", 8.29f, true ));
+        myTest.addMenu(new item("Loaded Potato Skins", 7.09f, false));
+        myTest.addMenu(new item("Classic Nachos", 7.69f, true));
+
+        myTest1 = new Test();
+        myTest1.addMenu(new item("Bacon Burger", 9.59f, false));
+        myTest1.addMenu(new item("Cheese Burger", 8.59f, true));
+        myTest1.addMenu(new item("Veggie Burger", 7.59f, true));
+        myTest1.addMenu(new item("Bacon Cheese Burger", 11.59f, false));
+
+        myTest2 = new Test();
+        myTest2.addMenu(new item("Chocolate Cake", 6.29f, false));
+        myTest2.addMenu(new item("Chocolate Ice Cream", 6.09f, false));
+        myTest2.addMenu(new item("Chocolate Cheesecake", 7.39f, true));
+
+        myTest3 = new Test();
+        myTest3.addMenu(new item("Apple Juice", 3.43f, true));
+        myTest3.addMenu(new item("Mango Juice", 3.43f, false));
+        myTest3.addMenu(new item("Orange Juice", 3.43f, false));
     }
 }

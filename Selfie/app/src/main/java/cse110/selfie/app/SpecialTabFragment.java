@@ -21,40 +21,12 @@ public class SpecialTabFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_special_tab, container, false);
 
         specialGallery = (LinearLayout) view.findViewById(R.id.imageGallery);
-        ImageView iv1 = new ImageView(specialGallery.getContext());
-        iv1.setImageResource(R.drawable.ic_launcher);
-        iv1.setLayoutParams(new ViewGroup.LayoutParams(100, 100));
-        specialGallery.addView(iv1);
-
-        ImageView iv2 = new ImageView(specialGallery.getContext());
-        iv2.setImageResource(R.drawable.ic_launcher);
-        iv2.setLayoutParams(new ViewGroup.LayoutParams(100, 100));
-        specialGallery.addView(iv2);
-
-        ImageView iv3 = new ImageView(specialGallery.getContext());
-        iv3.setImageResource(R.drawable.ic_launcher);
-        iv3.setLayoutParams(new ViewGroup.LayoutParams(100, 100));
-        specialGallery.addView(iv3);
-
-        ImageView iv4 = new ImageView(specialGallery.getContext());
-        iv4.setImageResource(R.drawable.ic_launcher);
-        iv4.setLayoutParams(new ViewGroup.LayoutParams(100, 100));
-        specialGallery.addView(iv4);
-
-        ImageView iv5 = new ImageView(specialGallery.getContext());
-        iv5.setImageResource(R.drawable.ic_launcher);
-        iv5.setLayoutParams(new ViewGroup.LayoutParams(100, 100));
-        specialGallery.addView(iv5);
-
-        ImageView iv6 = new ImageView(specialGallery.getContext());
-        iv6.setImageResource(R.drawable.ic_launcher);
-        iv6.setLayoutParams(new ViewGroup.LayoutParams(100, 100));
-        specialGallery.addView(iv6);
-
-        ImageView iv7 = new ImageView(specialGallery.getContext());
-        iv7.setImageResource(R.drawable.ic_launcher);
-        iv7.setLayoutParams(new ViewGroup.LayoutParams(100, 100));
-        specialGallery.addView(iv7);
+        for(int i=0; i<8; i++) {
+            ImageView iv1 = new ImageView(specialGallery.getContext());
+            iv1.setImageResource(R.drawable.ic_launcher);
+            iv1.setLayoutParams(new ViewGroup.LayoutParams(100, 100));
+            specialGallery.addView(iv1);
+        }
 
         return view;
     }

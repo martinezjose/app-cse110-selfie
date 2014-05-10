@@ -4,25 +4,22 @@
 package cse110.selfie.app;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
+import java.util.Stack;
+
 /**
  * Created by JuanJ on 4/28/2014.
  */
 
-// mCurrentFragment: HOME, CHECKOUT, CLASSIC, INTERACTIVE
+// mCurrentFragment: HOME, CHECKOUT, CLASSIC
 public class HomeScreenActivity extends FragmentActivity implements CategoryFragment.onItemSelectedListener {
-
-    public String mCurrentFragment = "HOME";
-    public String mPreviousFragment = "null";
 
     public FrameLayout list, detail;
 
@@ -34,18 +31,21 @@ public class HomeScreenActivity extends FragmentActivity implements CategoryFrag
     //on Category selected
     public void onItemSelected(int itemId) {
         Bundle arguments = new Bundle();
-        arguments.putInt(MenuItemList.ARG_ITEM_ID, itemId);
+        arguments.putInt(MenuItemList.ARG_CATEGORY_ID, itemId);
 
         MenuItemList menu = new MenuItemList();
         menu.setArguments(arguments);
 
         DetailFragment details = new DetailFragment();
 
+        //renders menu of category selected and first item details
         FragmentTransaction fTransaction = getSupportFragmentManager().beginTransaction();
         fTransaction.replace(R.id.MSfragment_listContainer, menu)
                 .replace(R.id.MSfragment_detailContainer, details)
-                .addToBackStack(null)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                .addToBackStack("Menu 1")
                 .commit();
+        changeLayoutWeight(1);
     }
 
     @Override
@@ -55,19 +55,15 @@ public class HomeScreenActivity extends FragmentActivity implements CategoryFrag
 
         FragmentTransaction fTransaction = getSupportFragmentManager().beginTransaction();
 
-        //place the main 2 fragments
+        //renders category list and special tab
         fTransaction.replace(R.id.MSfragment_listContainer, categoryFragment)
                 .replace(R.id.MSfragment_detailContainer, specialTabFragment)
-                .addToBackStack(null)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                .addToBackStack("Home")
                 .commit();
     }
 
-    /*
-        set layout ratios
-        0 = 1:4 category & specials' tab
-        1 = 1:1 menu list & item's detail
-        2 = 1:0 checkout
-    */
+    //sets the sizes of the layouts depending on the screens
     public void changeLayoutWeight (int changeType) {
         float frag1 = 1.0f, frag2 = 4.0f;
         list = (FrameLayout) findViewById(R.id.MSfragment_listContainer);
@@ -76,13 +72,13 @@ public class HomeScreenActivity extends FragmentActivity implements CategoryFrag
         switch(changeType) {
             case 0:
                 frag1 = 1.0f; frag2 = 4.0f;
-                Log.e("LAYOUT", "CASE 0"); break;
+                break;
             case 1:
                 frag1 = 1.0f; frag2 = 1.0f;
-                Log.e("LAYOUT", "CASE 1"); break;
+                break;
             case 2:
                 frag1 = 1.0f; frag2 = 0.0f;
-                Log.e("LAYOUT", "CASE 2"); break;
+                break;
         }
         list.setLayoutParams(
              new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, frag1));
@@ -91,60 +87,40 @@ public class HomeScreenActivity extends FragmentActivity implements CategoryFrag
 
     }
 
-    //listener for back and checkout
+
+    //listener for back and checkout and waiter ping buttons
     public void myButtonListener(View view) {
         FragmentManager fManager = getSupportFragmentManager();
         FragmentTransaction fTransaction = fManager.beginTransaction();
 
-        Button mCurrentView = (Button) findViewById(R.id.MS_view_button);
-        Fragment listFragment = fManager.findFragmentById(R.id.MSfragment_listContainer);
-        Fragment detailFragment = fManager.findFragmentById(R.id.MSfragment_detailContainer);
-
         switch (view.getId()) {
-            case R.id.MS_view_button:
-                if(mCurrentFragment == "CLASSIC") {
-                    Log.e("BUTTONLISTENER", "NOW INTERACTIVE");
-                    mPreviousFragment = mCurrentFragment;
-                    mCurrentFragment = "INTERACTIVE";
-                    changeLayoutWeight(0);
-                    mCurrentView.setText("Classic");
-                }
-                else {
-                    Log.e("BUTTONLISTENER", "NOW CLASSIC");
-                    MenuItemList ml = new MenuItemList();
-                    mPreviousFragment = mCurrentFragment;
-                    mCurrentFragment = "CLASSIC";
-                    changeLayoutWeight(1);
-                    mCurrentView.setText("Interactive");
-                }
+            //does nothing for now
+            case R.id.MS_alert:
+                Button alert = (Button) findViewById(R.id.MS_alert);
+                alert.setText("Waiting...");
                 break;
             case R.id.MS_checkout_button:
-                Log.e("BUTTONLISTENER", "NOW CHECKOUT");
-                changeLayoutWeight(2);
+                //render checkout screen
                 fTransaction.replace(R.id.MSfragment_listContainer, checkoutFragment)
-                        .addToBackStack(null).commit();
-                mPreviousFragment = mCurrentFragment;
-                mCurrentFragment = "CHECKOUT";
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                        .addToBackStack("Checkout")
+                        .commit();
+                changeLayoutWeight(2);
                 break;
             case R.id.MS_back_button:
-                if(fManager.getBackStackEntryCount() > 1
-                        && (mCurrentFragment != "CLASSIC")) {
+                //get previous screen to determine the size of the layout
+                FragmentManager.BackStackEntry mPrevious = fManager.getBackStackEntryAt(
+                        fManager.getBackStackEntryCount()-2);
+
+                if(fManager.getBackStackEntryCount() > 1) {
                     fManager.popBackStack();
-                    if (fManager.getBackStackEntryCount() == 2) {
-                        if (mCurrentFragment == "CHECKOUT") {
-                            if (mPreviousFragment == "HOME") {
-                                Log.e("BUTTONLISTENER", "NOW HOME");
-                                changeLayoutWeight(0);
-                                mPreviousFragment = mCurrentFragment;
-                                mCurrentFragment = "HOME";
-                            } else if (mPreviousFragment == "INTERACTIVE" || mPreviousFragment == "CLASSIC") {
-                                Log.e("BUTTONLISTENER", "NOW "+ mCurrentView.getText().toString());
-                                changeLayoutWeight(1);
-                                mPreviousFragment = mCurrentFragment;
-                                mCurrentFragment = mCurrentView.getText().toString();
-                            }
-                        }
+                    if(mPrevious.getName() == "Home") {
+                        changeLayoutWeight(0);
                     }
+                    else if(mPrevious.getName().startsWith("Menu ")) {
+                        changeLayoutWeight(1);
+                    }
+                    //clears stack if 10 screens have been added
                     if (fManager.getBackStackEntryCount() > 10) {
                         for(int i=0;i<fManager.getBackStackEntryCount()-2;i++)
                             fManager.popBackStack();

@@ -16,14 +16,14 @@
             android:layout_weight="1"
             android:background="#034">
             <Button
-                android:id="@+id/MS_view_button"
+                android:id="@+id/MS_alert"
                 android:layout_width="150dp"
                 android:layout_height="50dp"
                 android:padding="@dimen/component_padding"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
                 android:background="#FFFFFF"
-                android:text="@string/classic_button"
+                android:text="Waiter!"
                 android:onClick="myButtonListener"/>
             <Button
                 android:id="@+id/MS_checkout_button"
@@ -42,6 +42,7 @@
                 android:layout_width="70dp"
                 android:layout_height="60dp"
                 android:onClick="myButtonListener"/>
+
         </RelativeLayout>
 
         <LinearLayout

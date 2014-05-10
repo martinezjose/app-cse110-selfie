@@ -42,7 +42,8 @@
             android:id="@+id/itemDetail_quantityDisplay"
             android:layout_above="@+id/itemDetail_thumbDisplay"
             android:layout_alignLeft="@id/itemDetail_quantityUpOne"
-            android:layout_alignStart="@+id/itemDetail_quantityUpOne" />
+            android:layout_alignStart="@+id/itemDetail_quantityUpOne"
+            android:layout_marginLeft="9dp" />
 
         <ImageButton
             android:layout_width="25dp"
@@ -52,12 +53,13 @@
             android:layout_alignLeft="@+id/itemDetail_quantityUpOne"
             android:layout_alignStart="@+id/itemDetail_quantityUpOne" />
 
-        <ImageButton
-            android:layout_width="100dp"
+        <Button
+            android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:id="@+id/itemDetail_addToOrder"
             android:layout_below="@+id/itemDetail_itemName"
-            android:layout_centerHorizontal="true" />
+            android:layout_centerHorizontal="true"
+            android:text="Add To Order" />
 
         ImageButton
             android:layout_width="wrap_content"
@@ -103,6 +105,15 @@
             android:id="@+id/itemDetail_thumbup"
             android:layout_above="@+id/itemDetail_description"
             android:layout_toLeftOf="@+id/itemDetail_thumbDisplay" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="New Text"
+            android:id="@+id/itemDetail_price"
+            android:layout_alignTop="@+id/itemDetail_quantityDisplay"
+            android:layout_toRightOf="@+id/itemDetail_quantityDisplay"
+            android:layout_marginLeft="40dp" />
 
     </RelativeLayout>
     <HorizontalScrollView
