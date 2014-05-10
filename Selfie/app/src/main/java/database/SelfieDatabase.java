@@ -5,7 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 /**
- * ItemDatabase -- Extension of SQLiteOpenHelper for ItemDatabase
+ * SelfieDatabase -- Extension of SQLiteOpenHelper for SelfieDatabase
  * This is ONLY for the table "items"
  * Created by edwin on 4/25/14.
  *
@@ -13,6 +13,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  *
  * DATABASE_NAME = "selfieDB"   -- data/data/cse110.selfie.app/databases/selfieDB
  * TABLE_ALL_ITEMS = "items"    -- basic table "items"
+ * TABLE_CATEGORIES = "categories" -- categories table
  *
  *  TABLE_ALL_ITEMS
  * ----------*-----------*-------*-------------*-------*--------*--------*----------*---------*-------------*-------------*---------------*------------*
@@ -20,13 +21,20 @@ import android.database.sqlite.SQLiteOpenHelper;
  * +---------+-----------+-------+-------------+-------+--------+--------+----------+-----------------------+-------------+---------------+------------+
  * |         |           |       |             |       |        |        |          |         |             |             |               |            |
  *
+ * TABLE_CATEGORIES
+ * --------------*---------------*
+ * | category_id | category_name |
+ * +-------------+---------------+
+ * |             |               |
+ *
  *
  */
-public class ItemDatabase extends SQLiteOpenHelper {
+public class SelfieDatabase extends SQLiteOpenHelper {
     //All static variables
     public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "selfieDB";
     public static final String TABLE_ALL_ITEMS = "items";
+    public static final String TABLE_CATEGORIES = "categores";
 
     //TABLE_ALL_ITEMS column names
     public static final String KEY_ITEM_ID = "item_id";
@@ -43,13 +51,19 @@ public class ItemDatabase extends SQLiteOpenHelper {
     public static final String KEY_DAILY_SPECIAL = "daily_special";
     public static final String KEY_IMAGE_PATH = "image_path";
 
+    //TABLE_CATEGORIES column names
+    //public static final String KEY_CATEGORY_ID = "category_id"; //same as KEY_CATEGORY_ID above
+    public static final String KEY_CATEGORY_NAME = "category_name";
+
     //Constructor
-    public ItemDatabase(Context context){
+    public SelfieDatabase(Context context){
         super(context,DATABASE_NAME,null,DATABASE_VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db){
+
+        //TABLE_ALL_ITEMS
         String CREATE_ALL_ITEMS_TABLE = "CREATE TABLE " + TABLE_ALL_ITEMS + "("
                 + KEY_ITEM_ID + " INTEGER PRIMARY KEY,"
                 + KEY_ITEM_NAME + " TEXT,"
@@ -66,6 +80,12 @@ public class ItemDatabase extends SQLiteOpenHelper {
                 + KEY_IMAGE_PATH + " TEXT"
                 +");";
 
+        //TABLE_CATEGORIES
+        String CREATE_CATEGORIES_TABLE = "CREATE TABLE " + TABLE_CATEGORIES + "("
+                + KEY_CATEGORY_ID + " INTEGER PRIMARY KEY,"
+                + KEY_CATEGORY_NAME + " TEXT"
+                + ");";
+
         db.execSQL(CREATE_ALL_ITEMS_TABLE);
     }
 
@@ -78,5 +98,17 @@ public class ItemDatabase extends SQLiteOpenHelper {
         onCreate(db);
 
     }
+
+    /* customQuery()
+     * Description: custom query method; make queries for one or more fields
+     * PRECONDITION:
+     * POSTCONDITION:
+     * Returns:
+     * Status:
+     * Keyword:
+     */
+    public void customQuery(String table, String [] columns, String [] matching){
+    }
+
 
 }

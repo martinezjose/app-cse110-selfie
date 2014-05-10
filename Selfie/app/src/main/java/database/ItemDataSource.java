@@ -20,18 +20,18 @@ import classes.Item;
  */
 public class ItemDataSource {
 
-    private ItemDatabase myDB;
+    private SelfieDatabase myDB;
     private SQLiteDatabase db;
 
-    private String [] allColumns = {ItemDatabase.KEY_ITEM_ID,
-            ItemDatabase.KEY_ITEM_NAME,ItemDatabase.KEY_PRICE, ItemDatabase.KEY_CATEGORY_ID,
-            ItemDatabase.KEY_LIKES, ItemDatabase.KEY_SHARES, ItemDatabase.KEY_ACTIVE,
-            ItemDatabase.KEY_CALORIES, ItemDatabase.KEY_CREATED,ItemDatabase.KEY_LAST_UPDATED,
-            ItemDatabase.KEY_DESCRIPTION,ItemDatabase.KEY_DAILY_SPECIAL,ItemDatabase.KEY_IMAGE_PATH};
+    private String [] allColumns = {SelfieDatabase.KEY_ITEM_ID,
+            SelfieDatabase.KEY_ITEM_NAME,SelfieDatabase.KEY_PRICE, SelfieDatabase.KEY_CATEGORY_ID,
+            SelfieDatabase.KEY_LIKES, SelfieDatabase.KEY_SHARES, SelfieDatabase.KEY_ACTIVE,
+            SelfieDatabase.KEY_CALORIES, SelfieDatabase.KEY_CREATED,SelfieDatabase.KEY_LAST_UPDATED,
+            SelfieDatabase.KEY_DESCRIPTION,SelfieDatabase.KEY_DAILY_SPECIAL,SelfieDatabase.KEY_IMAGE_PATH};
 
     //CONSTRUCTOR
     public ItemDataSource(Context context){
-        myDB = new ItemDatabase(context);
+        myDB = new SelfieDatabase(context);
     }
 
     //open()
@@ -50,20 +50,22 @@ public class ItemDataSource {
      * Description: adds an item to the database
      * PRECONDITION: item is created with no ID (through setter constructor)
      * POSTCONDITION: item is added to the database
-     * Returns: None
+     * Returns: long ID of the newly inserted Item
      * Status: works, tested but not thoroughly
      * Keywords: create, add, new, add item
      */
-    public void addItem(Item item){
+    public long addItem(Item item){
 
         //get writable database
         db = myDB.getWritableDatabase();
 
         ContentValues values = itemToContentValues(item);
 
-        db.insert(ItemDatabase.TABLE_ALL_ITEMS,null,values);
+        long ReturnValue = db.insert(SelfieDatabase.TABLE_ALL_ITEMS,null,values);
         //close database
         db.close();
+
+        return ReturnValue;
     }
 
     /* getItem() -- Read
@@ -80,7 +82,7 @@ public class ItemDataSource {
         db = myDB.getReadableDatabase();
 
         //create a cursor pointing to the item identified by this "id"
-        Cursor cursor = db.query(ItemDatabase.TABLE_ALL_ITEMS,allColumns,ItemDatabase.KEY_ITEM_ID +
+        Cursor cursor = db.query(SelfieDatabase.TABLE_ALL_ITEMS,allColumns,SelfieDatabase.KEY_ITEM_ID +
         " = ?",new String[] {String.valueOf(id)},null,null,null);
 
         if(cursor != null)
@@ -91,10 +93,11 @@ public class ItemDataSource {
     }
 
     /* updateItem() -- Update
-     * Description: updates the item in the database.
-     * PRECONDITION: item is obtained through getItem() -- guarantees that item has an ItemID
+     * Description: updates the item in the database. >>> Handles LastUpdated field!!!!!!!!
+     * PRECONDITION: item is obtained through getItem() AND the modifications have been done
+     *                  prior to calling this method. item has been modified with the updated info.
      * POSTCONDITION: item in database is updated. NOTE: LastUpdated field is updated as well.
-     * Returns: ItemID
+     * Returns: number of rows affected
      * Status: not tested. Nothing is updated except for the LastUpdated field. Could implement
      *          more complex updating such as field-by-field updating.
      * Keywords: update, updating, not done
@@ -110,7 +113,7 @@ public class ItemDataSource {
         //create ContentValues from item
         ContentValues values = itemToContentValues(item);
 
-        return db.update(ItemDatabase.TABLE_ALL_ITEMS,values,ItemDatabase.KEY_ITEM_ID + " = ?",
+        return db.update(SelfieDatabase.TABLE_ALL_ITEMS,values,SelfieDatabase.KEY_ITEM_ID + " = ?",
                 new String[] {String.valueOf(item.getItemID())});
     }
 
@@ -128,7 +131,7 @@ public class ItemDataSource {
         db = myDB.getWritableDatabase();
 
 
-        db.delete(ItemDatabase.TABLE_ALL_ITEMS,ItemDatabase.KEY_ITEM_ID + " =?",
+        db.delete(SelfieDatabase.TABLE_ALL_ITEMS,SelfieDatabase.KEY_ITEM_ID + " =?",
                 new String[] {String.valueOf(item.getItemID())});
     }
 
@@ -154,7 +157,7 @@ public class ItemDataSource {
         List<Item> itemList = new ArrayList<Item>();
 
         //select all rows
-        String selectQuery = "SELECT * FROM " + ItemDatabase.TABLE_ALL_ITEMS;
+        String selectQuery = "SELECT * FROM " + SelfieDatabase.TABLE_ALL_ITEMS;
 
         Cursor cursor = db.rawQuery(selectQuery, null);
 
@@ -177,15 +180,15 @@ public class ItemDataSource {
      * Status: not tested
      * Keywords: count, size, number
      */
-    public int getItemCount(){
+    public int getCount(){
 
         //get readable database
         db = myDB.getReadableDatabase();
 
         //select all rows in TABLE_ALL_ITEMS
-        String countQuery = "SELECT * FROM " + ItemDatabase.TABLE_ALL_ITEMS;
+        String countQuery = "SELECT * FROM " + SelfieDatabase.TABLE_ALL_ITEMS;
 
-        //query for countQuery, returs a cursor to query result
+        //query for countQuery, returns a cursor to query result
         Cursor cursor = db.rawQuery(countQuery,null);
         cursor.close();
 
@@ -206,19 +209,19 @@ public class ItemDataSource {
 
         //getter Constructor
         return new Item(
-                Integer.parseInt(cursor.getString(cursor.getColumnIndex(ItemDatabase.KEY_ITEM_ID))),
-                cursor.getString(cursor.getColumnIndex(ItemDatabase.KEY_ITEM_NAME)),
-                Float.parseFloat(cursor.getString(cursor.getColumnIndex(ItemDatabase.KEY_PRICE))),
-                Integer.parseInt(cursor.getString(cursor.getColumnIndex(ItemDatabase.KEY_CATEGORY_ID))),
-                Integer.parseInt(cursor.getString(cursor.getColumnIndex(ItemDatabase.KEY_LIKES))),
-                Integer.parseInt(cursor.getString(cursor.getColumnIndex(ItemDatabase.KEY_SHARES))),
-                Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(ItemDatabase.KEY_ACTIVE))),
-                Integer.parseInt(cursor.getString(cursor.getColumnIndex(ItemDatabase.KEY_CALORIES))),
-                cursor.getString(cursor.getColumnIndex(ItemDatabase.KEY_CREATED)),
-                cursor.getString(cursor.getColumnIndex(ItemDatabase.KEY_LAST_UPDATED)),
-                cursor.getString(cursor.getColumnIndex(ItemDatabase.KEY_DESCRIPTION)),
-                Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(ItemDatabase.KEY_DAILY_SPECIAL))),
-                cursor.getString(cursor.getColumnIndex(ItemDatabase.KEY_IMAGE_PATH))
+                cursor.getInt(cursor.getColumnIndex(SelfieDatabase.KEY_ITEM_ID)),
+                cursor.getString(cursor.getColumnIndex(SelfieDatabase.KEY_ITEM_NAME)),
+                cursor.getFloat((cursor.getColumnIndex(SelfieDatabase.KEY_PRICE))),
+                cursor.getInt((cursor.getColumnIndex(SelfieDatabase.KEY_CATEGORY_ID))),
+                cursor.getInt((cursor.getColumnIndex(SelfieDatabase.KEY_LIKES))),
+                cursor.getInt((cursor.getColumnIndex(SelfieDatabase.KEY_SHARES))),
+                Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(SelfieDatabase.KEY_ACTIVE))),
+                cursor.getInt((cursor.getColumnIndex(SelfieDatabase.KEY_CALORIES))),
+                cursor.getString(cursor.getColumnIndex(SelfieDatabase.KEY_CREATED)),
+                cursor.getString(cursor.getColumnIndex(SelfieDatabase.KEY_LAST_UPDATED)),
+                cursor.getString(cursor.getColumnIndex(SelfieDatabase.KEY_DESCRIPTION)),
+                Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(SelfieDatabase.KEY_DAILY_SPECIAL))),
+                cursor.getString(cursor.getColumnIndex(SelfieDatabase.KEY_IMAGE_PATH))
         );
     }
 
@@ -232,18 +235,18 @@ public class ItemDataSource {
      */
     private ContentValues itemToContentValues(Item item){
         ContentValues values = new ContentValues();
-        values.put(ItemDatabase.KEY_ITEM_NAME,item.getItemName());
-        values.put(ItemDatabase.KEY_PRICE,item.getPrice());
-        values.put(ItemDatabase.KEY_CATEGORY_ID,item.getCategoryID());
-        values.put(ItemDatabase.KEY_LIKES,item.getLikes());
-        values.put(ItemDatabase.KEY_SHARES,item.getShares());
-        values.put(ItemDatabase.KEY_ACTIVE,item.isActive());
-        values.put(ItemDatabase.KEY_CALORIES,item.getCalories());
-        values.put(ItemDatabase.KEY_CREATED,item.getCreated());
-        values.put(ItemDatabase.KEY_LAST_UPDATED,item.getLastUpdated());
-        values.put(ItemDatabase.KEY_DESCRIPTION,item.getDescription());
-        values.put(ItemDatabase.KEY_DAILY_SPECIAL,item.isDailySpecial());
-        values.put(ItemDatabase.KEY_IMAGE_PATH,item.getImagePath());
+        values.put(SelfieDatabase.KEY_ITEM_NAME,item.getItemName());
+        values.put(SelfieDatabase.KEY_PRICE,item.getPrice());
+        values.put(SelfieDatabase.KEY_CATEGORY_ID,item.getCategoryID());
+        values.put(SelfieDatabase.KEY_LIKES,item.getLikes());
+        values.put(SelfieDatabase.KEY_SHARES,item.getShares());
+        values.put(SelfieDatabase.KEY_ACTIVE,item.isActive());
+        values.put(SelfieDatabase.KEY_CALORIES,item.getCalories());
+        values.put(SelfieDatabase.KEY_CREATED,item.getCreated());
+        values.put(SelfieDatabase.KEY_LAST_UPDATED,item.getLastUpdated());
+        values.put(SelfieDatabase.KEY_DESCRIPTION,item.getDescription());
+        values.put(SelfieDatabase.KEY_DAILY_SPECIAL,item.isDailySpecial());
+        values.put(SelfieDatabase.KEY_IMAGE_PATH,item.getImagePath());
         //ID is automatically incremented (PRIMARY KEY)
         return values;
     }
