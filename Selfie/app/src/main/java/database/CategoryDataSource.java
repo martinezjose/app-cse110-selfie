@@ -130,7 +130,7 @@ public class CategoryDataSource {
      * Status:
      * Keywords: get all categories, retrieve all
      */
-    public List<Category> getAllCategory(){
+    public List<Category> getAllCategories(){
 
         //get readable database
         db = myDB.getReadableDatabase();
@@ -213,5 +213,7 @@ public class CategoryDataSource {
 
         return values;
     }
+
+
 }
 

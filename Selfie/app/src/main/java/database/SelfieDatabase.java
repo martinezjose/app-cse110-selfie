@@ -50,6 +50,7 @@ public class SelfieDatabase extends SQLiteOpenHelper {
     public static final String KEY_DESCRIPTION = "description";
     public static final String KEY_DAILY_SPECIAL = "daily_special";
     public static final String KEY_IMAGE_PATH = "image_path";
+    public static final String KEY_THUMBNAIL = "thumbnail";
 
     //TABLE_CATEGORIES column names
     //public static final String KEY_CATEGORY_ID = "category_id"; //same as KEY_CATEGORY_ID above
@@ -78,6 +79,7 @@ public class SelfieDatabase extends SQLiteOpenHelper {
                 + KEY_DESCRIPTION + " TEXT,"
                 + KEY_DAILY_SPECIAL + " INTEGER,"
                 + KEY_IMAGE_PATH + " TEXT"
+                + KEY_THUMBNAIL + " TEXT"
                 +");";
 
         //TABLE_CATEGORIES
@@ -87,6 +89,7 @@ public class SelfieDatabase extends SQLiteOpenHelper {
                 + ");";
 
         db.execSQL(CREATE_ALL_ITEMS_TABLE);
+        db.execSQL(CREATE_CATEGORIES_TABLE);
     }
 
     @Override
@@ -99,16 +102,7 @@ public class SelfieDatabase extends SQLiteOpenHelper {
 
     }
 
-    /* customQuery()
-     * Description: custom query method; make queries for one or more fields
-     * PRECONDITION:
-     * POSTCONDITION:
-     * Returns:
-     * Status:
-     * Keyword:
-     */
-    public void customQuery(String table, String [] columns, String [] matching){
-    }
+
 
 
 }

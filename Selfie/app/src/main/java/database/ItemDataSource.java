@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import classes.Item;
+import classes.SmallItem;
 
 /**
  * Data Access Object (DAO)-- Handles Record insertion and retrieval with Database.
@@ -25,9 +26,13 @@ public class ItemDataSource {
 
     private String [] allColumns = {SelfieDatabase.KEY_ITEM_ID,
             SelfieDatabase.KEY_ITEM_NAME,SelfieDatabase.KEY_PRICE, SelfieDatabase.KEY_CATEGORY_ID,
-            SelfieDatabase.KEY_LIKES, SelfieDatabase.KEY_SHARES, SelfieDatabase.KEY_ACTIVE,
+            SelfieDatabase.KEY_LIKES,SelfieDatabase.KEY_ACTIVE,
             SelfieDatabase.KEY_CALORIES, SelfieDatabase.KEY_CREATED,SelfieDatabase.KEY_LAST_UPDATED,
-            SelfieDatabase.KEY_DESCRIPTION,SelfieDatabase.KEY_DAILY_SPECIAL,SelfieDatabase.KEY_IMAGE_PATH};
+            SelfieDatabase.KEY_DESCRIPTION,SelfieDatabase.KEY_DAILY_SPECIAL,SelfieDatabase.KEY_IMAGE_PATH,
+            SelfieDatabase.KEY_THUMBNAIL};
+
+    private String [] smallColumns = {SelfieDatabase.KEY_ITEM_ID,SelfieDatabase.KEY_ITEM_NAME,
+            SelfieDatabase.KEY_CATEGORY_ID,SelfieDatabase.KEY_DAILY_SPECIAL,SelfieDatabase.KEY_THUMBNAIL};
 
     //CONSTRUCTOR
     public ItemDataSource(Context context){
@@ -195,6 +200,35 @@ public class ItemDataSource {
         return cursor.getCount();
     }
 
+
+    /************************************ Specific Querying ***************************************/
+
+    /* getAllFromCategory()
+     * Description: returns an ArrayList of SmallItems that match this categoryID
+     * PRECONDITION: categoryID is a valid ID
+     * POSTCONDITION: an ArrayList of SmallItems is returned
+     * Returns: an ArrayList of SmallItems
+     * Status: no error-checking
+     * Keywords:
+     */
+    public ArrayList<SmallItem> getAllFromCategory(int categoryID){
+        db = myDB.getReadableDatabase();
+
+        ArrayList<SmallItem> smallItemsList = new ArrayList<SmallItem>();
+
+        //select rows in TABLE_ALL_ITEMS that match categoryID
+        Cursor cursor = db.query(SelfieDatabase.TABLE_ALL_ITEMS,smallColumns,SelfieDatabase.KEY_CATEGORY_ID + " = ? ",
+                new String [] {String.valueOf(categoryID)},null,null,null);
+
+        if(cursor.moveToFirst()){
+            do{
+                smallItemsList.add(cursorToSmallItem(cursor));
+            }while(cursor.moveToNext());
+        }
+
+        return smallItemsList;
+    }
+
     /************************************** HELPER METHODS ****************************************/
 
     /* cursorToItem()
@@ -214,12 +248,31 @@ public class ItemDataSource {
                 cursor.getFloat((cursor.getColumnIndex(SelfieDatabase.KEY_PRICE))),
                 cursor.getInt((cursor.getColumnIndex(SelfieDatabase.KEY_CATEGORY_ID))),
                 cursor.getInt((cursor.getColumnIndex(SelfieDatabase.KEY_LIKES))),
-                cursor.getInt((cursor.getColumnIndex(SelfieDatabase.KEY_SHARES))),
                 Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(SelfieDatabase.KEY_ACTIVE))),
                 cursor.getInt((cursor.getColumnIndex(SelfieDatabase.KEY_CALORIES))),
                 cursor.getString(cursor.getColumnIndex(SelfieDatabase.KEY_CREATED)),
                 cursor.getString(cursor.getColumnIndex(SelfieDatabase.KEY_LAST_UPDATED)),
                 cursor.getString(cursor.getColumnIndex(SelfieDatabase.KEY_DESCRIPTION)),
+                Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(SelfieDatabase.KEY_DAILY_SPECIAL))),
+                stringToArray(cursor.getString(cursor.getColumnIndex(SelfieDatabase.KEY_IMAGE_PATH))),
+                cursor.getString(cursor.getColumnIndex(SelfieDatabase.KEY_THUMBNAIL))
+        );
+    }
+
+    /* cursorToSmallItem()
+     * Description: returns a SmallItem object pointed at by the cursor in the database.
+     * PRECONDITION: cursor points to a valid entry in the database.
+     * POSTCONDITION: a SmallItem object is populated and returned
+     * Returns: SmallItem
+     * Status:
+     * Keywords: helper, helper function, cursor to SmallItem, cursorToSmallItem
+     */
+    private SmallItem cursorToSmallItem(Cursor cursor){
+
+        //getter Constructor
+        return new SmallItem(
+                cursor.getInt(cursor.getColumnIndex(SelfieDatabase.KEY_ITEM_ID)),
+                cursor.getString(cursor.getColumnIndex(SelfieDatabase.KEY_ITEM_NAME)),
                 Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(SelfieDatabase.KEY_DAILY_SPECIAL))),
                 cursor.getString(cursor.getColumnIndex(SelfieDatabase.KEY_IMAGE_PATH))
         );
@@ -239,15 +292,47 @@ public class ItemDataSource {
         values.put(SelfieDatabase.KEY_PRICE,item.getPrice());
         values.put(SelfieDatabase.KEY_CATEGORY_ID,item.getCategoryID());
         values.put(SelfieDatabase.KEY_LIKES,item.getLikes());
-        values.put(SelfieDatabase.KEY_SHARES,item.getShares());
         values.put(SelfieDatabase.KEY_ACTIVE,item.isActive());
         values.put(SelfieDatabase.KEY_CALORIES,item.getCalories());
         values.put(SelfieDatabase.KEY_CREATED,item.getCreated());
         values.put(SelfieDatabase.KEY_LAST_UPDATED,item.getLastUpdated());
         values.put(SelfieDatabase.KEY_DESCRIPTION,item.getDescription());
         values.put(SelfieDatabase.KEY_DAILY_SPECIAL,item.isDailySpecial());
-        values.put(SelfieDatabase.KEY_IMAGE_PATH,item.getImagePath());
+        values.put(SelfieDatabase.KEY_IMAGE_PATH,arrayToString(item.getImagePath()));
+        values.put(SelfieDatabase.KEY_THUMBNAIL,item.getThumbnail());
         //ID is automatically incremented (PRIMARY KEY)
         return values;
     }
+
+    /* stringToArray() -- retrieval
+     * Description:converts the image_paths column to an array of Strings, delimited by ;(semicolon)
+     * PRECONDITION:
+     * POSTCONDITION:
+     * Returns:
+     * Status:
+     * Keywords:
+     */
+    private String [] stringToArray(String image_paths){
+        return image_paths.split(";");
+    }
+
+    /* arrayToString() -- insertion
+     * Description: converts an array of Strings to one String, delimited by ; (semicolon)
+     * PRECONDITION:
+     * POSTCONDITION:
+     * Returns:
+     * Status:
+     * Keywords:
+     */
+    private String arrayToString(String [] image_paths){
+        String returnValue = "";
+
+        for(int i=0; i < image_paths.length; ++i){
+            returnValue = image_paths[i] + ";";
+        }
+
+        return returnValue;
+    }
+
+
 }
