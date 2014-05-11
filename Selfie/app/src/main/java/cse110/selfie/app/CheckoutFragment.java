@@ -48,18 +48,41 @@ public class CheckoutFragment extends Fragment {
 
     //custom adapter for custom individual item display
     private class checkoutAdapter extends ArrayAdapter<String> {
+
+        private class ViewHolder {
+            TextView quantity, price;
+            CheckBox checkBox;
+            ImageButton add, sub;
+        }
+
         public checkoutAdapter(String[] dishes) {
             super(getActivity(), android.R.layout.simple_list_item_1, dishes);
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
+            ViewHolder holder = null;
             if(convertView == null) {
                 convertView = getActivity().getLayoutInflater()
                         .inflate(R.layout.mylist_checkout_item, null);
+                /*
+                holder.quantity = (TextView) convertView.findViewById(R.id.checkout_quantityCounter);
+                holder.price = (TextView) convertView.findViewById(R.id.checkout_itemPrice);
+                holder.checkBox = (CheckBox) convertView.findViewById(R.id.checkout_checkBox);
+                holder.add = (ImageButton) convertView.findViewById(R.id.right);
+                holder.sub = (ImageButton) convertView.findViewById(R.id.left);
+
+                holder.checkBox.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        CheckBox cb = (CheckBox) v;
+
+                    }
+                }); */
+            } else {
+                holder = (ViewHolder) convertView.getTag();
             }
-            CheckBox checkBox = (CheckBox) convertView.findViewById(R.id.checkout_checkBox);
-            checkBox.setChecked(false);
+
+            holder.checkBox.setChecked(false);
 
             TextView itemName = (TextView) convertView.findViewById(R.id.checkout_itemName);
             //gets from DB

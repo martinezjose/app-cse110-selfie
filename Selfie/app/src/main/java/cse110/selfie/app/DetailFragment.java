@@ -24,9 +24,7 @@ public class DetailFragment extends Fragment {
 
     public WeightController myController;
     final static String ARG_ITEM_ID = "ARG_ITEM_ID";
-    public String test = "test";
-    public String des = "This is a description of the item. It is a test and it should be long enough that it will require two lines to show.\n" + " hopefully it works";
-
+    //public Item theItem;
     //Top Layout
     public ImageView iv1, iv2;
 
@@ -45,6 +43,8 @@ public class DetailFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_description_screen, container, false);
 
         myController = new WeightController(getActivity());
+        //theItem = database.get(Integer.parseInt(ARG_ITEM_ID));
+
         //Top Layout
         iv1 = (ImageView) view.findViewById(R.id.itemDetail_pic1);
         iv2 = (ImageView) view.findViewById(R.id.itemDetail_pic2);
@@ -54,7 +54,6 @@ public class DetailFragment extends Fragment {
         priceDisplay = (TextView) view.findViewById(R.id.itemDetail_price);
         itemName = (TextView) view.findViewById(R.id.itemDetail_itemName);
         quantityCounter = (TextView) view.findViewById(R.id.itemDetail_quantityDisplay);
-        //quantityCounter.setGravity(View.TEXT_ALIGNMENT_CENTER);
         thumbsCounter = (TextView) view.findViewById(R.id.itemDetail_thumbDisplay);
 
         MyButtonListener myButtonListener = new MyButtonListener();
@@ -73,7 +72,7 @@ public class DetailFragment extends Fragment {
         //Bottom Layout
         recommendedGallery = (LinearLayout) view.findViewById(R.id.itemDetail_recommendedGallery);
 
-        updateDetail();
+        updateDetail(/*theItem*/);
         return view;
     }
 
@@ -127,23 +126,40 @@ public class DetailFragment extends Fragment {
     }
 
     //will be taken out
-    public void updateDetail() {
+    public void updateDetail(/*Item theItem*/) {
         //get details from DB and replace
 
         iv1.setImageResource(R.drawable.ic_launcher);
         iv2.setImageResource(R.drawable.ic_launcher);
 
-        itemDescription.setText(des);
+        itemDescription.setText("test");
         priceDisplay.setText("$ 10.00");
-        itemName.setText(test);
+        itemName.setText("test");
         quantityCounter.setText("1");
         thumbsCounter.setText("0");
 
         for(int i=0; i<8; i++) {
             ImageView rg1 = new ImageView(recommendedGallery.getContext());
-            rg1.setLayoutParams(new ActionBar.LayoutParams(100, 100));
+            rg1.setLayoutParams(new ViewGroup.LayoutParams(100, 100));
             rg1.setImageResource(R.drawable.ic_launcher);
             recommendedGallery.addView(rg1);
         }
+
+        /*
+        iv1.setImageResource(theItem.getImage(0));
+        iv2.setImageResource(theItem.getImage(1));
+
+        itemDescription.setText(theItem.getDescription());
+        priceDisplay.setText("$ " +theItem.getPrice());
+        itemName.setText(theItem.getName());
+        thumbsCounter.setText(theItem.getThumbs());
+
+        for(int i=0; i<theItem.getRecommendation().size(); i++) {
+            ImageView rg1 = new ImageView(recommendedGallery.getContext());
+            rg1.setLayoutParams(new ViewGroup.LayoutParams(100, 100));
+            rg1.setImageResource(theItem.getRecommendations().get(i).getImage(0));
+            recommendedGallery.addView(rg1);
+        }
+         */
     }
 }

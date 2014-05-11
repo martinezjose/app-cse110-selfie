@@ -19,6 +19,7 @@ public class MenuItemList extends ListFragment {
 
     final static String ARG_CATEGORY_ID = "ARG_CATEGORY_ID";
     Test myTest, myTest1, myTest2, myTest3;
+    //public ArrayList<SmallItem> list;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -27,6 +28,8 @@ public class MenuItemList extends ListFragment {
 
         Bundle args = getArguments();
         int myNum = args.getInt(ARG_CATEGORY_ID);
+
+        //list = database.getMenu(Integer.parseInt(ARG_CATEGORY_ID)+1);
 
         init(); //for my (Juan's) testing only
         if(myNum == 0)
@@ -38,12 +41,49 @@ public class MenuItemList extends ListFragment {
         else
             myAdapter = new myListAdapter(myTest3);
 
-        //myAdapter = new myListAdapter(appetizers);
         setListAdapter(myAdapter);
     }
 
     //custom adapter for custom individual item display
     private class myListAdapter extends ArrayAdapter <String> {
+
+        /* INCLUDES DATABASE
+        ArrayList<SmallItem> newMenu
+          String [] name;
+
+          public String[] getNames(ArrayList<SmallItem> menu) {
+            name = new String[](newMenu.size());
+            for(int i=0; i<menu.size(); i++) {
+                name[i] = menu.get(i).getName();
+            }
+          }
+
+          public myListAdapter(ArrayList<SmallItem> newMenu) {
+            super.(getActivity(), android.R.layout.simple_list_item_1, name);
+            this.newMenu = newMenu;
+          }
+          @Override
+          public View getView(int position, View convertView, ViewGroup parent) {
+            if(convertView == null) {
+                convertView = getActivity().getLayoutInflater().inflate(
+                        R.layout.myList_menu_item, null);
+            }
+            TextView textView = (TextView) convertView.findViewById(R.id.textView);
+            textView.setText(name[position]);
+
+            ImageView imageView = (ImageView) convertView.findViewById(R.id.imageView);
+            imageView.setImageResource(newMenu.get(position).getThumbnail());
+
+            ImageView imageView1 = (ImageView) convertView.findViewById(R.id.imageView2);
+            imageView1.setImageResource(R.drawable.yellow_star);
+            if(newMenu.get(position).isSpecial)
+                imageView1.setAlpha(1f);
+            else
+                imageView1.setAlpha(0f);
+
+            return convertView;
+          }
+        */
         Test menu;
         public myListAdapter(Test menu) {
             super(getActivity(), android.R.layout.simple_list_item_1, menu.getNames());
@@ -63,10 +103,13 @@ public class MenuItemList extends ListFragment {
             ImageView imageView = (ImageView) convertView.findViewById(R.id.imageView);
             imageView.setImageResource(R.drawable.ic_launcher);
 
-            if(menu.getMenu().get(position).getSpecial()) {
-                ImageView imageView1 = (ImageView) convertView.findViewById(R.id.imageView2);
-                imageView1.setImageResource(R.drawable.yellow_star);
-            }
+            ImageView imageView1 = (ImageView) convertView.findViewById(R.id.imageView2);
+            imageView1.setImageResource(R.drawable.yellow_star);
+
+            if(menu.getMenu().get(position).getSpecial())
+                imageView1.setAlpha(1f);
+            else
+                imageView1.setAlpha(0f);
 
             return convertView;
         }
@@ -75,6 +118,18 @@ public class MenuItemList extends ListFragment {
     @Override
     //list's listener
     public void onListItemClick(ListView l, View v, int position, long id) {
+        /*INCLUDES DATABASE
+        Bundle arguments = new Bundle();
+        arguments.putInt(DetailFragment.ARG_ITEM_ID, list.get(i).id);
+        DetailFragment fragment = new DetailFragment();
+        fragment.setArguments(arguments);
+
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.MSfragment_detailContainer, fragment)
+                .addToBackStack("Menu " +ARG_CATEGORY_ID)
+                .commit();
+         */
+
         Bundle arguments = new Bundle();
         arguments.putInt(DetailFragment.ARG_ITEM_ID, position);
         DetailFragment fragment = new DetailFragment();

@@ -21,12 +21,17 @@ public class CategoryFragment extends ListFragment{
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        /*INCLUDES DATABASE
         super.onCreate(savedInstanceState);
-
-        String [] category = getResources().getStringArray(R.array.cat_list);
+        String[] category = database.getCategory();
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(),
                 android.R.layout.simple_list_item_1, category);
         setListAdapter(arrayAdapter);
+         */
+        super.onCreate(savedInstanceState);
+
+        String [] category = getResources().getStringArray(R.array.cat_list);
+
     }
 
     @Override
