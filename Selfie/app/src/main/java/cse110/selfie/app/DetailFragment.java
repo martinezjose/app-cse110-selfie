@@ -40,10 +40,13 @@ public class DetailFragment extends Fragment {
     @Override
     //gets and initializes components in fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        Bundle args = getArguments();
+        int itemPos = args.getInt(ARG_ITEM_ID);
         View view = inflater.inflate(R.layout.fragment_description_screen, container, false);
 
         myController = new WeightController(getActivity());
-        //theItem = database.get(Integer.parseInt(ARG_ITEM_ID));
+        //theItem = ItemDataSource.getItem(Integer.parseInt(ARG_ITEM_ID));
 
         //Top Layout
         iv1 = (ImageView) view.findViewById(R.id.itemDetail_pic1);
@@ -54,6 +57,7 @@ public class DetailFragment extends Fragment {
         priceDisplay = (TextView) view.findViewById(R.id.itemDetail_price);
         itemName = (TextView) view.findViewById(R.id.itemDetail_itemName);
         quantityCounter = (TextView) view.findViewById(R.id.itemDetail_quantityDisplay);
+        quantityCounter.setText("1");
         thumbsCounter = (TextView) view.findViewById(R.id.itemDetail_thumbDisplay);
 
         MyButtonListener myButtonListener = new MyButtonListener();
@@ -83,33 +87,33 @@ public class DetailFragment extends Fragment {
 
         @Override
         public void onClick(View view) {
-            switch(view.getId()) {
+            switch (view.getId()) {
                 //just shows an alert dialog
                 case R.id.itemDetail_addToOrder:
                     CurrentQuantity = Integer.parseInt(quantityCounter.getText().toString());
                     new AlertDialog.Builder(view.getContext())
-                    .setTitle("Confirmation").setMessage("Are You Done?")
-                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            FragmentTransaction fTransaction = getActivity()
-                                    .getSupportFragmentManager()
-                                    .beginTransaction();
-                            CheckoutFragment checkoutFragment = new CheckoutFragment();
+                            .setTitle("Confirmation").setMessage("Are You Done?")
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    FragmentTransaction fTransaction = getActivity()
+                                            .getSupportFragmentManager()
+                                            .beginTransaction();
+                                    OrderFragment checkoutFragment = new OrderFragment();
 
-                            fTransaction.replace(R.id.MSfragment_listContainer, checkoutFragment)
-                                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                                    .addToBackStack("Checkout")
-                                    .commit();
-                            myController.changeLayoutWeight(2);
-                        }
-                    })
-                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                        }
-                    })
-                    .show();
+                                    fTransaction.replace(R.id.MSfragment_listContainer, checkoutFragment)
+                                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                                            .addToBackStack("Order")
+                                            .commit();
+                                    myController.changeLayoutWeight(2);
+                                }
+                            })
+                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                }
+                            })
+                            .show();
                     break;
                 case R.id.itemDetail_quantityUpOne:
                     CurrentQuantity = Integer.parseInt(quantityCounter.getText().toString());
@@ -117,7 +121,7 @@ public class DetailFragment extends Fragment {
                     break;
                 case R.id.itemDetail_quantityDownOne:
                     CurrentQuantity = Integer.parseInt(quantityCounter.getText().toString());
-                    if(CurrentQuantity != 0)
+                    if (CurrentQuantity != 0)
                         quantityCounter.setText(Integer.toString(--CurrentQuantity));
                     break;
             }
@@ -135,13 +139,33 @@ public class DetailFragment extends Fragment {
         itemDescription.setText("test");
         priceDisplay.setText("$ 10.00");
         itemName.setText("test");
-        quantityCounter.setText("1");
         thumbsCounter.setText("0");
 
-        for(int i=0; i<8; i++) {
+        for (int i = 0; i < 8; i++) {
             ImageView rg1 = new ImageView(recommendedGallery.getContext());
             rg1.setLayoutParams(new ViewGroup.LayoutParams(100, 100));
             rg1.setImageResource(R.drawable.ic_launcher);
+            rg1.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Bundle argMenu = new Bundle();
+                    argMenu.putInt(MenuItemList.ARG_CATEGORY_ID, 1);
+                    MenuItemList m = new MenuItemList();
+                    m.setArguments(argMenu);
+
+                    Bundle argDetail = new Bundle();
+                    argDetail.putInt(DetailFragment.ARG_ITEM_ID, 1);
+                    DetailFragment d = new DetailFragment();
+                    d.setArguments(argDetail);
+
+                    FragmentTransaction ft = getActivity().getSupportFragmentManager()
+                            .beginTransaction();
+                    ft.replace(R.id.MSfragment_listContainer, m)
+                            .replace(R.id.MSfragment_detailContainer, d)
+                            .addToBackStack("Menu 2")
+                            .commit();
+                }
+            });
             recommendedGallery.addView(rg1);
         }
 
@@ -154,10 +178,33 @@ public class DetailFragment extends Fragment {
         itemName.setText(theItem.getName());
         thumbsCounter.setText(theItem.getThumbs());
 
+        ArrayList<SmallItem> recommendations = theItem.getRecommendations();
         for(int i=0; i<theItem.getRecommendation().size(); i++) {
             ImageView rg1 = new ImageView(recommendedGallery.getContext());
             rg1.setLayoutParams(new ViewGroup.LayoutParams(100, 100));
-            rg1.setImageResource(theItem.getRecommendations().get(i).getImage(0));
+            rg1.setImageResource(recommendations.get(i).getImage(0));
+            rg1.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Bundle argMenu = new Bundle();
+                    argMenu.putInt(MenuItemList.ARG_CATEGORY_ID,
+                            recommendation.get(i).getCategoryId());
+                    MenuItemList m = new MenuItemList();
+                    m.setArguments(argMenu);
+
+                    Bundle argDetail = new Bundle();
+                    argDetail.putInt(DetailFragment.ARG_ITEM_ID,
+                            recommendation.get(i).getItemId());
+                    DetailFragment d = new DetailFragment();
+                    d.setArguments(argDetail);
+
+                    FragmentTransaction ft = getActivity().getSupportFragmentManager()
+                            .beginTransaction();
+                    ft.replace(R.id.MSfragment_listContainer, m)
+                            .replace(R.id.MSfragment_detailContainer, d)
+                            .addToBackStack("Menu " +Integer.toString(theItem.getItemId())
+                            .commit();
+                }
             recommendedGallery.addView(rg1);
         }
          */

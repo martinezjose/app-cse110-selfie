@@ -12,8 +12,6 @@ import android.widget.ListView;
  */
 public class CategoryFragment extends ListFragment{
 
-    final static int ARG_POSITION = -1;
-
     onItemSelectedListener mCallback;
     public interface onItemSelectedListener {
         public void onItemSelected(int itemId);
@@ -23,7 +21,7 @@ public class CategoryFragment extends ListFragment{
     public void onCreate(Bundle savedInstanceState) {
         /*INCLUDES DATABASE
         super.onCreate(savedInstanceState);
-        String[] category = database.getCategory();
+        ArrayList<Category> categories = CategoryDataSource.getAllCategory();
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(),
                 android.R.layout.simple_list_item_1, category);
         setListAdapter(arrayAdapter);
@@ -31,7 +29,9 @@ public class CategoryFragment extends ListFragment{
         super.onCreate(savedInstanceState);
 
         String [] category = getResources().getStringArray(R.array.cat_list);
-
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_list_item_1, category);
+        setListAdapter(arrayAdapter);
     }
 
     @Override

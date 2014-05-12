@@ -24,25 +24,27 @@ public class HomeScreenActivity extends FragmentActivity implements CategoryFrag
 
     public CategoryFragment categoryFragment = new CategoryFragment();
     public SpecialTabFragment specialTabFragment = new SpecialTabFragment();
-    public CheckoutFragment checkoutFragment = new CheckoutFragment();
+    public OrderFragment checkoutFragment = new OrderFragment();
 
     @Override
     //on Category selected
-    public void onItemSelected(int itemId) {
-        Bundle arguments = new Bundle();
-        arguments.putInt(MenuItemList.ARG_CATEGORY_ID, itemId);
-
+    public void onItemSelected(int categoryId) {
+        Bundle argMenu = new Bundle();
+        argMenu.putInt(MenuItemList.ARG_CATEGORY_ID, categoryId);
         MenuItemList menu = new MenuItemList();
-        menu.setArguments(arguments);
+        menu.setArguments(argMenu);
 
+        Bundle argDetail = new Bundle();
+        argDetail.putInt(DetailFragment.ARG_ITEM_ID, 0);
         DetailFragment details = new DetailFragment();
+        details.setArguments(argDetail);
 
         //renders menu of category selected and first item details
         FragmentTransaction fTransaction = getSupportFragmentManager().beginTransaction();
         fTransaction.replace(R.id.MSfragment_listContainer, menu)
                 .replace(R.id.MSfragment_detailContainer, details)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                .addToBackStack("Menu " +Integer.toString(itemId))
+                .addToBackStack("Menu " +Integer.toString(categoryId))
                 .commit();
         myController.changeLayoutWeight(1);
     }
@@ -77,10 +79,10 @@ public class HomeScreenActivity extends FragmentActivity implements CategoryFrag
             case R.id.MS_checkout_button:
                 //render checkout screen
                 if(fManager.getBackStackEntryAt
-                        (fManager.getBackStackEntryCount()-1).getName() != "Checkout") {
+                        (fManager.getBackStackEntryCount()-1).getName() != "Order") {
                     fTransaction.replace(R.id.MSfragment_listContainer, checkoutFragment)
                             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                            .addToBackStack("Checkout")
+                            .addToBackStack("Order")
                             .commit();
                     myController.changeLayoutWeight(2);
                 }
@@ -92,12 +94,17 @@ public class HomeScreenActivity extends FragmentActivity implements CategoryFrag
 
                 if(fManager.getBackStackEntryCount() > 1) {
                     fManager.popBackStack();
-                    if(mPrevious.getName() == "Home") {
+                    if(fManager.getBackStackEntryAt
+                            (fManager.getBackStackEntryCount()-1).getName() == "Home")
+                        moveTaskToBack(true);
+
+                    else if(mPrevious.getName() == "Home") {
                         myController.changeLayoutWeight(0);
                     }
                     else if(mPrevious.getName().startsWith("Menu ")) {
                         myController.changeLayoutWeight(1);
                     }
+
                     //clears stack if 10 screens have been added
                     if (fManager.getBackStackEntryCount() > 10) {
                         for(int i=0;i<fManager.getBackStackEntryCount()-2;i++)
@@ -105,6 +112,7 @@ public class HomeScreenActivity extends FragmentActivity implements CategoryFrag
                         myController.changeLayoutWeight(0);
                     }
                 }
+                else {}
                 break;
         }
     }

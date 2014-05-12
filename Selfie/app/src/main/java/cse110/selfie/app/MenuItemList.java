@@ -1,5 +1,6 @@
 package cse110.selfie.app;
 
+import android.net.wifi.WifiEnterpriseConfig;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.view.View;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 //this is a comment
 public class MenuItemList extends ListFragment {
 
+    WeightController weightController;
     final static String ARG_CATEGORY_ID = "ARG_CATEGORY_ID";
     Test myTest, myTest1, myTest2, myTest3;
     //public ArrayList<SmallItem> list;
@@ -26,10 +28,9 @@ public class MenuItemList extends ListFragment {
         super.onCreate(savedInstanceState);
         myListAdapter myAdapter;
 
-        Bundle args = getArguments();
-        int myNum = args.getInt(ARG_CATEGORY_ID);
+        int myNum = getArguments().getInt(ARG_CATEGORY_ID);
 
-        //list = database.getMenu(Integer.parseInt(ARG_CATEGORY_ID)+1);
+        //list = ItemDataSource.getAllFromCategory(Integer.parseInt(ARG_CATEGORY_ID)+1);
 
         init(); //for my (Juan's) testing only
         if(myNum == 0)
