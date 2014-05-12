@@ -16,10 +16,10 @@ import android.database.sqlite.SQLiteOpenHelper;
  * TABLE_CATEGORIES = "categories" -- categories table
  *
  *  TABLE_ALL_ITEMS
- * ----------*-----------*-------*-------------*-------*--------*--------*----------*---------*-------------*-------------*---------------*------------*
- * | item_id | item_name | price | category_id | likes | shares | active | calories | created |last_updated | description | daily_special | image_path |
- * +---------+-----------+-------+-------------+-------+--------+--------+----------+-----------------------+-------------+---------------+------------+
- * |         |           |       |             |       |        |        |          |         |             |             |               |            |
+ * ----------*-----------*-------*-------------*-------*--------*----------*---------*-------------*-------------*---------------*------------*------------*
+ * | item_id | item_name | price | category_id | likes | active | calories | created |last_updated | description | daily_special | image_path | thumbnail  |
+ * +---------+-----------+-------+-------------+-------+--------+----------+---------+---------------------------+---------------+------------+------------+
+ * |         |           |       |             |       |        |          |         |             |             |               |            |            |
  *
  * TABLE_CATEGORIES
  * --------------*---------------*
@@ -34,7 +34,7 @@ public class SelfieDatabase extends SQLiteOpenHelper {
     public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "selfieDB";
     public static final String TABLE_ALL_ITEMS = "items";
-    public static final String TABLE_CATEGORIES = "categores";
+    public static final String TABLE_CATEGORIES = "categories";
 
     //TABLE_ALL_ITEMS column names
     public static final String KEY_ITEM_ID = "item_id";
@@ -42,7 +42,6 @@ public class SelfieDatabase extends SQLiteOpenHelper {
     public static final String KEY_PRICE = "price";
     public static final String KEY_CATEGORY_ID = "category_id";
     public static final String KEY_LIKES = "likes";
-    public static final String KEY_SHARES = "shares";
     public static final String KEY_ACTIVE = "active";
     public static final String KEY_CALORIES = "calories";
     public static final String KEY_CREATED = "created";
@@ -71,7 +70,6 @@ public class SelfieDatabase extends SQLiteOpenHelper {
                 + KEY_PRICE + " REAL,"
                 + KEY_CATEGORY_ID + " INTEGER,"
                 + KEY_LIKES + " INTEGER,"
-                + KEY_SHARES + " INTEGER,"
                 + KEY_ACTIVE + " INTEGER,"
                 + KEY_CALORIES + " INTEGER,"
                 + KEY_CREATED + " TEXT,"
