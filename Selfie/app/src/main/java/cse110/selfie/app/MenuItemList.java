@@ -1,8 +1,8 @@
 package cse110.selfie.app;
 
-import android.net.wifi.WifiEnterpriseConfig;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -14,34 +14,22 @@ import java.util.ArrayList;
 
 /**
  * Created by JuanJ on 4/29/2014.
+ * Controller for the Menu ListView
  */
-//this is a comment
+
 public class MenuItemList extends ListFragment {
 
     WeightController weightController;
-    final static String ARG_CATEGORY_ID = "ARG_CATEGORY_ID";
-    Test myTest, myTest1, myTest2, myTest3;
+    static String ARG_CATEGORY_ID = "ARG_CATEGORY_ID";
     //public ArrayList<SmallItem> list;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        myListAdapter myAdapter;
+        ARG_CATEGORY_ID = Integer.toString(getArguments().getInt(ARG_CATEGORY_ID));
 
-        int myNum = getArguments().getInt(ARG_CATEGORY_ID);
-
+        myListAdapter myAdapter = new myListAdapter(Test.getNames(Integer.parseInt(ARG_CATEGORY_ID)));
         //list = ItemDataSource.getAllFromCategory(Integer.parseInt(ARG_CATEGORY_ID)+1);
-
-        init(); //for my (Juan's) testing only
-        if(myNum == 0)
-            myAdapter = new myListAdapter(myTest);
-        else if(myNum == 1)
-            myAdapter = new myListAdapter(myTest1);
-        else if(myNum == 2)
-            myAdapter = new myListAdapter(myTest2);
-        else
-            myAdapter = new myListAdapter(myTest3);
-
         setListAdapter(myAdapter);
     }
 
@@ -85,10 +73,10 @@ public class MenuItemList extends ListFragment {
             return convertView;
           }
         */
-        Test menu;
-        public myListAdapter(Test menu) {
-            super(getActivity(), android.R.layout.simple_list_item_1, menu.getNames());
-            this.menu = menu;
+        TextView textView;
+
+        public myListAdapter(String[] menu) {
+            super(getActivity(), android.R.layout.simple_list_item_1, menu);
         }
 
         //Gets individual list items
@@ -99,7 +87,7 @@ public class MenuItemList extends ListFragment {
             }
 
             TextView textView = (TextView) convertView.findViewById(R.id.textView);
-            textView.setText(menu.getMenu().get(position).getName());
+            textView.setText(Test.getMenu(Integer.parseInt(ARG_CATEGORY_ID)).get(position).getName());
 
             ImageView imageView = (ImageView) convertView.findViewById(R.id.imageView);
             imageView.setImageResource(R.drawable.ic_launcher);
@@ -107,7 +95,7 @@ public class MenuItemList extends ListFragment {
             ImageView imageView1 = (ImageView) convertView.findViewById(R.id.imageView2);
             imageView1.setImageResource(R.drawable.yellow_star);
 
-            if(menu.getMenu().get(position).getSpecial())
+            if(Test.getMenu(Integer.parseInt(ARG_CATEGORY_ID)).get(position).getSpecial())
                 imageView1.setAlpha(1f);
             else
                 imageView1.setAlpha(0f);
@@ -131,8 +119,9 @@ public class MenuItemList extends ListFragment {
                 .commit();
          */
 
+        int theId = Test.getMenu(Integer.parseInt(ARG_CATEGORY_ID)).get(position).getiId();
         Bundle arguments = new Bundle();
-        arguments.putInt(DetailFragment.ARG_ITEM_ID, position);
+        arguments.putInt(DetailFragment.ARG_ITEM_ID, theId);
         DetailFragment fragment = new DetailFragment();
         fragment.setArguments(arguments);
 
@@ -150,42 +139,5 @@ public class MenuItemList extends ListFragment {
         if(getFragmentManager().findFragmentById(R.id.MSfragment_listContainer) != null) {
             getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         }
-    }
-
-    //for my (Juan's) testing only
-    public void init() {
-        myTest = new Test();
-        myTest.addMenu(new item("Triple Dipper", 10.79f, true ));
-        myTest.addMenu(new item("Southwestern Eggrolls", 8.29f, true ));
-        myTest.addMenu(new item("Loaded Potato Skins", 7.09f, false));
-        myTest.addMenu(new item("Classic Nachos", 7.69f, true));
-        myTest.addMenu(new item("Triple Dipper", 10.79f, true ));
-        myTest.addMenu(new item("Southwestern Eggrolls", 8.29f, true ));
-        myTest.addMenu(new item("Loaded Potato Skins", 7.09f, false));
-        myTest.addMenu(new item("Classic Nachos", 7.69f, true));
-        myTest.addMenu(new item("Triple Dipper", 10.79f, true ));
-        myTest.addMenu(new item("Southwestern Eggrolls", 8.29f, true ));
-        myTest.addMenu(new item("Loaded Potato Skins", 7.09f, false));
-        myTest.addMenu(new item("Classic Nachos", 7.69f, true));
-        myTest.addMenu(new item("Triple Dipper", 10.79f, true ));
-        myTest.addMenu(new item("Southwestern Eggrolls", 8.29f, true ));
-        myTest.addMenu(new item("Loaded Potato Skins", 7.09f, false));
-        myTest.addMenu(new item("Classic Nachos", 7.69f, true));
-
-        myTest1 = new Test();
-        myTest1.addMenu(new item("Bacon Burger", 9.59f, false));
-        myTest1.addMenu(new item("Cheese Burger", 8.59f, true));
-        myTest1.addMenu(new item("Veggie Burger", 7.59f, true));
-        myTest1.addMenu(new item("Bacon Cheese Burger", 11.59f, false));
-
-        myTest2 = new Test();
-        myTest2.addMenu(new item("Chocolate Cake", 6.29f, false));
-        myTest2.addMenu(new item("Chocolate Ice Cream", 6.09f, false));
-        myTest2.addMenu(new item("Chocolate Cheesecake", 7.39f, true));
-
-        myTest3 = new Test();
-        myTest3.addMenu(new item("Apple Juice", 3.43f, true));
-        myTest3.addMenu(new item("Mango Juice", 3.43f, false));
-        myTest3.addMenu(new item("Orange Juice", 3.43f, false));
     }
 }

@@ -17,23 +17,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".dummy.CategoryListActivity"
-            android:label="@string/app_name" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".dummy.CategoryDetailActivity"
-            android:label="@string/title_category_detail"
-            android:parentActivityName=".dummy.CategoryListActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="cse110.selfie.app.CategoryListActivity" />
-        </activity>
     </application>
 
 </manifest>

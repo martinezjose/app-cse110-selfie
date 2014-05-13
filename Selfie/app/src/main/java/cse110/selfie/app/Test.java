@@ -1,6 +1,9 @@
 package cse110.selfie.app;
 
+import android.util.Log;
+
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by JuanJ on 5/9/2014.
@@ -8,30 +11,55 @@ import java.util.ArrayList;
 // TEST ONLY !
 public class Test {
 
-    public ArrayList<item> menu;
+    private static ArrayList<ArrayList<item>> menu = new ArrayList<ArrayList<item>>();
 
-    public Test() {
-        menu = new ArrayList<item>();
+    public static void init(int numCategory) {
+        for(int i=0; i<numCategory; i++)
+            menu.add(new ArrayList<item>());
     }
 
-    public Test(ArrayList<item> newMenu) {
-        this.menu = newMenu;
+    public static void add(int category, item newItem) {
+        menu.get(category).add(newItem);
     }
 
-    public ArrayList<item> getMenu () {
-        return menu;
+    public static ArrayList<item> getMenu(int category) {
+        return menu.get(category);
     }
 
-    public void addMenu(item newItem) {
-        menu.add(newItem);
+    public static item getItem(int itemId) {
+        item theItem = null;
+        for(int i=0; i<menu.size(); i++) {
+            for(int j=0; j<menu.get(i).size(); j++) {
+                if(menu.get(i).get(j).getiId() == itemId) {
+                    theItem = menu.get(i).get(j);
+                    break;
+                }
+            }
+        }
+        if(theItem != null)
+            return theItem;
+        else
+            return theItem;
     }
 
-    public String[] getNames() {
-        String [] names = new String[menu.size()];
-        for(int i=0; i<menu.size();i++) {
-            names[i] = menu.get(i).getName();
+    public static String[] getNames(int category) {
+        Log.e("TEST", "trying");
+        String [] names = new String[menu.get(category).size()];
+        for(int i=0; i<menu.get(category).size();i++) {
+            names[i] = menu.get(category).get(i).getName();
         }
         return names;
     }
 
+    public static ArrayList<item> getSpecials () {
+        ArrayList<item> specials = new ArrayList<item>();
+        for(int i=0; i<menu.size(); i++) {
+            for(int j=0; j<menu.get(i).size(); j++) {
+                if(menu.get(i).get(j).getSpecial()) {
+                    specials.add(menu.get(i).get(j));
+                }
+            }
+        }
+        return specials;
+    }
 }

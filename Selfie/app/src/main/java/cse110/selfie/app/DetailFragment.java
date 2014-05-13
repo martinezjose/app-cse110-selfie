@@ -1,12 +1,11 @@
 package cse110.selfie.app;
 
-import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.preference.DialogPreference;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,16 +14,18 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 /**
  * Created by JuanJ on 4/30/2014.
+ * Controller for the Detail Screen
  */
 public class DetailFragment extends Fragment {
 
-    public WeightController myController;
-    final static String ARG_ITEM_ID = "ARG_ITEM_ID";
+    WeightController myController;
+    static String ARG_ITEM_ID = "ARG_ITEM_ID";
     //public Item theItem;
+    item newItem;
+
     //Top Layout
     public ImageView iv1, iv2;
 
@@ -42,7 +43,8 @@ public class DetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         Bundle args = getArguments();
-        int itemPos = args.getInt(ARG_ITEM_ID);
+        ARG_ITEM_ID = Integer.toString(args.getInt(ARG_ITEM_ID));
+        newItem = Test.getItem(Integer.parseInt(ARG_ITEM_ID));
         View view = inflater.inflate(R.layout.fragment_description_screen, container, false);
 
         myController = new WeightController(getActivity());
@@ -76,7 +78,7 @@ public class DetailFragment extends Fragment {
         //Bottom Layout
         recommendedGallery = (LinearLayout) view.findViewById(R.id.itemDetail_recommendedGallery);
 
-        updateDetail(/*theItem*/);
+        updateDetail();
         return view;
     }
 
@@ -84,15 +86,17 @@ public class DetailFragment extends Fragment {
     private class MyButtonListener implements View.OnClickListener {
 
         int CurrentQuantity;
-
         @Override
         public void onClick(View view) {
             switch (view.getId()) {
                 //just shows an alert dialog
                 case R.id.itemDetail_addToOrder:
                     CurrentQuantity = Integer.parseInt(quantityCounter.getText().toString());
+                    Order.add(/*theItem*/ newItem, CurrentQuantity);
                     new AlertDialog.Builder(view.getContext())
-                            .setTitle("Confirmation").setMessage("Are You Done?")
+                            .setTitle("Confirmation").setMessage("Item: "
+                                +itemName.getText().toString() + "\nQuantity: "
+                                +Integer.toString(CurrentQuantity) +"\nAre You Done?")
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
@@ -118,27 +122,33 @@ public class DetailFragment extends Fragment {
                 case R.id.itemDetail_quantityUpOne:
                     CurrentQuantity = Integer.parseInt(quantityCounter.getText().toString());
                     quantityCounter.setText(Integer.toString(++CurrentQuantity));
+                    priceDisplay.setText(Float.toString(newPrice()));
                     break;
                 case R.id.itemDetail_quantityDownOne:
                     CurrentQuantity = Integer.parseInt(quantityCounter.getText().toString());
                     if (CurrentQuantity != 0)
                         quantityCounter.setText(Integer.toString(--CurrentQuantity));
+                    priceDisplay.setText(Float.toString(newPrice()));
                     break;
             }
         }
 
+        private float newPrice() {
+            return (float)Integer.parseInt(quantityCounter.getText().toString())
+                    * newItem.getPrice();
+        }
     }
 
     //will be taken out
-    public void updateDetail(/*Item theItem*/) {
+    public void updateDetail() {
         //get details from DB and replace
 
         iv1.setImageResource(R.drawable.ic_launcher);
         iv2.setImageResource(R.drawable.ic_launcher);
 
         itemDescription.setText("test");
-        priceDisplay.setText("$ 10.00");
-        itemName.setText("test");
+        priceDisplay.setText("$ " +newItem.getPrice());
+        itemName.setText(newItem.getName());
         thumbsCounter.setText("0");
 
         for (int i = 0; i < 8; i++) {
@@ -170,6 +180,7 @@ public class DetailFragment extends Fragment {
         }
 
         /*
+        Item theItem = ItemSource
         iv1.setImageResource(theItem.getImage(0));
         iv2.setImageResource(theItem.getImage(1));
 

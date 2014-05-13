@@ -70,7 +70,8 @@
             android:text="0.0"
             android:layout_alignParentTop="true"
             android:layout_alignLeft="@+id/CS_tax"
-            android:layout_alignStart="@+id/CS_tax" />
+            android:layout_alignStart="@+id/CS_tax"
+            android:autoText="false" />
 
         <TextView
             android:id="@+id/textView2"
