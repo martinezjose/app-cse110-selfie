@@ -11,6 +11,7 @@ import java.util.List;
 
 import classes.Item;
 import classes.SmallItem;
+import tests.testItemDataSource;
 
 /**
  * Data Access Object (DAO)-- Handles Record insertion and retrieval with Database.
@@ -43,6 +44,18 @@ public class ItemDataSource {
     public void open() throws SQLiteException{
         db = myDB.getWritableDatabase();
     }
+
+    /////////////////////////////////////////////////////////////////
+    //setUp()
+    //THIS IS ONLY FOR TESTING PURPOSES!!!!! DELETE THIS METHOD AFTER WE ACTUALLY HAVE A DATABASE...
+    public void setUp() throws Exception{
+        for(int i =0; i<100; ++i) {
+            if (addItem(testItemDataSource.startItem()) == -1)
+                throw new Exception();  //throw exception if error adding item
+        }
+
+    }
+    ////////////////////////////////////////////////////////////////
 
     //close()
     public void close(){
@@ -203,7 +216,7 @@ public class ItemDataSource {
 
     /************************************ Specific Querying ***************************************/
 
-    /* getAllFromCategory()
+    /* getSmallItemFromCategory()
      * Description: returns an ArrayList of SmallItems that match this categoryID
      * PRECONDITION: categoryID is a valid ID
      * POSTCONDITION: an ArrayList of SmallItems is returned
@@ -211,14 +224,15 @@ public class ItemDataSource {
      * Status: no error-checking
      * Keywords:
      */
-    public ArrayList<SmallItem> getAllFromCategory(int categoryID){
+    public ArrayList<SmallItem> getSmallItemFromCategory(int categoryID){
         db = myDB.getReadableDatabase();
 
         ArrayList<SmallItem> smallItemsList = new ArrayList<SmallItem>();
 
         //select rows in TABLE_ALL_ITEMS that match categoryID
-        Cursor cursor = db.query(SelfieDatabase.TABLE_ALL_ITEMS,smallColumns,SelfieDatabase.KEY_CATEGORY_ID + " = ? ",
-                new String [] {String.valueOf(categoryID)},null,null,null);
+        Cursor cursor = db.query(SelfieDatabase.TABLE_ALL_ITEMS,smallColumns,
+                SelfieDatabase.KEY_CATEGORY_ID + " = ? ",new String [] {String.valueOf(categoryID)},
+                null,null,null);
 
         if(cursor.moveToFirst()){
             do{
@@ -241,6 +255,9 @@ public class ItemDataSource {
      */
     private Item cursorToItem(Cursor cursor){
 
+        int IsActive = cursor.getInt(cursor.getColumnIndex(SelfieDatabase.KEY_ACTIVE));
+        int IsSpecial = cursor.getInt(cursor.getColumnIndex(SelfieDatabase.KEY_DAILY_SPECIAL));
+
         //getter Constructor
         return new Item(
                 cursor.getInt(cursor.getColumnIndex(SelfieDatabase.KEY_ITEM_ID)),
@@ -248,12 +265,12 @@ public class ItemDataSource {
                 cursor.getFloat((cursor.getColumnIndex(SelfieDatabase.KEY_PRICE))),
                 cursor.getInt((cursor.getColumnIndex(SelfieDatabase.KEY_CATEGORY_ID))),
                 cursor.getInt((cursor.getColumnIndex(SelfieDatabase.KEY_LIKES))),
-                Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(SelfieDatabase.KEY_ACTIVE))),
+                (IsActive==1)?true:false,
                 cursor.getInt((cursor.getColumnIndex(SelfieDatabase.KEY_CALORIES))),
                 cursor.getString(cursor.getColumnIndex(SelfieDatabase.KEY_CREATED)),
                 cursor.getString(cursor.getColumnIndex(SelfieDatabase.KEY_LAST_UPDATED)),
                 cursor.getString(cursor.getColumnIndex(SelfieDatabase.KEY_DESCRIPTION)),
-                Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(SelfieDatabase.KEY_DAILY_SPECIAL))),
+                (IsSpecial==1)?true:false,
                 stringToArray(cursor.getString(cursor.getColumnIndex(SelfieDatabase.KEY_IMAGE_PATH))),
                 cursor.getString(cursor.getColumnIndex(SelfieDatabase.KEY_THUMBNAIL))
         );
@@ -268,13 +285,14 @@ public class ItemDataSource {
      * Keywords: helper, helper function, cursor to SmallItem, cursorToSmallItem
      */
     private SmallItem cursorToSmallItem(Cursor cursor){
-
+        int IsSpecial = cursor.getInt(cursor.getColumnIndex(SelfieDatabase.KEY_DAILY_SPECIAL));
         //getter Constructor
         return new SmallItem(
                 cursor.getInt(cursor.getColumnIndex(SelfieDatabase.KEY_ITEM_ID)),
                 cursor.getString(cursor.getColumnIndex(SelfieDatabase.KEY_ITEM_NAME)),
-                Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(SelfieDatabase.KEY_DAILY_SPECIAL))),
-                cursor.getString(cursor.getColumnIndex(SelfieDatabase.KEY_IMAGE_PATH))
+                cursor.getInt(cursor.getColumnIndex(SelfieDatabase.KEY_CATEGORY_ID)),
+                (IsSpecial==1)?true:false,
+                cursor.getString(cursor.getColumnIndex(SelfieDatabase.KEY_THUMBNAIL))
         );
     }
 
@@ -327,8 +345,14 @@ public class ItemDataSource {
     private String arrayToString(String [] image_paths){
         String returnValue = "";
 
-        for(int i=0; i < image_paths.length; ++i){
-            returnValue = image_paths[i] + ";";
+        //for every string in image_paths
+        for(String string:image_paths){
+            //append to returnValue the string
+            returnValue = returnValue + string;
+
+            //if it's not the last string in image_paths, append ;
+            if(string != image_paths[image_paths.length-1])
+                returnValue = returnValue+";";
         }
 
         return returnValue;

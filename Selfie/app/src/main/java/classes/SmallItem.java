@@ -16,9 +16,10 @@ public class SmallItem extends Item {
     /* Getter Constructor
      * Description: used to retrieve data from the database.
      */
-    public SmallItem(int itemid, String name, boolean special, String thumbnail){
+    public SmallItem(int itemid, String name, int categoryid, boolean special, String thumbnail){
         this.ItemID = itemid;
         this.ItemName = name;
+        this.CategoryID = categoryid;
         this.DailySpecial = special;
         this.Thumbnail = thumbnail;
     }

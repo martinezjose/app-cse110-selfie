@@ -1,6 +1,7 @@
 package classes;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 
@@ -26,7 +27,7 @@ public class Item {
     protected int ItemID;
     protected String ItemName;
     private float Price;
-    private int CategoryID;
+    protected int CategoryID;
     private int Likes;
     private boolean Active;
     private int Calories;
@@ -200,5 +201,34 @@ public class Item {
                 Locale.getDefault());
         Date date = new Date();
         return dateFormat.format(date);
+    }
+
+    /* equals
+     * Overriden method to be used for testing purposes
+     */
+    @Override
+    public boolean equals(Object other){
+        if(this==other) return true;
+
+        if(other==null | (this.getClass() != other.getClass())) return false;
+
+
+
+        Item that = (Item) other;
+
+        //custom equality check
+        return  (this.ItemID == that.getItemID())
+                && (this.ItemName == that.getItemName())
+                && (this.Price == that.getPrice())
+                && (this.CategoryID == that.getCategoryID())
+                && (this.Likes == that.getLikes())
+                && (this.Active == that.isActive())
+                && (this.Calories == that.getCalories())
+                && (this.Created == that.getCreated())
+                && (this.LastUpdated == that.getLastUpdated())
+                && (this.Description == that.getDescription())
+                && (this.DailySpecial == that.isDailySpecial())
+                && ((Arrays.equals(this.ImagePath, that.getImagePath())))
+                && (this.Thumbnail == that.getThumbnail());
     }
 }

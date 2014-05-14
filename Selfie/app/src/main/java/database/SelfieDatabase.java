@@ -76,7 +76,7 @@ public class SelfieDatabase extends SQLiteOpenHelper {
                 + KEY_LAST_UPDATED + " TEXT,"
                 + KEY_DESCRIPTION + " TEXT,"
                 + KEY_DAILY_SPECIAL + " INTEGER,"
-                + KEY_IMAGE_PATH + " TEXT"
+                + KEY_IMAGE_PATH + " TEXT,"
                 + KEY_THUMBNAIL + " TEXT"
                 +");";
 
@@ -94,6 +94,7 @@ public class SelfieDatabase extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion){
         //Drop older table if it exists
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ALL_ITEMS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CATEGORIES);
 
         //re-create table
         onCreate(db);
