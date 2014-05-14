@@ -49,7 +49,9 @@ public class ItemDataSource {
     //setUp()
     //THIS IS ONLY FOR TESTING PURPOSES!!!!! DELETE THIS METHOD AFTER WE ACTUALLY HAVE A DATABASE...
     public void setUp() throws Exception{
-        for(int i =0; i<100; ++i) {
+
+        int numberOfItems = 100;
+        for(int i =0; i<numberOfItems; ++i) {
             if (addItem(testItemDataSource.startItem()) == -1)
                 throw new Exception();  //throw exception if error adding item
         }
