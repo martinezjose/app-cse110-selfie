@@ -1,4 +1,4 @@
-package cse110.selfie.app;
+package uix;
 
 /**
  * Created by JuanJ on 5/11/2014.

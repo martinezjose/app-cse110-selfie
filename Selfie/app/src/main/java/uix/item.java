@@ -1,4 +1,4 @@
-package cse110.selfie.app;
+package uix;
 
 import java.util.ArrayList;
 

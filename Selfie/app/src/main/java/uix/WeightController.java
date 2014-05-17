@@ -1,8 +1,10 @@
-package cse110.selfie.app;
+package uix;
 
 import android.app.Activity;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+
+import cse110.selfie.app.UI.R;
 
 /**
  * Created by JuanJ on 5/10/2014.

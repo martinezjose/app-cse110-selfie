@@ -1,7 +1,7 @@
 /*
     This is the app launcher point.
  */
-package cse110.selfie.app;
+package uix;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -9,9 +9,9 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
+
+import cse110.selfie.app.UI.R;
 
 /**
  * Created by JuanJ on 4/28/2014.
@@ -81,14 +81,10 @@ public class HomeScreenActivity extends FragmentActivity {
 
                 if(fManager.getBackStackEntryCount() > 1) {
                     fManager.popBackStack();
-                    if(fManager.getBackStackEntryAt
-                            (fManager.getBackStackEntryCount()-1).getName() == "Home")
-                        moveTaskToBack(true);
-
-                    else if(mPrevious.getName() == "Home") {
+                    if(mPrevious.getName() == "Home") {
                         weightController.changeLayoutWeight(0);
                     }
-                    else if(mPrevious.getName().startsWith("Menu ")) {
+                    else if(mPrevious.getName().startsWith("Menu")) {
                         weightController.changeLayoutWeight(1);
                     }
 
@@ -99,8 +95,19 @@ public class HomeScreenActivity extends FragmentActivity {
                         weightController.changeLayoutWeight(0);
                     }
                 }
-                else {}
+                else
+                    moveTaskToBack(true);
                 break;
+            case R.id.MS_home_button:
+                if(fManager.getBackStackEntryAt
+                        (fManager.getBackStackEntryCount()-1).getName() != "Home") {
+                    fTransaction.replace(R.id.MSfragment_listContainer, categoryFragment)
+                            .replace(R.id.MSfragment_detailContainer, specialTabFragment)
+                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                            .addToBackStack("Home")
+                            .commit();
+                    weightController.changeLayoutWeight(0);
+                }
         }
     }
 
@@ -110,18 +117,6 @@ public class HomeScreenActivity extends FragmentActivity {
         Test.add(0, new item("Southwestern Eggrolls", 2, 0, 8.29f, true));
         Test.add(0, new item("Loaded Potato Skins", 3, 0, 7.09f, false));
         Test.add(0, new item("Classic Nachos", 4, 0, 7.69f, true));
-        Test.add(0, new item("Triple Dipper", 5, 0, 10.79f, true));
-        Test.add(0, new item("Southwestern Eggrolls", 0, 6, 8.29f, true));
-        Test.add(0, new item("Loaded Potato Skins", 7, 0, 7.09f, false));
-        Test.add(0, new item("Classic Nachos", 8, 0, 7.69f, true));
-        Test.add(0, new item("Triple Dipper", 9, 0, 10.79f, true));
-        Test.add(0, new item("Southwestern Eggrolls", 0, 10, 8.29f, true));
-        Test.add(0, new item("Loaded Potato Skins", 11, 0, 7.09f, false));
-        Test.add(0, new item("Classic Nachos", 12, 0, 7.69f, true));
-        Test.add(0, new item("Triple Dipper", 13, 0, 10.79f, true));
-        Test.add(0, new item("Southwestern Eggrolls", 14, 0, 8.29f, true));
-        Test.add(0, new item("Loaded Potato Skins", 15, 0, 7.09f, false));
-        Test.add(0, new item("Classic Nachos", 16, 0, 7.69f, true));
         Test.add(1, new item("Bacon Burger", 17, 1, 9.59f, false));
         Test.add(1, new item("Cheese Burger", 18, 1, 8.59f, true));
         Test.add(1, new item("Veggie Burger", 19, 1, 7.59f, true));

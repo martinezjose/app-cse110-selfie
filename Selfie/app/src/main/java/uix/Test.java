@@ -1,9 +1,6 @@
-package cse110.selfie.app;
-
-import android.util.Log;
+package uix;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by JuanJ on 5/9/2014.
@@ -43,7 +40,6 @@ public class Test {
     }
 
     public static String[] getNames(int category) {
-        Log.e("TEST", "trying");
         String [] names = new String[menu.get(category).size()];
         for(int i=0; i<menu.get(category).size();i++) {
             names[i] = menu.get(category).get(i).getName();

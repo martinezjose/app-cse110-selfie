@@ -1,4 +1,4 @@
-package cse110.selfie.app;
+package uix;
 
 /**
  * Created by JuanJ on 5/11/2014.
@@ -18,6 +18,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+
+import cse110.selfie.app.UI.R;
 
 public class OrderFragment extends Fragment {
 

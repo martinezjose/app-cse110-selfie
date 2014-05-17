@@ -1,4 +1,4 @@
-package cse110.selfie.app;
+package uix;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
@@ -6,6 +6,9 @@ import android.support.v4.app.ListFragment;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import cse110.selfie.app.UI.R;
+
 
 /**
  * Created by JuanJ on 5/1/2014.

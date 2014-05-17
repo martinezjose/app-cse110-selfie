@@ -1,8 +1,7 @@
-package cse110.selfie.app;
+package uix;
 
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -10,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
+import cse110.selfie.app.UI.R;
 
 /**
  * Created by JuanJ on 4/29/2014.
@@ -128,7 +127,8 @@ public class MenuItemList extends ListFragment {
         //renders details fragment
         getActivity().getSupportFragmentManager().beginTransaction()
                 .replace(R.id.MSfragment_detailContainer, fragment)
-                .addToBackStack("Menu " + ARG_CATEGORY_ID)
+                .addToBackStack("Menu " + Test.getMenu(Integer.parseInt(ARG_CATEGORY_ID))
+                        .get(position).getiId())
                 .commit();
     }
 

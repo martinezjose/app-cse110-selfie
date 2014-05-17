@@ -1,11 +1,7 @@
-package cse110.selfie.app;
-
-import android.content.ClipData;
+package uix;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import cse110.selfie.app.OrderDetail;
 /**
  * Created by JuanJ on 5/11/2014.
  * Keeps a list of the current order
