@@ -19,6 +19,7 @@ public class testItemDataSource extends AndroidTestCase{
     private ItemDataSource itemSource;
     private final String LOG_CAT_TAG = "***testItemDataSource***";
     private final String TEST_FILE_PREFIX = "test_";
+    private final int MAX_RECORDS = 10;
 
     /* setUp method @Override
      * setups variables/properties
@@ -38,7 +39,7 @@ public class testItemDataSource extends AndroidTestCase{
         itemSource.open();
 
         //populate the database
-        for(int i =0; i<10; ++i){
+        for(int i =0; i<MAX_RECORDS; ++i){
             Item item = startItem();
             long result = itemSource.addItem(item);
             if(result==-1)
@@ -77,6 +78,21 @@ public class testItemDataSource extends AndroidTestCase{
         Item retrievedItem = itemSource.getItem(ItemID);
 
         assertTrue(retrievedItem!=null);
+        Log.d("testGetItem()","retrieved " + retrievedItem.getItemName());
+    }
+
+    /* testAddGetItem()
+     * Tests insertion and retrieval of an Item
+     */
+    public void testAddGetItem(){
+
+        Item newItem = startItem();
+        Log.d("testAddGetItem()","Inserting item... " + newItem.getItemName());
+        int itemID = (int)itemSource.addItem(newItem);
+
+        Log.d("testAddGetItem()", "Retrieving item... ");
+        Item retrievedItem = itemSource.getItem(itemID);
+        Log.d("testAddGetItem()", "Retrieved " + retrievedItem.getItemName());
     }
 
     /* testGetSmallItemFromCategory()
