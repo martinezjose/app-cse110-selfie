@@ -51,6 +51,10 @@ public class HomeScreenActivity extends FragmentActivity {
         FragmentManager fManager = getSupportFragmentManager();
         FragmentTransaction fTransaction = fManager.beginTransaction();
 
+        FragmentManager.BackStackEntry mPrevious = fManager.getBackStackEntryAt(
+                fManager.getBackStackEntryCount()-2);
+        FragmentManager.BackStackEntry mCurrent = fManager.getBackStackEntryAt(
+                fManager.getBackStackEntryCount()-1);
         switch (view.getId()) {
             //does nothing for now
             case R.id.MS_alert:
@@ -64,9 +68,8 @@ public class HomeScreenActivity extends FragmentActivity {
                         .show();
                 break;
             case R.id.MS_checkout_button:
-                //render checkout screen
-                if(fManager.getBackStackEntryAt
-                        (fManager.getBackStackEntryCount()-1).getName() != "Order") {
+                //goes to checkout screen
+                if(mCurrent.getName() != "Order") {
                     fTransaction.replace(R.id.MSfragment_listContainer, checkoutFragment)
                             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                             .addToBackStack("Order")
@@ -74,17 +77,25 @@ public class HomeScreenActivity extends FragmentActivity {
                     weightController.changeLayoutWeight(2);
                 }
                 break;
+            case R.id.MS_home_button:
+                //goes to home screen
+                if(mCurrent.getName() != "Home") {
+                    fTransaction.replace(R.id.MSfragment_listContainer, categoryFragment)
+                            .replace(R.id.MSfragment_detailContainer, specialTabFragment)
+                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                            .addToBackStack("Home")
+                            .commit();
+                    weightController.changeLayoutWeight(0);
+                }
+                break;
             case R.id.MS_back_button:
                 //get previous screen to determine the size of the layout
-                FragmentManager.BackStackEntry mPrevious = fManager.getBackStackEntryAt(
-                        fManager.getBackStackEntryCount()-2);
-
                 if(fManager.getBackStackEntryCount() > 1) {
                     fManager.popBackStack();
                     if(mPrevious.getName() == "Home") {
                         weightController.changeLayoutWeight(0);
                     }
-                    else if(mPrevious.getName().startsWith("Menu")) {
+                    else if(mPrevious.getName().startsWith("Menu ")) {
                         weightController.changeLayoutWeight(1);
                     }
 
@@ -95,19 +106,7 @@ public class HomeScreenActivity extends FragmentActivity {
                         weightController.changeLayoutWeight(0);
                     }
                 }
-                else
-                    moveTaskToBack(true);
                 break;
-            case R.id.MS_home_button:
-                if(fManager.getBackStackEntryAt
-                        (fManager.getBackStackEntryCount()-1).getName() != "Home") {
-                    fTransaction.replace(R.id.MSfragment_listContainer, categoryFragment)
-                            .replace(R.id.MSfragment_detailContainer, specialTabFragment)
-                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                            .addToBackStack("Home")
-                            .commit();
-                    weightController.changeLayoutWeight(0);
-                }
         }
     }
 

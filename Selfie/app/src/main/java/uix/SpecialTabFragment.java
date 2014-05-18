@@ -77,7 +77,6 @@ public class SpecialTabFragment extends Fragment {
                 @Override
                 public void onClick(View view) {
                     int pos = view.getId();
-                    Log.e("SPECIAL", Integer.toString(pos));
                     Bundle argMenu = new Bundle();
                     argMenu.putInt(MenuItemList.ARG_CATEGORY_ID, specials.get(pos).getiCategory());
                     MenuItemList m = new MenuItemList();

@@ -30,6 +30,14 @@ public class Order {
         }
     }
 
+    public static void remove(int position) {
+        theOrder.remove(position);
+    }
+
+    public static void clear() {
+        theOrder.clear();
+    }
+
     //gets the order
     public static ArrayList<OrderDetail> getTheOrder() {
         return theOrder;

@@ -29,7 +29,7 @@ public class WeightController {
 
         switch(changeType) {
             case 0:
-                frag1 = 1.0f; frag2 = 4.0f;
+                frag1 = 1.0f; frag2 = 2.0f;
                 break;
             case 1:
                 frag1 = 1.0f; frag2 = 1.0f;
