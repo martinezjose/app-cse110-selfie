@@ -210,7 +210,6 @@ public class ItemDataSource {
 
         //query for countQuery, returns a cursor to query result
         Cursor cursor = db.rawQuery(countQuery,null);
-        cursor.close();
 
         return cursor.getCount();
     }
@@ -359,6 +358,5 @@ public class ItemDataSource {
 
         return returnValue;
     }
-
 
 }

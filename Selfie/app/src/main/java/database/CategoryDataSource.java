@@ -121,7 +121,6 @@ public class CategoryDataSource {
 
     /*********************************** EXTRA FUNCTIONALITY **************************************/
 
-
     /* getAllCategories()
      * Description: extra functionality. Returns a List of all rows (Category) in the database.
      * PRECONDITION: myDB exists
@@ -172,7 +171,6 @@ public class CategoryDataSource {
 
         //query for countQuery, returns a cursor to query result
         Cursor cursor = db.rawQuery(countQuery,null);
-        cursor.close();
 
         return cursor.getCount();
     }
