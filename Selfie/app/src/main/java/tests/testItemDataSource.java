@@ -7,7 +7,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.Random;
 
-import downloader.Download;
+import database.Download;
 import classes.Item;
 import classes.SmallItem;
 import database.ItemDataSource;
