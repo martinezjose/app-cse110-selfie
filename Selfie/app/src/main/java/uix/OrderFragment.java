@@ -16,6 +16,8 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.CheckBox;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -24,14 +26,22 @@ import cse110.selfie.app.UI.R;
 public class OrderFragment extends Fragment {
 
     ArrayList<OrderDetail> theOrder;
+    ArrayList<ViewHolder> listView;
+    String[] names;
+    boolean[] selected;
+
+    OrderAdapter myAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_checkout_screen, container, false);
+        View view = inflater.inflate(R.layout.fragment_order_screen, container, false);
 
         ListView lv = (ListView)  view.findViewById(R.id.CS_selectedItems);
         theOrder = Order.getTheOrder();
-        checkoutAdapter myAdapter = new checkoutAdapter(Order.getNames());
+        names = Order.getNames();
+        selected = new boolean[theOrder.size()];
+
+        myAdapter = new OrderAdapter(theOrder);
         lv.setAdapter(myAdapter);
 
         MyButtonListener myButtonListener = new MyButtonListener();
@@ -44,48 +54,66 @@ public class OrderFragment extends Fragment {
     }
 
     //custom adapter for custom individual item display
-    private class checkoutAdapter extends ArrayAdapter<String> {
-        TextView itemName, itemPrice, quantity;
+    private class OrderAdapter extends ArrayAdapter<String> {
 
-        public checkoutAdapter(String[] dishes) {
-            super(getActivity(), android.R.layout.simple_list_item_1, dishes);
+        public OrderAdapter(ArrayList<OrderDetail> order) {
+            super(getActivity(), android.R.layout.simple_list_item_1, names);
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            //ViewHolder holder = null;
+            ViewHolder holder = null;
+            final int pos = position;
             if(convertView == null) {
                 convertView = getActivity().getLayoutInflater()
                         .inflate(R.layout.mylist_checkout_item, null);
+                holder = new ViewHolder();
+                holder.itemName = (TextView) convertView.findViewById(R.id.checkout_itemName);
+                holder.itemPrice = (TextView) convertView.findViewById(R.id.checkout_itemPrice);
+                holder.quantity = (TextView) convertView.findViewById(R.id.checkout_quantityCounter);
+                holder.checkBox = (CheckBox) convertView.findViewById(R.id.checkout_checkBox);
+                holder.leftButton = (ImageButton) convertView.findViewById(R.id.left);
+                holder.rightButton = (ImageButton) convertView.findViewById(R.id.right);
+                convertView.setTag(holder);
+
+                holder.checkBox.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View view) {
+                        CheckBox cb = (CheckBox) view;
+                        if(cb.isChecked())
+                            selected[pos] = true;
+                        else
+                            selected[pos] = false;
+                    }
+                });
+            }
+            else {
+                holder = (ViewHolder) convertView.getTag();
             }
 
-            itemName = (TextView) convertView.findViewById(R.id.checkout_itemName);
-            itemPrice = (TextView) convertView.findViewById(R.id.checkout_itemPrice);
-            quantity = (TextView) convertView.findViewById(R.id.checkout_quantityCounter);
-            updateList(position);
+            holder.leftButton.setImageResource(R.drawable.arrow_left);
+            holder.rightButton.setImageResource(R.drawable.arrow_right);
+            holder.itemName.setText(theOrder.get(position).getTheItem().getName());
+            int q = theOrder.get(position).getQuantity();
+            holder.quantity.setText(Integer.toString(q));
+            holder.itemPrice.setText("$ " +Float.toString(theOrder.get(position)
+                    .getTheItem().getPrice() * (float)q));
 
-            ImageButton left = (ImageButton) convertView.findViewById(R.id.left);
-            left.setImageResource(R.drawable.arrow_left);
-
-            ImageButton right = (ImageButton) convertView.findViewById(R.id.right);
-            right.setImageResource(R.drawable.arrow_right);
-
+            listView.add(holder);
             return convertView;
         }
+    }
 
-        private void updateList(int position) {
-            float newPrice = theOrder.get(position).getTheItem().getPrice()
-                * (float)theOrder.get(position).getQuantity();
-
-            itemName.setText(theOrder.get(position).getTheItem().getName());
-            itemPrice.setText("$ " +Float.toString(newPrice));
-            quantity.setText(Integer.toString(theOrder.get(position).getQuantity()));
+    private void removedSelected() {
+        for(int i=0; i<selected.length; i++) {
+            if(selected[i]) {
+                theOrder.remove(i);
+                Log.e("*****ORDER*****", Integer.toString(i));
+            }
         }
     }
 
     private class MyButtonListener implements View.OnClickListener{
         @Override
-        //just shows alert dialogs
         public void onClick(View view) {
             switch (view.getId()) {
                 case R.id.CS_removeSelected:
@@ -95,13 +123,13 @@ public class OrderFragment extends Fragment {
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
-
+                                    removedSelected();
+                                    myAdapter.notifyDataSetChanged();
                                 }
                             })
                             .setNegativeButton("No", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
-
                                 }
                             })
                             .show();
@@ -112,19 +140,31 @@ public class OrderFragment extends Fragment {
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
-
+                                    Order.clear();
                                 }
                             })
                             .setNegativeButton("No", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
-
                                 }
                             })
                             .show();
                     break;
+                case R.id.all_checkbox:
+                    CheckBox cb = (CheckBox) view;
+                    if(cb.isChecked()) {
+                        for(int i=0; i< listView.size(); i++) {
+                            listView.get(i).checkBox.setChecked(true);
+                            selected[i] = true;
+                        }
+                    }
             }
         }
     }
 
+    private class ViewHolder {
+        TextView itemName, itemPrice, quantity;
+        ImageButton leftButton, rightButton;
+        CheckBox checkBox;
+    }
 }
