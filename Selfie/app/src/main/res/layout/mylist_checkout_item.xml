@@ -16,24 +16,28 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Small Text"
         android:id="@+id/checkout_quantityCounter"
-        android:layout_marginRight="135dp"
+        android:layout_marginRight="102dp"
         android:enabled="false"
-        android:layout_alignBottom="@+id/checkout_itemName"
+        android:singleLine="true"
+        android:layout_alignTop="@+id/right"
         android:layout_toLeftOf="@+id/checkout_itemPrice" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Small Text"
         android:id="@+id/checkout_itemPrice"
+        android:layout_marginRight="52dp"
+        android:numeric="decimal"
+        android:maxLength="8"
+        android:phoneNumber="true"
         android:layout_alignTop="@+id/checkout_quantityCounter"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginRight="61dp" />
+        android:layout_alignParentEnd="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -50,17 +54,16 @@
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:id="@+id/right"
-        android:layout_alignTop="@+id/left"
-        android:layout_toLeftOf="@+id/checkout_quantityCounter"
-        android:layout_marginRight="27dp" />
+        android:layout_marginRight="60dp"
+        android:layout_alignTop="@+id/checkout_checkBox"
+        android:layout_toLeftOf="@+id/checkout_quantityCounter" />
 
     <ImageButton
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:id="@+id/left"
-        android:layout_marginRight="22dp"
-        android:layout_alignTop="@+id/checkout_checkBox"
+        android:layout_alignTop="@+id/right"
         android:layout_toLeftOf="@+id/right"
-        android:layout_marginTop="12dp" />
+        android:layout_marginRight="20dp" />
 
 </RelativeLayout>

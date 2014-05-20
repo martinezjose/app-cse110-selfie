@@ -2,6 +2,8 @@ package uix;
 
 import java.util.ArrayList;
 
+import classes.Item;
+
 /**
  * Created by JuanJ on 5/11/2014.
  * Keeps a list of the current order
@@ -15,7 +17,7 @@ public class Order {
     public static void add(item newItem, int quantity) {
         int itemPos = -1;
         for(int i=0; i<theOrder.size(); i++) {
-            if(theOrder.get(i).getTheItem().getName() == newItem.getName()) {
+            if(theOrder.get(i).getTheItem().getiId() == newItem.getiId()) {
                 itemPos = i;
                 break;
             }

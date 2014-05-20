@@ -58,6 +58,5 @@ public class CategoryFragment extends ListFragment{
                 .addToBackStack("Menu " +Integer.toString(position))
                 .commit();
         weightController.changeLayoutWeight(1);
-        getListView().setItemChecked(position, true);
     }
 }

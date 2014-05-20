@@ -25,7 +25,7 @@ public class HomeScreenActivity extends FragmentActivity {
 
     public CategoryFragment categoryFragment = new CategoryFragment();
     public SpecialTabFragment specialTabFragment = new SpecialTabFragment();
-    public OrderFragment checkoutFragment = new OrderFragment();
+    public OrderFragment orderFragment = new OrderFragment();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,10 +51,6 @@ public class HomeScreenActivity extends FragmentActivity {
         FragmentManager fManager = getSupportFragmentManager();
         FragmentTransaction fTransaction = fManager.beginTransaction();
 
-        FragmentManager.BackStackEntry mPrevious = fManager.getBackStackEntryAt(
-                fManager.getBackStackEntryCount()-2);
-        FragmentManager.BackStackEntry mCurrent = fManager.getBackStackEntryAt(
-                fManager.getBackStackEntryCount()-1);
         switch (view.getId()) {
             //does nothing for now
             case R.id.MS_alert:
@@ -67,29 +63,31 @@ public class HomeScreenActivity extends FragmentActivity {
                         })
                         .show();
                 break;
-            case R.id.MS_checkout_button:
-                //goes to checkout screen
-                if(mCurrent.getName() != "Order") {
-                    fTransaction.replace(R.id.MSfragment_listContainer, checkoutFragment)
-                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                            .addToBackStack("Order")
-                            .commit();
-                    weightController.changeLayoutWeight(2);
-                }
-                break;
             case R.id.MS_home_button:
-                //goes to home screen
-                if(mCurrent.getName() != "Home") {
-                    fTransaction.replace(R.id.MSfragment_listContainer, categoryFragment)
-                            .replace(R.id.MSfragment_detailContainer, specialTabFragment)
+                if(fManager.getBackStackEntryAt(
+                        fManager.getBackStackEntryCount()-1).getName() != "Home") {
+                    fTransaction.replace(R.id.MSfragment_detailContainer, specialTabFragment)
+                            .replace(R.id.MSfragment_listContainer, categoryFragment)
                             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                             .addToBackStack("Home")
                             .commit();
                     weightController.changeLayoutWeight(0);
                 }
                 break;
+            case R.id.MS_checkout_button:
+                //render checkout screen
+                if(fManager.getBackStackEntryAt(
+                    fManager.getBackStackEntryCount()-1).getName() != "Order") {
+                    fTransaction.replace(R.id.MSfragment_listContainer, orderFragment)
+                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                            .addToBackStack("Order")
+                            .commit();
+                    weightController.changeLayoutWeight(2);
+                }
+                break;
             case R.id.MS_back_button:
-                //get previous screen to determine the size of the layout
+                FragmentManager.BackStackEntry mPrevious = fManager.getBackStackEntryAt(
+                        fManager.getBackStackEntryCount()-2);
                 if(fManager.getBackStackEntryCount() > 1) {
                     fManager.popBackStack();
                     if(mPrevious.getName() == "Home") {
@@ -98,6 +96,9 @@ public class HomeScreenActivity extends FragmentActivity {
                     else if(mPrevious.getName().startsWith("Menu ")) {
                         weightController.changeLayoutWeight(1);
                     }
+                    else if(mPrevious.getName() == "Order") {
+                        weightController.changeLayoutWeight(2);
+                    }
 
                     //clears stack if 10 screens have been added
                     if (fManager.getBackStackEntryCount() > 10) {
@@ -105,6 +106,9 @@ public class HomeScreenActivity extends FragmentActivity {
                             fManager.popBackStack();
                         weightController.changeLayoutWeight(0);
                     }
+                }
+                else {
+                    moveTaskToBack(true);
                 }
                 break;
         }

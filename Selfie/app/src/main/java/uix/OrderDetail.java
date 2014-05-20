@@ -1,5 +1,7 @@
 package uix;
 
+import classes.Item;
+
 /**
  * Created by JuanJ on 5/11/2014.
  * Keeps track of a single item in the order

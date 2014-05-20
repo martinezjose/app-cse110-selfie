@@ -72,7 +72,6 @@ public class SpecialTabFragment extends Fragment {
             iv1.setImageResource(R.drawable.ic_launcher);
             iv1.setLayoutParams(new ViewGroup.LayoutParams(100, 100));
             iv1.setId(i);
-            Log.e(Integer.toString(iv1.getId()), specials.get(iv1.getId()).getName());
             iv1.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

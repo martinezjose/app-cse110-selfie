@@ -32,11 +32,10 @@ public class Test {
                     break;
                 }
             }
+            if(theItem != null)
+                break;
         }
-        if(theItem != null)
-            return theItem;
-        else
-            return theItem;
+        return theItem;
     }
 
     public static String[] getNames(int category) {

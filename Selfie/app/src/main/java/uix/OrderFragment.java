@@ -26,7 +26,7 @@ import cse110.selfie.app.UI.R;
 public class OrderFragment extends Fragment {
 
     ArrayList<OrderDetail> theOrder;
-    ArrayList<ViewHolder> listView;
+    ArrayList<View> listView;
     String[] names;
     boolean[] selected;
 
@@ -98,7 +98,7 @@ public class OrderFragment extends Fragment {
             holder.itemPrice.setText("$ " +Float.toString(theOrder.get(position)
                     .getTheItem().getPrice() * (float)q));
 
-            listView.add(holder);
+            listView.add(convertView);
             return convertView;
         }
     }
@@ -154,7 +154,8 @@ public class OrderFragment extends Fragment {
                     CheckBox cb = (CheckBox) view;
                     if(cb.isChecked()) {
                         for(int i=0; i< listView.size(); i++) {
-                            listView.get(i).checkBox.setChecked(true);
+                            CheckBox c = (CheckBox) listView.get(i).findViewById(R.id.checkout_checkBox);
+                            c.setChecked(true);
                             selected[i] = true;
                         }
                     }

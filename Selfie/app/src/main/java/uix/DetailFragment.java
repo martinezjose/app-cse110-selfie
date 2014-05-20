@@ -13,8 +13,16 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
+import android.util.Log;
+
+import java.io.File;
 
 import cse110.selfie.app.UI.R;
+import classes.Item;
+import database.ItemDataSource;
 
 /**
  * Created by JuanJ on 4/30/2014.
@@ -22,10 +30,14 @@ import cse110.selfie.app.UI.R;
  */
 public class DetailFragment extends Fragment {
 
+    final static String ARG_ITEM_ID = "ARG_ITEM_ID";
+
+    ItemDataSource itemDataSource;
     WeightController myController;
-    static String ARG_ITEM_ID = "ARG_ITEM_ID";
-    //public Item theItem;
+
+    Item theItem;
     item newItem;
+    int itemId = -1;
 
     //Top Layout
     public ImageView iv1, iv2;
@@ -42,10 +54,9 @@ public class DetailFragment extends Fragment {
     @Override
     //gets and initializes components in fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         Bundle args = getArguments();
-        ARG_ITEM_ID = Integer.toString(args.getInt(ARG_ITEM_ID));
-        newItem = Test.getItem(Integer.parseInt(ARG_ITEM_ID));
+        itemId = args.getInt(ARG_ITEM_ID);
+        newItem = Test.getItem(itemId);
         View view = inflater.inflate(R.layout.fragment_description_screen, container, false);
 
         myController = new WeightController(getActivity());
@@ -87,6 +98,7 @@ public class DetailFragment extends Fragment {
     private class MyButtonListener implements View.OnClickListener {
 
         int CurrentQuantity;
+
         @Override
         public void onClick(View view) {
             switch (view.getId()) {
@@ -96,8 +108,8 @@ public class DetailFragment extends Fragment {
                     Order.add(/*theItem*/ newItem, CurrentQuantity);
                     new AlertDialog.Builder(view.getContext())
                             .setTitle("Confirmation").setMessage("Item: "
-                                +itemName.getText().toString() + "\nQuantity: "
-                                +Integer.toString(CurrentQuantity) +"\nAre You Done?")
+                            + itemName.getText().toString() + "\nQuantity: "
+                            + Integer.toString(CurrentQuantity) + "\nAre You Done?")
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
@@ -135,7 +147,7 @@ public class DetailFragment extends Fragment {
         }
 
         private float newPrice() {
-            return (float)Integer.parseInt(quantityCounter.getText().toString())
+            return (float) Integer.parseInt(quantityCounter.getText().toString())
                     * newItem.getPrice();
         }
     }
@@ -148,7 +160,7 @@ public class DetailFragment extends Fragment {
         iv2.setImageResource(R.drawable.ic_launcher);
 
         itemDescription.setText("test");
-        priceDisplay.setText("$ " +newItem.getPrice());
+        priceDisplay.setText("$ " + Float.toString(newItem.getPrice()));
         itemName.setText(newItem.getName());
         thumbsCounter.setText("0");
 
