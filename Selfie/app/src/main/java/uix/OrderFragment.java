@@ -38,6 +38,7 @@ public class OrderFragment extends Fragment {
 
         ListView lv = (ListView)  view.findViewById(R.id.CS_selectedItems);
         theOrder = Order.getTheOrder();
+        listView = new ArrayList<View>();
         names = Order.getNames();
         selected = new boolean[theOrder.size()];
 
@@ -49,6 +50,28 @@ public class OrderFragment extends Fragment {
         remove.setOnClickListener(myButtonListener);
         Button submit = (Button) view.findViewById(R.id.CS_summitOrder);
         submit.setOnClickListener(myButtonListener);
+
+        CheckBox all_cb = (CheckBox) view.findViewById(R.id.all_checkbox);
+        all_cb.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                CheckBox cb = (CheckBox) view;
+                if(cb.isChecked()) {
+                    for(int i=0; i< listView.size(); i++) {
+                        CheckBox c = (CheckBox) listView.get(i).findViewById(R.id.checkout_checkBox);
+                        c.setChecked(true);
+                        selected[i] = true;
+                    }
+                }
+                else {
+                    for(int i=0; i< listView.size(); i++) {
+                        CheckBox c = (CheckBox) listView.get(i).findViewById(R.id.checkout_checkBox);
+                        c.setChecked(false);
+                        selected[i] = false;
+                    }
+                }
+                myAdapter.notifyDataSetChanged();
+            }
+        });
 
         return view;
     }
@@ -150,15 +173,6 @@ public class OrderFragment extends Fragment {
                             })
                             .show();
                     break;
-                case R.id.all_checkbox:
-                    CheckBox cb = (CheckBox) view;
-                    if(cb.isChecked()) {
-                        for(int i=0; i< listView.size(); i++) {
-                            CheckBox c = (CheckBox) listView.get(i).findViewById(R.id.checkout_checkBox);
-                            c.setChecked(true);
-                            selected[i] = true;
-                        }
-                    }
             }
         }
     }
