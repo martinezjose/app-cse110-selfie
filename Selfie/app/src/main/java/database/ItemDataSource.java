@@ -248,11 +248,11 @@ public class ItemDataSource {
 
         ArrayList<SmallItem> smallItemsList = new ArrayList<SmallItem>();
 
-        //select rows in TABLE_ALL_ITEMS where CategoryID == categoryID, grouped by (is special) and
-        //ordered by (# of likes) in descending order (highest first).
-        Cursor cursor = db.query(SelfieDatabase.TABLE_ALL_ITEMS,smallColumns,
+        //select rows in TABLE_ALL_ITEMS where CategoryID == categoryID, ordered by (daily_special)
+        //descending and (likes) descending
+        Cursor cursor = db.query(SelfieDatabase.TABLE_ALL_ITEMS,allColumns,
                 SelfieDatabase.KEY_CATEGORY_ID + " = ? ",new String [] {String.valueOf(categoryID)},
-                SelfieDatabase.KEY_DAILY_SPECIAL,null,SelfieDatabase.KEY_LIKES + " DESC");
+                null,null,SelfieDatabase.KEY_DAILY_SPECIAL + " desc, " + SelfieDatabase.KEY_LIKES + " desc");
 
         if(cursor.moveToFirst()){
             do{
