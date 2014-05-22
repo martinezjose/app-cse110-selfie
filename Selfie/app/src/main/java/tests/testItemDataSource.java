@@ -7,7 +7,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.Random;
 
-import downloader.Download;
+import database.Download;
 import classes.Item;
 import classes.SmallItem;
 import database.ItemDataSource;
@@ -140,7 +140,7 @@ public class testItemDataSource extends AndroidTestCase{
     public static Item startItem(){
         int LikesLimit = 100;
         int PriceLimit = 75;
-        int CategoryIDLimit = 4;
+        int CategoryIDLimit = 4;        //NEED TO TAKE OUT MAGIC NUMBERS
         int CaloriesLimit = 5000;
         //array of Strings to choose from
         String [] EntreeNames = {"Garlic & Butter Lobster",

@@ -1,5 +1,4 @@
-package Downloader;
-
+package database;
 import android.content.Context;
 
 import java.io.File;
@@ -14,6 +13,8 @@ import java.net.URL;
  * Created by edwinmo on 5/18/14.
  */
 public class Download {
+
+    //a maximum number of bytes. Pretty reasonable (don't expect to be saving >10mb images!)
     private final static int MAXSIZE = 10000000;
 
     /* saveImageFromURL()
@@ -21,6 +22,7 @@ public class Download {
      * PRECONDITION: method is called from an activity/context
      * POSTCONDITION: the image pointed at by imageURL is saved in the android device, and this path
      * is returned to the caller.
+     * Status: unhandled exceptions (they are only being caught)
      * Returns: a String of the path to the image
      */
     public static String saveImageFromURL(Context context, String imageURL) {

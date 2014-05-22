@@ -248,10 +248,11 @@ public class ItemDataSource {
 
         ArrayList<SmallItem> smallItemsList = new ArrayList<SmallItem>();
 
-        //select rows in TABLE_ALL_ITEMS that match categoryID
-        Cursor cursor = db.query(SelfieDatabase.TABLE_ALL_ITEMS,smallColumns,
+        //select rows in TABLE_ALL_ITEMS where CategoryID == categoryID, ordered by (daily_special)
+        //descending and (likes) descending
+        Cursor cursor = db.query(SelfieDatabase.TABLE_ALL_ITEMS,allColumns,
                 SelfieDatabase.KEY_CATEGORY_ID + " = ? ",new String [] {String.valueOf(categoryID)},
-                null,null,null);
+                null,null,SelfieDatabase.KEY_DAILY_SPECIAL + " desc, " + SelfieDatabase.KEY_LIKES + " desc");
 
         if(cursor.moveToFirst()){
             do{
@@ -260,6 +261,26 @@ public class ItemDataSource {
         }
 
         return smallItemsList;
+    }
+
+    /* getFirstItem()
+     * Description: returns the first Item from the first SmallItem for a specified category.
+     * PRECONDITION: categoryID is provided and it exists in the database
+     * POSTCONDITION: an Item object is returned
+     * Returns: Item object
+     * Status: untested
+     * Keywords: get first item, getfirstitem
+     */
+    public Item getFirstItem(int categoryID){
+
+        //query for all SmallItems from categoryID
+        ArrayList<SmallItem> smallItemsList = getSmallItemFromCategory(categoryID);
+
+        //get the first SmallItem and retrieve its ItemID
+        int itemID = smallItemsList.get(0).getItemID();
+
+        //use retrieved itemID to get the Item object.
+        return getItem(itemID);
     }
 
     /************************************** HELPER METHODS ****************************************/
