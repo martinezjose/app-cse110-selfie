@@ -7,6 +7,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.Random;
 
+import downloader.Download;
 import classes.Item;
 import classes.SmallItem;
 import database.ItemDataSource;
@@ -17,15 +18,14 @@ import database.ItemDataSource;
 public class testItemDataSource extends AndroidTestCase{
 
     private ItemDataSource itemSource;
-    private final String LOG_CAT_TAG = "***testItemDataSource***";
     private final String TEST_FILE_PREFIX = "test_";
+    private final int MAX_RECORDS = 15;
 
     /* setUp method @Override
      * setups variables/properties
      */
     @Override
     protected void setUp() throws Exception{
-
         super.setUp();
         //use this context to use a separate, temporary database!
         //otherwise use getContext()
@@ -38,7 +38,7 @@ public class testItemDataSource extends AndroidTestCase{
         itemSource.open();
 
         //populate the database
-        for(int i =0; i<10; ++i){
+        for(int i =0; i<MAX_RECORDS; ++i){
             Item item = startItem();
             long result = itemSource.addItem(item);
             if(result==-1)
@@ -77,6 +77,21 @@ public class testItemDataSource extends AndroidTestCase{
         Item retrievedItem = itemSource.getItem(ItemID);
 
         assertTrue(retrievedItem!=null);
+        Log.d("testGetItem()","retrieved " + retrievedItem.getItemName());
+    }
+
+    /* testAddGetItem()
+     * Tests insertion and retrieval of an Item
+     */
+    public void testAddGetItem(){
+
+        Item newItem = startItem();
+        Log.d("testAddGetItem()","Inserting item... " + newItem.getItemName());
+        int itemID = (int)itemSource.addItem(newItem);
+
+        Log.d("testAddGetItem()", "Retrieving item... ");
+        Item retrievedItem = itemSource.getItem(itemID);
+        Log.d("testAddGetItem()", "Retrieved " + retrievedItem.getItemName());
     }
 
     /* testGetSmallItemFromCategory()
@@ -96,7 +111,22 @@ public class testItemDataSource extends AndroidTestCase{
         }
     }
 
+    /* testGetCount()
+     * tests the method getCount
+     */
+    public void testGetCount() {
+        int count = itemSource.getCount();
+        assertEquals(MAX_RECORDS,count);
+    }
 
+    /* testSaveImageFromURL
+     *
+     */
+    public void testSaveImageFromURL(){
+            String imageURL = Download.saveImageFromURL(getContext(),
+                    "http://www.steveosbar.com/wp-content/uploads/Monday_Pasta_Special_9.99.jpg");
+            Log.d("testSaveImageFromURL","Downloaded image in " + imageURL);
+    }
 
     /************************************** HELPER METHODS ****************************************/
 
@@ -110,7 +140,7 @@ public class testItemDataSource extends AndroidTestCase{
     public static Item startItem(){
         int LikesLimit = 100;
         int PriceLimit = 75;
-        int CategoryIDLimit = 4;
+        int CategoryIDLimit = 3;
         int CaloriesLimit = 5000;
         //array of Strings to choose from
         String [] EntreeNames = {"Garlic & Butter Lobster",
@@ -146,7 +176,7 @@ public class testItemDataSource extends AndroidTestCase{
         Item myItem = new Item();
         myItem.setItemName(EntreeNames[randomNameIndex]);
         myItem.setPrice(myRandom.nextFloat()+myRandom.nextInt(PriceLimit));
-        myItem.setCategoryID(myRandom.nextInt(CategoryIDLimit));
+        myItem.setCategoryID(myRandom.nextInt(CategoryIDLimit) + 1);    //+1 to always avoid category 0
         myItem.setLikes(myRandom.nextInt(LikesLimit));
         myItem.setActive(myRandom.nextBoolean());
         myItem.setCalories(myRandom.nextInt(CaloriesLimit));

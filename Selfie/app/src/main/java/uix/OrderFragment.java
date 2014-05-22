@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -28,19 +29,18 @@ public class OrderFragment extends Fragment {
     ArrayList<OrderDetail> theOrder;
     ArrayList<View> listView;
     String[] names;
-    boolean[] selected;
 
+    ListView lv;
     OrderAdapter myAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_order_screen, container, false);
 
-        ListView lv = (ListView)  view.findViewById(R.id.CS_selectedItems);
+        lv = (ListView)  view.findViewById(R.id.CS_selectedItems);
         theOrder = Order.getTheOrder();
         listView = new ArrayList<View>();
         names = Order.getNames();
-        selected = new boolean[theOrder.size()];
 
         myAdapter = new OrderAdapter(theOrder);
         lv.setAdapter(myAdapter);
@@ -55,29 +55,40 @@ public class OrderFragment extends Fragment {
         all_cb.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 CheckBox cb = (CheckBox) view;
-                if(cb.isChecked()) {
-                    for(int i=0; i< listView.size(); i++) {
-                        CheckBox c = (CheckBox) listView.get(i).findViewById(R.id.checkout_checkBox);
-                        c.setChecked(true);
-                        selected[i] = true;
-                    }
+                int itemCount = lv.getCount();
+                for(int i=0; i<=itemCount; i++) {
+                    CheckBox c = (CheckBox) listView.get(i).findViewById(R.id.checkout_checkBox);
+                    c.setChecked(cb.isChecked());
                 }
-                else {
-                    for(int i=0; i< listView.size(); i++) {
-                        CheckBox c = (CheckBox) listView.get(i).findViewById(R.id.checkout_checkBox);
-                        c.setChecked(false);
-                        selected[i] = false;
-                    }
-                }
-                myAdapter.notifyDataSetChanged();
             }
         });
-
         return view;
     }
 
-    //custom adapter for custom individual item display
+    private void removeSelected() {
+        CheckBox cb;
+        int itemCount = lv.getCount();
+
+        for(int i=itemCount; i>0; i--) {
+            cb = (CheckBox) listView.get(i).findViewById(R.id.checkout_checkBox);
+            if(cb.isChecked()) {
+                Log.e("ORDERFRAGMENT", Integer.toString(listView.size()));
+                for(int j=0; j<listView.size(); j++) {
+                    TextView tx = (TextView) listView.get(j).findViewById(R.id.checkout_itemName);
+                    Log.e("ORDERFRAGMENT", tx.getText().toString() +Integer.toString(j));
+                }
+
+                Order.remove(i-1);
+                listView.remove(i);
+            }
+        }
+        theOrder = Order.getTheOrder();
+    }
+
     private class OrderAdapter extends ArrayAdapter<String> {
+        public TextView quantity, itemName, itemPrice;
+        public CheckBox checkBox;
+        public ImageButton leftButton, rightButton;
 
         public OrderAdapter(ArrayList<OrderDetail> order) {
             super(getActivity(), android.R.layout.simple_list_item_1, names);
@@ -85,53 +96,45 @@ public class OrderFragment extends Fragment {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            ViewHolder holder = null;
-            final int pos = position;
             if(convertView == null) {
                 convertView = getActivity().getLayoutInflater()
                         .inflate(R.layout.mylist_checkout_item, null);
-                holder = new ViewHolder();
-                holder.itemName = (TextView) convertView.findViewById(R.id.checkout_itemName);
-                holder.itemPrice = (TextView) convertView.findViewById(R.id.checkout_itemPrice);
-                holder.quantity = (TextView) convertView.findViewById(R.id.checkout_quantityCounter);
-                holder.checkBox = (CheckBox) convertView.findViewById(R.id.checkout_checkBox);
-                holder.leftButton = (ImageButton) convertView.findViewById(R.id.left);
-                holder.rightButton = (ImageButton) convertView.findViewById(R.id.right);
-                convertView.setTag(holder);
-
-                holder.checkBox.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View view) {
-                        CheckBox cb = (CheckBox) view;
-                        if(cb.isChecked())
-                            selected[pos] = true;
-                        else
-                            selected[pos] = false;
-                    }
-                });
-            }
-            else {
-                holder = (ViewHolder) convertView.getTag();
             }
 
-            holder.leftButton.setImageResource(R.drawable.arrow_left);
-            holder.rightButton.setImageResource(R.drawable.arrow_right);
-            holder.itemName.setText(theOrder.get(position).getTheItem().getName());
-            int q = theOrder.get(position).getQuantity();
-            holder.quantity.setText(Integer.toString(q));
-            holder.itemPrice.setText("$ " +Float.toString(theOrder.get(position)
-                    .getTheItem().getPrice() * (float)q));
+            itemName = (TextView) convertView.findViewById(R.id.checkout_itemName);
+            itemName.setText(theOrder.get(position).getTheItem().getItemName());
+
+            itemPrice = (TextView) convertView.findViewById(R.id.checkout_itemPrice);
+            itemPrice.setText("$ " +Float.toString(theOrder.get(position)
+                    .getTheItem().getPrice() * (float)theOrder.get(position).getQuantity()));
+
+            quantity = (TextView) convertView.findViewById(R.id.checkout_quantityCounter);
+            quantity.setText(Integer.toString(theOrder.get(position).getQuantity()));
+
+            checkBox = (CheckBox) convertView.findViewById(R.id.checkout_checkBox);
+
+            leftButton = (ImageButton) convertView.findViewById(R.id.left);
+            leftButton.setImageResource(R.drawable.arrow_left);
+            leftButton.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View view) {
+                int Q = Integer.parseInt(quantity.getText().toString());
+                if(Q != 0) {
+                    quantity.setText(--Q);
+                }
+                }
+            });
+
+            rightButton = (ImageButton) convertView.findViewById(R.id.right);
+            rightButton.setImageResource(R.drawable.arrow_right);
+            rightButton.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View view) {
+                int Q = Integer.parseInt(quantity.getText().toString());
+                quantity.setText(++Q);
+                }
+            });
 
             listView.add(convertView);
-            return convertView;
-        }
-    }
-
-    private void removedSelected() {
-        for(int i=0; i<selected.length; i++) {
-            if(selected[i]) {
-                theOrder.remove(i);
-                Log.e("*****ORDER*****", Integer.toString(i));
-            }
+                return convertView;
         }
     }
 
@@ -146,7 +149,7 @@ public class OrderFragment extends Fragment {
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
-                                    removedSelected();
+                                    removeSelected();
                                     myAdapter.notifyDataSetChanged();
                                 }
                             })
@@ -175,11 +178,5 @@ public class OrderFragment extends Fragment {
                     break;
             }
         }
-    }
-
-    private class ViewHolder {
-        TextView itemName, itemPrice, quantity;
-        ImageButton leftButton, rightButton;
-        CheckBox checkBox;
     }
 }

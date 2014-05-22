@@ -5,7 +5,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.util.Log;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +26,7 @@ public class ItemDataSource {
 
     private SelfieDatabase myDB;
     private SQLiteDatabase db;
+    private String databasePath;
 
     private String [] allColumns = {SelfieDatabase.KEY_ITEM_ID,
             SelfieDatabase.KEY_ITEM_NAME,SelfieDatabase.KEY_PRICE, SelfieDatabase.KEY_CATEGORY_ID,
@@ -37,7 +40,12 @@ public class ItemDataSource {
 
     //CONSTRUCTOR
     public ItemDataSource(Context context){
+
         myDB = new SelfieDatabase(context);
+
+        //save the absolute path for checking existence
+        databasePath = context.getDatabasePath(myDB.DATABASE_NAME).toString();
+
     }
 
     //open()
@@ -51,6 +59,16 @@ public class ItemDataSource {
     public void setUp() throws Exception{
 
         int numberOfItems = 100;
+
+        //check whether a database exists already
+        File database = new File(databasePath);
+
+        //if the database already exists, do nothing and return.
+        if(database.exists() && !database.isDirectory()) {
+            Log.d("setUp()","Database exists already!");
+            return;
+        }
+
         for(int i =0; i<numberOfItems; ++i) {
             if (addItem(testItemDataSource.startItem()) == -1)
                 throw new Exception();  //throw exception if error adding item
@@ -210,7 +228,6 @@ public class ItemDataSource {
 
         //query for countQuery, returns a cursor to query result
         Cursor cursor = db.rawQuery(countQuery,null);
-        cursor.close();
 
         return cursor.getCount();
     }
@@ -359,6 +376,5 @@ public class ItemDataSource {
 
         return returnValue;
     }
-
 
 }
