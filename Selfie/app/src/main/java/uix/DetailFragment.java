@@ -16,8 +16,6 @@ import android.widget.TextView;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-import android.util.Log;
-
 import java.io.File;
 
 import cse110.selfie.app.UI.R;
@@ -36,19 +34,12 @@ public class DetailFragment extends Fragment {
     WeightController myController;
 
     Item theItem;
-    item newItem;
     int itemId = -1;
 
-    //Top Layout
-    public ImageView iv1, iv2;
-
-    //Middle Layout
     public TextView itemName, itemDescription, quantityCounter, thumbsCounter, priceDisplay;
     public ImageButton quantityUp, quantityDown;
-    public ImageView thumbsUp;
+    public ImageView thumbsUp, iv1, iv2;;
     public Button addToOrder;
-
-    //Bottom Layout
     public LinearLayout recommendedGallery;
 
     @Override
@@ -56,11 +47,12 @@ public class DetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Bundle args = getArguments();
         itemId = args.getInt(ARG_ITEM_ID);
-        newItem = Test.getItem(itemId);
         View view = inflater.inflate(R.layout.fragment_description_screen, container, false);
 
         myController = new WeightController(getActivity());
-        //theItem = ItemDataSource.getItem(Integer.parseInt(ARG_ITEM_ID));
+        itemDataSource = new ItemDataSource(getActivity());
+        theItem = itemDataSource.getItem(itemId);
+        itemDataSource.close();
 
         //Top Layout
         iv1 = (ImageView) view.findViewById(R.id.itemDetail_pic1);
@@ -105,7 +97,7 @@ public class DetailFragment extends Fragment {
                 //just shows an alert dialog
                 case R.id.itemDetail_addToOrder:
                     CurrentQuantity = Integer.parseInt(quantityCounter.getText().toString());
-                    Order.add(/*theItem*/ newItem, CurrentQuantity);
+                    Order.add(theItem, CurrentQuantity);
                     new AlertDialog.Builder(view.getContext())
                             .setTitle("Confirmation").setMessage("Item: "
                             + itemName.getText().toString() + "\nQuantity: "
@@ -148,21 +140,37 @@ public class DetailFragment extends Fragment {
 
         private float newPrice() {
             return (float) Integer.parseInt(quantityCounter.getText().toString())
-                    * newItem.getPrice();
+                    * theItem.getPrice();
         }
     }
 
     //will be taken out
-    public void updateDetail() {
+    private void updateDetail() {
         //get details from DB and replace
 
-        iv1.setImageResource(R.drawable.ic_launcher);
-        iv2.setImageResource(R.drawable.ic_launcher);
+        String[] images = theItem.getImagePath();
+        File img1 = new File(images[0]);
+        if(img1.exists()) {
+            Bitmap bit1 = BitmapFactory.decodeFile(img1.getAbsolutePath());
+            iv1.setImageBitmap(bit1);
+        }
+        else {
+            iv1.setImageResource(R.drawable.ic_launcher);
+        }
+        File img2 = new File(images[1]);
+        if(img2.exists()) {
+            Bitmap bit2 = BitmapFactory.decodeFile(img1.getAbsolutePath());
+            iv2.setImageBitmap(bit2);
+        }
+        else {
+            iv2.setImageResource(R.drawable.ic_launcher);
+        }
 
-        itemDescription.setText("test");
-        priceDisplay.setText("$ " + Float.toString(newItem.getPrice()));
-        itemName.setText(newItem.getName());
-        thumbsCounter.setText("0");
+
+        itemDescription.setText(theItem.getDescription());
+        priceDisplay.setText("$ " + Float.toString(theItem.getPrice()));
+        itemName.setText(theItem.getItemName());
+        thumbsCounter.setText(Integer.toString(theItem.getLikes()));
 
         for (int i = 0; i < 8; i++) {
             ImageView rg1 = new ImageView(recommendedGallery.getContext());
@@ -191,46 +199,5 @@ public class DetailFragment extends Fragment {
             });
             recommendedGallery.addView(rg1);
         }
-
-        /*
-        Item theItem = ItemSource
-        iv1.setImageResource(theItem.getImage(0));
-        iv2.setImageResource(theItem.getImage(1));
-
-        itemDescription.setText(theItem.getDescription());
-        priceDisplay.setText("$ " +theItem.getPrice());
-        itemName.setText(theItem.getName());
-        thumbsCounter.setText(theItem.getThumbs());
-
-        ArrayList<SmallItem> recommendations = theItem.getRecommendations();
-        for(int i=0; i<theItem.getRecommendation().size(); i++) {
-            ImageView rg1 = new ImageView(recommendedGallery.getContext());
-            rg1.setLayoutParams(new ViewGroup.LayoutParams(100, 100));
-            rg1.setImageResource(recommendations.get(i).getImage(0));
-            rg1.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Bundle argMenu = new Bundle();
-                    argMenu.putInt(MenuItemList.ARG_CATEGORY_ID,
-                            recommendation.get(i).getCategoryId());
-                    MenuItemList m = new MenuItemList();
-                    m.setArguments(argMenu);
-
-                    Bundle argDetail = new Bundle();
-                    argDetail.putInt(DetailFragment.ARG_ITEM_ID,
-                            recommendation.get(i).getItemId());
-                    DetailFragment d = new DetailFragment();
-                    d.setArguments(argDetail);
-
-                    FragmentTransaction ft = getActivity().getSupportFragmentManager()
-                            .beginTransaction();
-                    ft.replace(R.id.MSfragment_listContainer, m)
-                            .replace(R.id.MSfragment_detailContainer, d)
-                            .addToBackStack("Menu " +Integer.toString(theItem.getItemId())
-                            .commit();
-                }
-            recommendedGallery.addView(rg1);
-        }
-         */
     }
 }

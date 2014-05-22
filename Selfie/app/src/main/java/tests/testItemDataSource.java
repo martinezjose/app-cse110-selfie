@@ -140,7 +140,7 @@ public class testItemDataSource extends AndroidTestCase{
     public static Item startItem(){
         int LikesLimit = 100;
         int PriceLimit = 75;
-        int CategoryIDLimit = 3;
+        int CategoryIDLimit = 4;
         int CaloriesLimit = 5000;
         //array of Strings to choose from
         String [] EntreeNames = {"Garlic & Butter Lobster",

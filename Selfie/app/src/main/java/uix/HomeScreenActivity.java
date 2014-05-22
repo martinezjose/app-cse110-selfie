@@ -10,15 +10,16 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentManager;
 import android.view.View;
+import android.util.Log;
 
 import cse110.selfie.app.UI.R;
+import database.ItemDataSource;
 
 /**
  * Created by JuanJ on 4/28/2014.
  * Controller for the Home activity
  */
 
-// mCurrentFragment: HOME, CHECKOUT, CLASSIC
 public class HomeScreenActivity extends FragmentActivity {
 
     WeightController weightController;
@@ -33,6 +34,13 @@ public class HomeScreenActivity extends FragmentActivity {
         setContentView(R.layout.activity_main_screen);
 
         weightController = new WeightController(this);
+        ItemDataSource itemDataSource = new ItemDataSource(this);
+        try {
+            itemDataSource.setUp();
+        } catch (Exception e) {
+            Log.e("ITEMDATASOURCE", "SETUP EXCEPTION");
+        }
+
         Test.init(4);
         init();
 

@@ -2,6 +2,7 @@ package uix;
 
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -34,7 +35,6 @@ public class MenuItemList extends ListFragment {
     int categoryId = -1;
     String [] names = null;
     ArrayList<SmallItem> list;
-    //public ArrayList<SmallItem> list;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,28 +43,24 @@ public class MenuItemList extends ListFragment {
         Bundle args = getArguments();
         categoryId = args.getInt(ARG_CATEGORY_ID);
         ItemDataSource itemDataSource = new ItemDataSource(getActivity());
-        try {
-            itemDataSource.setUp();
-        } catch (Exception e) {
-            new Exception("SETUP ERROR");
-        }
 
-        if(list == null) {
-            Log.e("DATABASE", "LIST IS NULL");
-            list = itemDataSource.getSmallItemFromCategory(categoryId);
-        }
-        else {
-            Log.e("DATABASE", "LIST IS NOT NULL");
-            list.clear();
-            list = itemDataSource.getSmallItemFromCategory(categoryId);
-        }
-        Log.e("DATABASE", Integer.toString(list.size()));
+        list = itemDataSource.getSmallItemFromCategory(++categoryId);
         itemDataSource.close();
 
+        /*
+        Bundle firstArgs = new Bundle();
+        firstArgs.putInt(DetailFragment.ARG_ITEM_ID, list.get(0).getItemID());
+        MenuItemList firstItem = new MenuItemList();
+        firstItem.setArguments(firstArgs);
+        FragmentTransaction fTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+        fTransaction.replace(R.id.MSfragment_detailContainer, firstItem)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                .addToBackStack("Menu " +Integer.toString(list.get(0).getItemID()))
+                .commit();
+        */
         names = getNames(list);
 
         myListAdapter myAdapter = new myListAdapter(list);
-        //list = ItemDataSource.getAllFromCategory(Integer.parseInt(ARG_CATEGORY_ID)+1);
         setListAdapter(myAdapter);
     }
 
@@ -107,45 +103,12 @@ public class MenuItemList extends ListFragment {
 
             return convertView;
         }
-        /*
-        TextView textView;
-
-        public myListAdapter(String[] menu) {
-            super(getActivity(), android.R.layout.simple_list_item_1, menu);
-        }
-
-        //Gets individual list items
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            if(convertView == null) {
-                convertView = getActivity().getLayoutInflater().inflate(R.layout.mylist_menu_item, null);
-            }
-
-            TextView textView = (TextView) convertView.findViewById(R.id.textView);
-            textView.setText(Test.getMenu(categoryId).get(position).getName());
-
-            ImageView imageView = (ImageView) convertView.findViewById(R.id.imageView);
-            imageView.setImageResource(R.drawable.ic_launcher);
-
-            ImageView imageView1 = (ImageView) convertView.findViewById(R.id.imageView2);
-            imageView1.setImageResource(R.drawable.yellow_star);
-
-            if(Test.getMenu(categoryId).get(position).getSpecial())
-                imageView1.setAlpha(1f);
-            else
-                imageView1.setAlpha(0f);
-
-            return convertView;
-        }
-        */
     }
 
     @Override
-    //list's listener
     public void onListItemClick(ListView l, View v, int position, long id) {
-        /*INCLUDES DATABASE
         Bundle arguments = new Bundle();
-        arguments.putInt(DetailFragment.ARG_ITEM_ID, list.get(i).id);
+        arguments.putInt(DetailFragment.ARG_ITEM_ID, list.get(position).getItemID());
         DetailFragment fragment = new DetailFragment();
         fragment.setArguments(arguments);
 
@@ -153,23 +116,9 @@ public class MenuItemList extends ListFragment {
                 .replace(R.id.MSfragment_detailContainer, fragment)
                 .addToBackStack("Menu " +ARG_CATEGORY_ID)
                 .commit();
-         */
-
-        int theId = Test.getMenu(categoryId).get(position).getiId();
-        Bundle arguments = new Bundle();
-        arguments.putInt(DetailFragment.ARG_ITEM_ID, theId);
-        DetailFragment fragment = new DetailFragment();
-        fragment.setArguments(arguments);
-
-        //renders details fragment
-        getActivity().getSupportFragmentManager().beginTransaction()
-                .replace(R.id.MSfragment_detailContainer, fragment)
-                .addToBackStack("Menu " +Integer.toString(theId))
-                .commit();
     }
 
     @Override
-    //highlights the item selected
     public void onStart() {
         super.onStart();
         if(getFragmentManager().findFragmentById(R.id.MSfragment_listContainer) != null) {

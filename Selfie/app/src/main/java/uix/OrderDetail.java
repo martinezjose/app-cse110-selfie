@@ -7,16 +7,16 @@ import classes.Item;
  * Keeps track of a single item in the order
  */
 public class OrderDetail {
-    public item theItem;
+    public Item theItem;
     public int quantity;
 
-    public OrderDetail(item newItem, int newQuantity) {
+    public OrderDetail(Item newItem, int newQuantity) {
         this.theItem = newItem;
         this.quantity = newQuantity;
     }
 
     //gets the item
-    public item getTheItem() {
+    public Item getTheItem() {
         return theItem;
     }
 

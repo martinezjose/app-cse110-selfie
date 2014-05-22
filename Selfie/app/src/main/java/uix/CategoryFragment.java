@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import cse110.selfie.app.UI.R;
+import database.ItemDataSource;
 
 
 /**
@@ -17,18 +18,13 @@ import cse110.selfie.app.UI.R;
 public class CategoryFragment extends ListFragment{
 
     WeightController weightController;
+    ItemDataSource itemDataSource;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        /*INCLUDES DATABASE
-        super.onCreate(savedInstanceState);
-        ArrayList<Category> categories = CategoryDataSource.getAllCategory();
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_list_item_1, category);
-        setListAdapter(arrayAdapter);
-         */
         super.onCreate(savedInstanceState);
         weightController = new WeightController(getActivity());
+        itemDataSource = new ItemDataSource(getActivity());
 
         String [] category = getResources().getStringArray(R.array.cat_list);
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(),
@@ -43,13 +39,14 @@ public class CategoryFragment extends ListFragment{
         MenuItemList menu = new MenuItemList();
         menu.setArguments(argMenu);
 
-        int firstItem = Test.getMenu(position).get(0).getiId();
+
+        int firstItem = itemDataSource.getItem(1).getItemID();
         Bundle argDetail = new Bundle();
         argDetail.putInt(DetailFragment.ARG_ITEM_ID, firstItem);
         DetailFragment details = new DetailFragment();
         details.setArguments(argDetail);
 
-        //renders menu of category selected and first item details
+
         FragmentTransaction fTransaction = getActivity().getSupportFragmentManager()
                 .beginTransaction();
         fTransaction.replace(R.id.MSfragment_listContainer, menu)

@@ -1,6 +1,7 @@
 package uix;
 
 import java.util.ArrayList;
+import android.util.Log;
 
 import classes.Item;
 
@@ -14,10 +15,10 @@ public class Order {
     public final static int TABLE_ID = 1;
 
     //add item to the order
-    public static void add(item newItem, int quantity) {
+    public static void add(Item newItem, int quantity) {
         int itemPos = -1;
         for(int i=0; i<theOrder.size(); i++) {
-            if(theOrder.get(i).getTheItem().getiId() == newItem.getiId()) {
+            if(theOrder.get(i).getTheItem().getItemID() == newItem.getItemID()) {
                 itemPos = i;
                 break;
             }
@@ -34,6 +35,9 @@ public class Order {
 
     public static void remove(int position) {
         theOrder.remove(position);
+        for(int i=0; i<theOrder.size(); i++) {
+            Log.e("*****ORDER*****", theOrder.get(i).getTheItem().getItemName());
+        }
     }
 
     public static void clear() {
@@ -49,7 +53,7 @@ public class Order {
     public static String[] getNames() {
         String[] names = new String[theOrder.size()];
         for(int i=0; i<theOrder.size(); i++) {
-            names[i] = theOrder.get(i).getTheItem().getName();
+            names[i] = theOrder.get(i).getTheItem().getItemName();
         }
         return names;
     }
