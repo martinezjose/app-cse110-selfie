@@ -13,5 +13,5 @@
     </string-array>
 
     <!-- tab -->
-    <string name="checkout_button">Checkout</string>
+    <string name="checkout_button">Order</string>
 </resources>

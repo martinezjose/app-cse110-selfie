@@ -11,13 +11,13 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.CheckBox;
+import android.view.View.OnClickListener;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -32,6 +32,7 @@ public class OrderFragment extends Fragment {
 
     ListView lv;
     OrderAdapter myAdapter;
+    MyButtonListener myButtonListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -45,7 +46,7 @@ public class OrderFragment extends Fragment {
         myAdapter = new OrderAdapter(theOrder);
         lv.setAdapter(myAdapter);
 
-        MyButtonListener myButtonListener = new MyButtonListener();
+        myButtonListener = new MyButtonListener();
         Button remove = (Button) view.findViewById(R.id.CS_removeSelected);
         remove.setOnClickListener(myButtonListener);
         Button submit = (Button) view.findViewById(R.id.CS_summitOrder);
@@ -72,17 +73,10 @@ public class OrderFragment extends Fragment {
         for(int i=itemCount; i>0; i--) {
             cb = (CheckBox) listView.get(i).findViewById(R.id.checkout_checkBox);
             if(cb.isChecked()) {
-                Log.e("ORDERFRAGMENT", Integer.toString(listView.size()));
-                for(int j=0; j<listView.size(); j++) {
-                    TextView tx = (TextView) listView.get(j).findViewById(R.id.checkout_itemName);
-                    Log.e("ORDERFRAGMENT", tx.getText().toString() +Integer.toString(j));
-                }
-
-                Order.remove(i-1);
+                theOrder.remove(i-1);
                 listView.remove(i);
             }
         }
-        theOrder = Order.getTheOrder();
     }
 
     private class OrderAdapter extends ArrayAdapter<String> {
@@ -112,35 +106,27 @@ public class OrderFragment extends Fragment {
             quantity.setText(Integer.toString(theOrder.get(position).getQuantity()));
 
             checkBox = (CheckBox) convertView.findViewById(R.id.checkout_checkBox);
-
             leftButton = (ImageButton) convertView.findViewById(R.id.left);
             leftButton.setImageResource(R.drawable.arrow_left);
-            leftButton.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View view) {
-                int Q = Integer.parseInt(quantity.getText().toString());
-                if(Q != 0) {
-                    quantity.setText(--Q);
-                }
-                }
-            });
+            leftButton.setOnClickListener(myButtonListener);
 
             rightButton = (ImageButton) convertView.findViewById(R.id.right);
             rightButton.setImageResource(R.drawable.arrow_right);
-            rightButton.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View view) {
-                int Q = Integer.parseInt(quantity.getText().toString());
-                quantity.setText(++Q);
-                }
-            });
+            rightButton.setOnClickListener(myButtonListener);
 
             listView.add(convertView);
-                return convertView;
+            return convertView;
         }
     }
 
     private class MyButtonListener implements View.OnClickListener{
         @Override
         public void onClick(View view) {
+            int position = lv.getPositionForView((View) view.getParent());
+            TextView tx1 = (TextView)((View)listView.get(position+1)).findViewById(R.id.checkout_quantityCounter);
+            Log.e(Integer.toString(position), tx1.getText().toString());
+            int Q = Integer.parseInt(tx1.getText().toString());
+
             switch (view.getId()) {
                 case R.id.CS_removeSelected:
                     new AlertDialog.Builder(view.getContext())
@@ -176,7 +162,18 @@ public class OrderFragment extends Fragment {
                             })
                             .show();
                     break;
+                case R.id.left:
+                    if(Q != 1) {
+                        int newQ = --Q;
+                        theOrder.get(position).setQuantity(newQ);
+                    }
+                    break;
+                case R.id.right:
+                    int newQ = ++Q;
+                    theOrder.get(position).setQuantity(newQ);
+                    break;
             }
+            myAdapter.notifyDataSetChanged();
         }
     }
 }

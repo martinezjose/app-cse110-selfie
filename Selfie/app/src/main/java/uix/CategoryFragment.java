@@ -39,18 +39,9 @@ public class CategoryFragment extends ListFragment{
         MenuItemList menu = new MenuItemList();
         menu.setArguments(argMenu);
 
-
-        int firstItem = itemDataSource.getItem(1).getItemID();
-        Bundle argDetail = new Bundle();
-        argDetail.putInt(DetailFragment.ARG_ITEM_ID, firstItem);
-        DetailFragment details = new DetailFragment();
-        details.setArguments(argDetail);
-
-
         FragmentTransaction fTransaction = getActivity().getSupportFragmentManager()
                 .beginTransaction();
         fTransaction.replace(R.id.MSfragment_listContainer, menu)
-                .replace(R.id.MSfragment_detailContainer, details)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 .addToBackStack("Menu " +Integer.toString(position))
                 .commit();

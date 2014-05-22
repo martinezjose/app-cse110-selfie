@@ -56,7 +56,9 @@
         android:id="@+id/right"
         android:layout_marginRight="60dp"
         android:layout_alignTop="@+id/checkout_checkBox"
-        android:layout_toLeftOf="@+id/checkout_quantityCounter" />
+        android:layout_toLeftOf="@+id/checkout_quantityCounter"
+        android:focusable="false"
+        android:focusableInTouchMode="false" />
 
     <ImageButton
         android:layout_width="25dp"
@@ -64,6 +66,8 @@
         android:id="@+id/left"
         android:layout_alignTop="@+id/right"
         android:layout_toLeftOf="@+id/right"
-        android:layout_marginRight="20dp" />
+        android:layout_marginRight="20dp"
+        android:focusable="false"
+        android:focusableInTouchMode="false" />
 
 </RelativeLayout>

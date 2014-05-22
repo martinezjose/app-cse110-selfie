@@ -30,7 +30,6 @@ public class MenuItemList extends ListFragment {
     final static String ARG_CATEGORY_ID = "ARG_CATEGORY_ID";
 
     ItemDataSource itemDataSource;
-    WeightController weightController;
 
     int categoryId = -1;
     String [] names = null;
@@ -42,22 +41,21 @@ public class MenuItemList extends ListFragment {
 
         Bundle args = getArguments();
         categoryId = args.getInt(ARG_CATEGORY_ID);
-        ItemDataSource itemDataSource = new ItemDataSource(getActivity());
+        itemDataSource = new ItemDataSource(getActivity());
 
         list = itemDataSource.getSmallItemFromCategory(++categoryId);
         itemDataSource.close();
 
-        /*
         Bundle firstArgs = new Bundle();
         firstArgs.putInt(DetailFragment.ARG_ITEM_ID, list.get(0).getItemID());
-        MenuItemList firstItem = new MenuItemList();
+        DetailFragment firstItem = new DetailFragment();
         firstItem.setArguments(firstArgs);
         FragmentTransaction fTransaction = getActivity().getSupportFragmentManager().beginTransaction();
         fTransaction.replace(R.id.MSfragment_detailContainer, firstItem)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                .addToBackStack("Menu " +Integer.toString(list.get(0).getItemID()))
+                .addToBackStack("Detail " +Integer.toString(list.get(0).getItemID()))
                 .commit();
-        */
+
         names = getNames(list);
 
         myListAdapter myAdapter = new myListAdapter(list);
@@ -114,7 +112,7 @@ public class MenuItemList extends ListFragment {
 
         getActivity().getSupportFragmentManager().beginTransaction()
                 .replace(R.id.MSfragment_detailContainer, fragment)
-                .addToBackStack("Menu " +ARG_CATEGORY_ID)
+                .addToBackStack("Detail " +Integer.toString(list.get(position).getItemID()))
                 .commit();
     }
 

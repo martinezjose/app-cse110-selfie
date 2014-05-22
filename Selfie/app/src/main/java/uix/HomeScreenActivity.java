@@ -102,10 +102,14 @@ public class HomeScreenActivity extends FragmentActivity {
                         weightController.changeLayoutWeight(0);
                     }
                     else if(mPrevious.getName().startsWith("Menu ")) {
-                        weightController.changeLayoutWeight(1);
+                        fManager.popBackStack();
+                        weightController.changeLayoutWeight(0);
                     }
                     else if(mPrevious.getName() == "Order") {
                         weightController.changeLayoutWeight(2);
+                    }
+                    else if(mPrevious.getName().startsWith("Detail ")) {
+                        weightController.changeLayoutWeight(1);
                     }
 
                     //clears stack if 10 screens have been added
