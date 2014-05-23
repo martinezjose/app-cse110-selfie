@@ -18,16 +18,19 @@ import tests.testItemDataSource;
 /**
  * Data Access Object (DAO)-- Handles Record insertion and retrieval with Database.
  * Basic functionality such as CRUD and extras are found here.
- * Status: NOT FINISHED
+ * Status: IN PROGRESS
  *
  * Created by edwinmo on 5/7/14.
  */
 public class ItemDataSource {
 
-    private SelfieDatabase myDB;
-    private SQLiteDatabase db;
-    private String databasePath;
+    private SelfieDatabase myDB;        //instance of the SelfieDatabase class
+    private SQLiteDatabase db;          //instance of the SQLiteDatabase class, from which SelfieD-
+                                        //atabase extends.
+    private String databasePath;        //storing the path where the database exists for existence
+                                        //check
 
+    //used to retrieve all columns for basic queries
     private String [] allColumns = {SelfieDatabase.KEY_ITEM_ID,
             SelfieDatabase.KEY_ITEM_NAME,SelfieDatabase.KEY_PRICE, SelfieDatabase.KEY_CATEGORY_ID,
             SelfieDatabase.KEY_LIKES,SelfieDatabase.KEY_ACTIVE,
@@ -35,15 +38,18 @@ public class ItemDataSource {
             SelfieDatabase.KEY_DESCRIPTION,SelfieDatabase.KEY_DAILY_SPECIAL,SelfieDatabase.KEY_IMAGE_PATH,
             SelfieDatabase.KEY_THUMBNAIL};
 
+    //used to retrieve specific columns for getSmallItemFromCategory query
     private String [] smallColumns = {SelfieDatabase.KEY_ITEM_ID,SelfieDatabase.KEY_ITEM_NAME,
-            SelfieDatabase.KEY_CATEGORY_ID,SelfieDatabase.KEY_DAILY_SPECIAL,SelfieDatabase.KEY_THUMBNAIL};
+            SelfieDatabase.KEY_CATEGORY_ID,SelfieDatabase.KEY_LIKES,
+            SelfieDatabase.KEY_DAILY_SPECIAL,SelfieDatabase.KEY_THUMBNAIL};
 
     //CONSTRUCTOR
     public ItemDataSource(Context context){
 
+        //instantiate a SelfieDatabase from this context
         myDB = new SelfieDatabase(context);
 
-        //save the absolute path for checking existence
+        //save the absolute path for the database
         databasePath = context.getDatabasePath(myDB.DATABASE_NAME).toString();
 
     }
@@ -69,6 +75,7 @@ public class ItemDataSource {
             return;
         }
 
+        //loop numberOfItems times.
         for(int i =0; i<numberOfItems; ++i) {
             if (addItem(testItemDataSource.startItem()) == -1)
                 throw new Exception();  //throw exception if error adding item
@@ -84,35 +91,37 @@ public class ItemDataSource {
 
     /******************************************* CRUD *********************************************/
 
-    /* addItem() -- Create
+    /* public long addItem(Item item) -- Create
+     * Parameters: Item item
      * Description: adds an item to the database
      * PRECONDITION: item is created with no ID (through setter constructor)
      * POSTCONDITION: item is added to the database
      * Returns: long ID of the newly inserted Item
      * Status: works, tested but not thoroughly
-     * Keywords: create, add, new, add item
      */
     public long addItem(Item item){
 
         //get writable database
         db = myDB.getWritableDatabase();
 
+        //convert Item object to ContentValues
         ContentValues values = itemToContentValues(item);
 
         long ReturnValue = db.insert(SelfieDatabase.TABLE_ALL_ITEMS,null,values);
+
         //close database
         db.close();
 
         return ReturnValue;
     }
 
-    /* getItem() -- Read
+    /* public Item getItem(int id) -- Read
+     * Parameters: int id
      * Description: reads from the database; returns an Item.
      * PRECONDITION: id for the target item is provided (somehow).
      * POSTCONDITION: Item object is returned
      * Returns: found item in the database is returned.
      * Status: works, kinda tested
-     * Keywords: read, getItem, get item, retrieve
      */
     public Item getItem(int id){
 
@@ -126,11 +135,17 @@ public class ItemDataSource {
         if(cursor != null)
             cursor.moveToFirst();
 
+        //obtain an Item from cursor
+        Item returnItem = cursorToItem(cursor);
+
+        //close database
+        db.close();
+
         //return item
-        return cursorToItem(cursor);
+        return returnItem;
     }
 
-    /* updateItem() -- Update
+    /* public int updateItem(Item item) -- Update
      * Description: updates the item in the database. >>> Handles LastUpdated field!!!!!!!!
      * PRECONDITION: item is obtained through getItem() AND the modifications have been done
      *                  prior to calling this method. item has been modified with the updated info.
@@ -138,7 +153,6 @@ public class ItemDataSource {
      * Returns: number of rows affected
      * Status: not tested. Nothing is updated except for the LastUpdated field. Could implement
      *          more complex updating such as field-by-field updating.
-     * Keywords: update, updating, not done
      */
     public int updateItem(Item item){
 
@@ -151,26 +165,36 @@ public class ItemDataSource {
         //create ContentValues from item
         ContentValues values = itemToContentValues(item);
 
-        return db.update(SelfieDatabase.TABLE_ALL_ITEMS,values,SelfieDatabase.KEY_ITEM_ID + " = ?",
+        //number of rows affected
+        int affected = db.update(SelfieDatabase.TABLE_ALL_ITEMS,values,SelfieDatabase.KEY_ITEM_ID + " = ?",
                 new String[] {String.valueOf(item.getItemID())});
+
+        //close database
+        db.close();
+
+        //return number of rows affected
+        return affected;
     }
 
-    /* deleteItem() -- Delete
+    /* public void deleteItem(Item item) -- Delete
+     * Parameters: Item item
      * Description: Deletes 'item' from the database.
      * PRECONDITION: item was obtained through getItem() -- guarantees that item has an ItemID
      * POSTCONDITION: item has been deleted from the database.
      * Returns: None
-     * STATUS: works, but may change implementation.
-     * Keywords: delete, delete item, done
+     * STATUS: works, but may change implementation. Dependencies are not handled.
      */
     public void deleteItem(Item item){
 
         //get writable database
         db = myDB.getWritableDatabase();
 
-
+        //delete the record in the database matching item.ID
         db.delete(SelfieDatabase.TABLE_ALL_ITEMS,SelfieDatabase.KEY_ITEM_ID + " =?",
                 new String[] {String.valueOf(item.getItemID())});
+
+        //close database
+        db.close();
     }
 
 
@@ -178,13 +202,13 @@ public class ItemDataSource {
     /*********************************** EXTRA FUNCTIONALITY **************************************/
 
 
-    /* getAllItems()
+    /* public List<Item> getAllItems()
+     * Parameters: none
      * Description: extra functionality. Returns a List of all rows (Items) in the database.
      * PRECONDITION: myDB exists
      * POSTCONDITION: a List of Items is returned
      * Returns: List of Items
      * Status: works, not thoroughly tested. Need to include checks
-     * Keywords: get all items, retrieve all
      */
     public List<Item> getAllItems(){
 
@@ -207,16 +231,20 @@ public class ItemDataSource {
             }while(cursor.moveToNext());
         }
 
+        //close database
+        db.close();
+
+        //returns the populated itemList
         return itemList;
     }
 
-    /* getCount()
+    /* public int getCount()
+     * Parameters: none
      * Description: extra functionality. Returns the number of entries in the database.
      * PRECONDITION: myDB exists
      * POSTCONDITION: the number of entries in the database is returned.
      * Returns: number of entries in the database
      * Status: not tested
-     * Keywords: count, size, number
      */
     public int getCount(){
 
@@ -229,19 +257,25 @@ public class ItemDataSource {
         //query for countQuery, returns a cursor to query result
         Cursor cursor = db.rawQuery(countQuery,null);
 
-        return cursor.getCount();
+        //get count
+        int count = cursor.getCount();
+
+        //close database
+        db.close();
+
+        return count;
     }
 
 
     /************************************ Specific Querying ***************************************/
 
-    /* getSmallItemFromCategory()
+    /* public ArrayList<SmallItem> getSmallItemFromCategory(int categoryID)
+     * Parameters: int categoryID
      * Description: returns an ArrayList of SmallItems that match this categoryID
      * PRECONDITION: categoryID is a valid ID
      * POSTCONDITION: an ArrayList of SmallItems is returned
      * Returns: an ArrayList of SmallItems
      * Status: no error-checking
-     * Keywords:
      */
     public ArrayList<SmallItem> getSmallItemFromCategory(int categoryID){
         db = myDB.getReadableDatabase();
@@ -260,38 +294,51 @@ public class ItemDataSource {
             }while(cursor.moveToNext());
         }
 
+        //close database
+        db.close();
+
+        //return the populated smallItemsList
         return smallItemsList;
     }
 
-    /* getFirstItem()
-     * Description: returns the first Item from the first SmallItem for a specified category.
-     * PRECONDITION: categoryID is provided and it exists in the database
-     * POSTCONDITION: an Item object is returned
-     * Returns: Item object
+    /* public ArrayList<SmallItem> getSpecialSmallItem()
+     * Parameters: none
+     * Description: returns all SmallItem objects that are specials (daily_special).
+     * PRECONDITION: none
+     * POSTCONDITION: a ListArray of SmallItem objects is returned
+     * Returns: ListArray of SmallItem
      * Status: untested
-     * Keywords: get first item, getfirstitem
      */
-    public Item getFirstItem(int categoryID){
+    public ArrayList<SmallItem> getSpecialSmallItem(){
 
-        //query for all SmallItems from categoryID
-        ArrayList<SmallItem> smallItemsList = getSmallItemFromCategory(categoryID);
+        //get a readable database
+        db = myDB.getReadableDatabase();
 
-        //get the first SmallItem and retrieve its ItemID
-        int itemID = smallItemsList.get(0).getItemID();
+        ArrayList<SmallItem> smallItemList = new ArrayList<SmallItem>();
 
-        //use retrieved itemID to get the Item object.
-        return getItem(itemID);
+        //query for all specials
+        Cursor cursor = db.query(SelfieDatabase.TABLE_ALL_ITEMS,smallColumns,
+                SelfieDatabase.KEY_DAILY_SPECIAL + " = 1 ",null,null,null,null,null);
+
+        if(cursor.moveToFirst()){
+            do{
+               smallItemList.add(cursorToSmallItem(cursor));
+            }while(cursor.moveToNext());
+        }
+
+        //return populated smallItemList
+        return smallItemList;
     }
 
     /************************************** HELPER METHODS ****************************************/
 
-    /* cursorToItem()
+    /* private Item cursorToItem(Cursor cursor)
+     * Parameters: Cursor cursor
      * Description: returns an Item object pointed at by the cursor in the database.
      * PRECONDITION: cursor points to a valid entry in the database.
      * POSTCONDITION: an Item object is populated and returned
      * Returns: Item
      * Status: works. Not thoroughly tested.
-     * Keywords: helper, helper function, cursor to Item, cursorToItem
      */
     private Item cursorToItem(Cursor cursor){
 
@@ -316,13 +363,12 @@ public class ItemDataSource {
         );
     }
 
-    /* cursorToSmallItem()
+    /* private SmallItem cursorToSmallItem(Cursor cursor)
      * Description: returns a SmallItem object pointed at by the cursor in the database.
      * PRECONDITION: cursor points to a valid entry in the database.
      * POSTCONDITION: a SmallItem object is populated and returned
      * Returns: SmallItem
      * Status:
-     * Keywords: helper, helper function, cursor to SmallItem, cursorToSmallItem
      */
     private SmallItem cursorToSmallItem(Cursor cursor){
         int IsSpecial = cursor.getInt(cursor.getColumnIndex(SelfieDatabase.KEY_DAILY_SPECIAL));
@@ -336,13 +382,13 @@ public class ItemDataSource {
         );
     }
 
-    /* itemToContentValues()
+    /* private ContentValues itemToContentValues(Item item)
+     * Parameters: Item item;
      * Description: helper function. Returns a ContentValues populated by item's fields.
      * PRECONDITION: item exists.
      * POSTCONDITION: a ContentValues is returned
      * Returns: ContentValues (populated)
      * Status: works, not thoroughly tested.
-     * Keywords: content values, contentvalues, itemToContentValues
      */
     private ContentValues itemToContentValues(Item item){
         ContentValues values = new ContentValues();
@@ -362,25 +408,23 @@ public class ItemDataSource {
         return values;
     }
 
-    /* stringToArray() -- retrieval
-     * Description:converts the image_paths column to an array of Strings, delimited by ;(semicolon)
-     * PRECONDITION:
-     * POSTCONDITION:
-     * Returns:
-     * Status:
-     * Keywords:
+    /* String [] stringToArray(String image_paths) -- retrieval
+     * Description: converts the image_paths column to an array of Strings, delimited by ;(semicolon)
+     * PRECONDITION: image_paths is some string that may or may not contain ";"
+     * POSTCONDITION: an array of strings split from ";" is returned
+     * Returns: array of strings
+     * Status: not thoroughly tested.
      */
     private String [] stringToArray(String image_paths){
         return image_paths.split(";");
     }
 
-    /* arrayToString() -- insertion
+    /* String arrayToString(String [] image_paths) -- insertion
      * Description: converts an array of Strings to one String, delimited by ; (semicolon)
-     * PRECONDITION:
-     * POSTCONDITION:
-     * Returns:
-     * Status:
-     * Keywords:
+     * PRECONDITION: image_paths is an array containing zero or more strings
+     * POSTCONDITION: a string containing every element in image_paths is returned, delimited by ;
+     * Returns: a string delimited by ;
+     * Status: works, untested.
      */
     private String arrayToString(String [] image_paths){
         String returnValue = "";

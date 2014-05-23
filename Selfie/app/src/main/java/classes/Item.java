@@ -46,11 +46,11 @@ public class Item {
     }
 
     /*
-         * Getter Constructor
-         * :: All fields -- for retrieval
-         * Description: Used to retrieve information from the database. All fields have been
-         * populated.
-         */
+     * Getter Constructor
+     * :: All fields -- for retrieval
+     * Description: Used to retrieve information from the database. All fields have been
+     * populated.
+     */
     public Item(int itemID, String itemName, float price, int categoryID, int likes,
                 boolean active, int calories,String created, String lastupdated,String description,
                 boolean dailySpecial, String [] imagePath, String thumbnail) {
