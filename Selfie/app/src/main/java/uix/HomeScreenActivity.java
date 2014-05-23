@@ -17,12 +17,15 @@ import database.ItemDataSource;
 
 /**
  * Created by JuanJ on 4/28/2014.
- * Controller for the Home activity
+ * Main Screen to display every other screen.
+ * All other screens are stack on top of this one.
+ * Button listeners for home screen, back, waiter, and order.
  */
 
 public class HomeScreenActivity extends FragmentActivity {
 
     WeightController weightController;
+    FragmentTransaction fTransaction;
 
     public CategoryFragment categoryFragment = new CategoryFragment();
     public SpecialTabFragment specialTabFragment = new SpecialTabFragment();
@@ -41,12 +44,20 @@ public class HomeScreenActivity extends FragmentActivity {
             Log.e("ITEMDATASOURCE", "SETUP EXCEPTION");
         }
 
-        Test.init(4);
-        init();
+        fTransaction = getSupportFragmentManager().beginTransaction();
 
-        FragmentTransaction fTransaction = getSupportFragmentManager().beginTransaction();
+        fTransaction.replace(R.id.MSfragment_listContainer, categoryFragment)
+                .replace(R.id.MSfragment_detailContainer, specialTabFragment)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                .addToBackStack("Home")
+                .commit();
+    }
 
-        //renders category list and special tab
+    @Override
+    protected void onResume() {
+        super.onResume();
+        fTransaction = getSupportFragmentManager().beginTransaction();
+
         fTransaction.replace(R.id.MSfragment_listContainer, categoryFragment)
                 .replace(R.id.MSfragment_detailContainer, specialTabFragment)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
@@ -93,54 +104,39 @@ public class HomeScreenActivity extends FragmentActivity {
                     weightController.changeLayoutWeight(2);
                 }
                 break;
-            case R.id.MS_back_button:
-                FragmentManager.BackStackEntry mPrevious = fManager.getBackStackEntryAt(
-                        fManager.getBackStackEntryCount()-2);
-                if(fManager.getBackStackEntryCount() > 1) {
-                    fManager.popBackStack();
-                    if(mPrevious.getName() == "Home") {
-                        weightController.changeLayoutWeight(0);
-                    }
-                    else if(mPrevious.getName().startsWith("Menu ")) {
-                        fManager.popBackStack();
-                        weightController.changeLayoutWeight(0);
-                    }
-                    else if(mPrevious.getName() == "Order") {
-                        weightController.changeLayoutWeight(2);
-                    }
-                    else if(mPrevious.getName().startsWith("Detail ")) {
-                        weightController.changeLayoutWeight(1);
-                    }
-
-                    //clears stack if 10 screens have been added
-                    if (fManager.getBackStackEntryCount() > 10) {
-                        for(int i=0;i<fManager.getBackStackEntryCount()-2;i++)
-                            fManager.popBackStack();
-                        weightController.changeLayoutWeight(0);
-                    }
-                }
-                else {
-                    moveTaskToBack(true);
-                }
-                break;
         }
     }
 
-    //for my (Juan's) testing only
-    public void init() {
-        Test.add(0, new item("Triple Dipper", 1, 0, 10.79f, true));
-        Test.add(0, new item("Southwestern Eggrolls", 2, 0, 8.29f, true));
-        Test.add(0, new item("Loaded Potato Skins", 3, 0, 7.09f, false));
-        Test.add(0, new item("Classic Nachos", 4, 0, 7.69f, true));
-        Test.add(1, new item("Bacon Burger", 17, 1, 9.59f, false));
-        Test.add(1, new item("Cheese Burger", 18, 1, 8.59f, true));
-        Test.add(1, new item("Veggie Burger", 19, 1, 7.59f, true));
-        Test.add(1, new item("Bacon Cheese Burger", 20, 1, 11.59f, false));
-        Test.add(2, new item("Chocolate Cake", 21, 2, 6.29f, false));
-        Test.add(2, new item("Chocolate Ice Cream", 22, 2, 6.09f, false));
-        Test.add(2, new item("Chocolate Cheesecake", 23, 2, 7.39f, true));
-        Test.add(3, new item("Apple Juice", 24, 3, 3.43f, true));
-        Test.add(3, new item("Mango Juice", 25, 3, 3.43f, false));
-        Test.add(3, new item("Orange Juice", 26, 3, 3.43f, false));
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        FragmentManager fManager = getSupportFragmentManager();
+        if(fManager.getBackStackEntryCount() > 1) {
+            FragmentManager.BackStackEntry mPrevious = fManager.getBackStackEntryAt(
+                    fManager.getBackStackEntryCount()-2);
+            fManager.popBackStack();
+            if(mPrevious.getName() == "Home") {
+                weightController.changeLayoutWeight(0);
+            }
+            else if(mPrevious.getName().startsWith("Menu ")) {
+                fManager.popBackStack();
+                weightController.changeLayoutWeight(0);
+            }
+            else if(mPrevious.getName() == "Order") {
+                weightController.changeLayoutWeight(2);
+            }
+            else if(mPrevious.getName().startsWith("Detail ")) {
+                weightController.changeLayoutWeight(1);
+            }
+
+            if (fManager.getBackStackEntryCount() > 10) {
+                for(int i=0;i<fManager.getBackStackEntryCount()-2;i++)
+                    fManager.popBackStack();
+                weightController.changeLayoutWeight(0);
+            }
+        }
+        else {
+            moveTaskToBack(true);
+        }
     }
 }

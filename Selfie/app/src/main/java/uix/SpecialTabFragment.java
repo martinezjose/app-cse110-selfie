@@ -21,13 +21,18 @@ import database.ItemDataSource;
 
 /**
  * Created by JuanJ on 5/1/2014.
- * Controller for the Specials screen
+ * Screen displaying the list of specials and logo of restaurant.
+ * The list is dynamically populated from a list given by the database.
+ * The logo is obtain from the database.
+ * On clicking special item change the screen to the corresponding details of the item.
  */
 public class SpecialTabFragment extends Fragment {
 
     WeightController weightController;
     ItemDataSource itemDataSource;
+
     private LinearLayout specialGallery;
+    private ImageView logo;
     private ArrayList<SmallItem> specials;
 
     @Override
@@ -38,6 +43,7 @@ public class SpecialTabFragment extends Fragment {
         specials = itemDataSource.getSpecialSmallItem();
 
         weightController = new WeightController(getActivity());
+        logo = (ImageView) view.findViewById(R.id.logo);
         specialGallery = (LinearLayout) view.findViewById(R.id.imageGallery);
 
         for(int i=0; i<specials.size(); i++) {

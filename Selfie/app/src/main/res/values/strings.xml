@@ -2,7 +2,6 @@
 <resources>
 
     <string name="app_name">Lobsters and Nachos</string>
-    <string name="title_category_detail">Category Detail</string>
 
     <!-- category -->
     <string-array name="cat_list">
@@ -12,6 +11,9 @@
         <item>Drinks</item>
     </string-array>
 
-    <!-- tab -->
-    <string name="checkout_button">Order</string>
+    <string name="welcome">Welcome</string>
+    <string name="order_button">Order</string>
+    <string name="waiter_button">Waiter!</string>
+    <string name="link_button">Link</string>
+
 </resources>

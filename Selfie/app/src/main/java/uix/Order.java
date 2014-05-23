@@ -7,12 +7,13 @@ import classes.Item;
 
 /**
  * Created by JuanJ on 5/11/2014.
- * Keeps a list of the current order
+ * Singleton pattern.
+ * This class keeps the order.
  */
 
 public class Order {
     private static ArrayList<OrderDetail> theOrder = new ArrayList<OrderDetail>();
-    public final static int TABLE_ID = 1;
+    private static int TABLE_ID = 1;
 
     //add item to the order
     public static void add(Item newItem, int quantity) {
@@ -39,10 +40,6 @@ public class Order {
         }
     }
 
-    public static void clear() {
-        theOrder.clear();
-    }
-
     //gets the order
     public static ArrayList<OrderDetail> getTheOrder() {
         return theOrder;
@@ -65,5 +62,9 @@ public class Order {
             temp += singleItem;
         }
         return temp;
+    }
+
+    public static void setTableId (int tableId) {
+        TABLE_ID = tableId;
     }
 }

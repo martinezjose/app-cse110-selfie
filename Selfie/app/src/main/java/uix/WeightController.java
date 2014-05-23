@@ -8,7 +8,6 @@ import cse110.selfie.app.UI.R;
 
 /**
  * Created by JuanJ on 5/10/2014.
- * (MAYBE EXCESSIVE)
  * This class controls the screens weight in order to display the correct sizes
  */
 

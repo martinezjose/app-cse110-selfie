@@ -13,7 +13,9 @@ import database.ItemDataSource;
 
 /**
  * Created by JuanJ on 5/1/2014.
- * Controller for the Category screen
+ * Screen displaying the list of categories.
+ * The list is dynamically populated from a list given by the database.
+ * On row click will open a menu list for the corresponding to the category in that row.
  */
 public class CategoryFragment extends ListFragment{
 

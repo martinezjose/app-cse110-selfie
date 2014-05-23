@@ -24,7 +24,13 @@ import database.ItemDataSource;
 
 /**
  * Created by JuanJ on 4/30/2014.
- * Controller for the Detail Screen
+ * Screen displaying the details of a specific item.
+ * Details are obtained from a database through the item id.
+ * Quantity can be changed with the up and down button; price will change accordingly.
+ * 'Add To Order' prompts the user if he/she wants to continue through the menu or go to order
+ *  screen.
+ * On clicking a recommended item, menu list and detail screen will display the corresponding item
+ *  through the item id and category id.
  */
 public class DetailFragment extends Fragment {
 
@@ -47,7 +53,7 @@ public class DetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Bundle args = getArguments();
         itemId = args.getInt(ARG_ITEM_ID);
-        View view = inflater.inflate(R.layout.fragment_description_screen, container, false);
+        View view = inflater.inflate(R.layout.fragment_detail_screen, container, false);
 
         myController = new WeightController(getActivity());
         itemDataSource = new ItemDataSource(getActivity());

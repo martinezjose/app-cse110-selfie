@@ -4,7 +4,7 @@ import classes.Item;
 
 /**
  * Created by JuanJ on 5/11/2014.
- * Keeps track of a single item in the order
+ * This class keeps track of a single item in the order
  */
 public class OrderDetail {
     public Item theItem;

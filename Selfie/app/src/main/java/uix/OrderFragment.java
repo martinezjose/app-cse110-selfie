@@ -2,6 +2,12 @@ package uix;
 
 /**
  * Created by JuanJ on 5/11/2014.
+ * Screen displays the current order.
+ * List is populated from the Order.class arraylist.
+ * Checked checkboxes are removed from the list as well as the order on clicking 'remove items'.
+ * 'Submit Order' ignores checkboxes and submit all items displayed, then clear the Order.
+ * Quantity can be changed using the left and right buttons; price, subtotal, tax, and total will
+ *  change accordingly.
  */
 
 import android.app.AlertDialog;
@@ -17,7 +23,6 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.CheckBox;
-import android.util.Log;
 import android.util.SparseBooleanArray;
 
 import java.util.ArrayList;
@@ -97,7 +102,7 @@ public class OrderFragment extends Fragment {
         public View getView(int position, View convertView, ViewGroup parent) {
             if(convertView == null) {
                 convertView = getActivity().getLayoutInflater()
-                        .inflate(R.layout.mylist_checkout_item, null);
+                        .inflate(R.layout.mylist_order_item, null);
             }
 
             itemName = (TextView) convertView.findViewById(R.id.checkout_itemName);
@@ -162,7 +167,7 @@ public class OrderFragment extends Fragment {
                                 }
                             })
                             .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                @Override
+                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                 }
                             })
@@ -174,7 +179,9 @@ public class OrderFragment extends Fragment {
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
-                                    Order.clear();
+                                    //send order
+                                    //clear order
+                                    setCheck();
                                 }
                             })
                             .setNegativeButton("No", new DialogInterface.OnClickListener() {

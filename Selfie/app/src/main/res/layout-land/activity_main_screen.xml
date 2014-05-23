@@ -23,8 +23,9 @@
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
                 android:background="#FFFFFF"
-                android:text="Waiter!"
-                android:onClick="myButtonListener"/>
+                android:text="@string/waiter_button"
+                android:onClick="myButtonListener"
+                android:singleLine="true" />
             <Button
                 android:id="@+id/MS_checkout_button"
                 android:layout_width="150dp"
@@ -35,21 +36,13 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
                 android:background="#FFFFFF"
-                android:text="@string/checkout_button"
+                android:text="@string/order_button"
                 android:onClick="myButtonListener"/>
             <ImageButton
-                android:id="@+id/MS_back_button"
-                android:layout_width="70dp"
-                android:layout_height="60dp"
-                android:onClick="myButtonListener"/>
-
-            <ImageButton
-                android:layout_width="70dp"
-                android:layout_height="60dp"
                 android:id="@+id/MS_home_button"
-                android:layout_toRightOf="@+id/MS_back_button"
-                android:onClick="myButtonListener" />
-
+                android:layout_width="70dp"
+                android:layout_height="60dp"
+                android:onClick="myButtonListener"/>
         </RelativeLayout>
 
         <LinearLayout

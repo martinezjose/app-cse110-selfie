@@ -22,7 +22,10 @@ import database.ItemDataSource;
 
 /**
  * Created by JuanJ on 4/29/2014.
- * Controller for the Menu ListView
+ * Screen displaying the list of menu items.
+ * The list is dynamically populated with SmallItem from a list given by the database through
+ *  the category id.
+ * On row click will open a details for the corresponding to the item in that row.
  */
 
 public class MenuItemList extends ListFragment {
@@ -47,7 +50,6 @@ public class MenuItemList extends ListFragment {
         itemDataSource = new ItemDataSource(getActivity());
 
         list = itemDataSource.getSmallItemFromCategory(categoryId);
-        itemDataSource.close();
 
         Bundle firstArgs = new Bundle();
         if(itemId == -1) {
@@ -71,7 +73,6 @@ public class MenuItemList extends ListFragment {
         setListAdapter(myAdapter);
     }
 
-    //custom adapter for custom individual item display
     private class myListAdapter extends ArrayAdapter <String> {
 
         // INCLUDES DATABASE
