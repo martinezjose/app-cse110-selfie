@@ -17,8 +17,8 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.CheckBox;
-import android.view.View.OnClickListener;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 
 import java.util.ArrayList;
 
@@ -51,41 +51,30 @@ public class OrderFragment extends Fragment {
         remove.setOnClickListener(myButtonListener);
         Button submit = (Button) view.findViewById(R.id.CS_summitOrder);
         submit.setOnClickListener(myButtonListener);
-
-        CheckBox all_cb = (CheckBox) view.findViewById(R.id.all_checkbox);
-        all_cb.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                CheckBox cb = (CheckBox) view;
-                int itemCount = lv.getCount();
-                for(int i=0; i<=itemCount; i++) {
-                    CheckBox c = (CheckBox) listView.get(i).findViewById(R.id.checkout_checkBox);
-                    c.setChecked(cb.isChecked());
-                }
-            }
-        });
+        CheckBox all_chk = (CheckBox) view.findViewById(R.id.all_checkbox);
+        all_chk.setOnClickListener(myButtonListener);
         return view;
     }
 
     private void removeSelected() {
-        CheckBox cb;
-        int itemCount = lv.getCount();
+        SparseBooleanArray checked = myAdapter.getSelected();
 
-        for(int i=itemCount; i>0; i--) {
-            cb = (CheckBox) listView.get(i).findViewById(R.id.checkout_checkBox);
-            if(cb.isChecked()) {
-                theOrder.remove(i-1);
-                listView.remove(i);
+        for(int i=checked.size()-1; i>=0; i--) {
+            if(checked.valueAt(i)) {
+                OrderDetail temp = myAdapter.getItem(checked.keyAt(i));
+                myAdapter.remove(temp);
             }
         }
     }
 
-    private class OrderAdapter extends ArrayAdapter<String> {
+    private class OrderAdapter extends ArrayAdapter<OrderDetail> {
         public TextView quantity, itemName, itemPrice;
         public CheckBox checkBox;
         public ImageButton leftButton, rightButton;
+        SparseBooleanArray mSelectedIds = new SparseBooleanArray();
 
         public OrderAdapter(ArrayList<OrderDetail> order) {
-            super(getActivity(), android.R.layout.simple_list_item_1, names);
+            super(getActivity(), android.R.layout.simple_list_item_1, order);
         }
 
         @Override
@@ -99,13 +88,15 @@ public class OrderFragment extends Fragment {
             itemName.setText(theOrder.get(position).getTheItem().getItemName());
 
             itemPrice = (TextView) convertView.findViewById(R.id.checkout_itemPrice);
-            itemPrice.setText("$ " +Float.toString(theOrder.get(position)
-                    .getTheItem().getPrice() * (float)theOrder.get(position).getQuantity()));
+            float price = theOrder.get(position)
+                    .getTheItem().getPrice() * (float)theOrder.get(position).getQuantity();
+            itemPrice.setText("$ " +String.format("%.2f", price));
 
             quantity = (TextView) convertView.findViewById(R.id.checkout_quantityCounter);
             quantity.setText(Integer.toString(theOrder.get(position).getQuantity()));
 
             checkBox = (CheckBox) convertView.findViewById(R.id.checkout_checkBox);
+            checkBox.setOnClickListener(myButtonListener);
             leftButton = (ImageButton) convertView.findViewById(R.id.left);
             leftButton.setImageResource(R.drawable.arrow_left);
             leftButton.setOnClickListener(myButtonListener);
@@ -117,6 +108,22 @@ public class OrderFragment extends Fragment {
             listView.add(convertView);
             return convertView;
         }
+
+        public void toggleSelection(int position) {
+            selectedView(position, !mSelectedIds.get(position));
+        }
+
+        public void selectedView(int position, boolean value) {
+            if(value)
+                mSelectedIds.put(position, value);
+            else
+                mSelectedIds.delete(position);
+            notifyDataSetChanged();
+        }
+
+        public SparseBooleanArray getSelected() {
+            return mSelectedIds;
+        }
     }
 
     private class MyButtonListener implements View.OnClickListener{
@@ -124,7 +131,6 @@ public class OrderFragment extends Fragment {
         public void onClick(View view) {
             int position = lv.getPositionForView((View) view.getParent());
             TextView tx1 = (TextView)((View)listView.get(position+1)).findViewById(R.id.checkout_quantityCounter);
-            Log.e(Integer.toString(position), tx1.getText().toString());
             int Q = Integer.parseInt(tx1.getText().toString());
 
             switch (view.getId()) {
@@ -136,7 +142,6 @@ public class OrderFragment extends Fragment {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     removeSelected();
-                                    myAdapter.notifyDataSetChanged();
                                 }
                             })
                             .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -161,6 +166,22 @@ public class OrderFragment extends Fragment {
                                 }
                             })
                             .show();
+                    break;
+                case R.id.all_checkbox:
+                    CheckBox cb = (CheckBox) view;
+                    int itemCount = lv.getCount();
+                    for(int j=0; j<listView.size(); j++) {
+                        TextView x1 = (TextView)((View)listView.get(j)).findViewById(R.id.checkout_itemName);
+                        Log.e("alksjdlkf" , x1.getText().toString());
+                    }
+                    for(int i=1; i<=itemCount; i++) {
+                        CheckBox c = (CheckBox) listView.get(i).findViewById(R.id.checkout_checkBox);
+                        c.setChecked(cb.isChecked());
+                        myAdapter.toggleSelection(i-1);
+                    }
+                    break;
+                case R.id.checkout_checkBox:
+                    myAdapter.toggleSelection(position);
                     break;
                 case R.id.left:
                     if(Q != 1) {

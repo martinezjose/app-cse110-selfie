@@ -131,7 +131,7 @@ public class DetailFragment extends Fragment {
                     break;
                 case R.id.itemDetail_quantityDownOne:
                     CurrentQuantity = Integer.parseInt(quantityCounter.getText().toString());
-                    if (CurrentQuantity != 0)
+                    if (CurrentQuantity != 1)
                         quantityCounter.setText(Integer.toString(--CurrentQuantity));
                     priceDisplay.setText(Float.toString(newPrice()));
                     break;
@@ -168,7 +168,7 @@ public class DetailFragment extends Fragment {
 
 
         itemDescription.setText(theItem.getDescription());
-        priceDisplay.setText("$ " + Float.toString(theItem.getPrice()));
+        priceDisplay.setText("$ " + String.format("%.2f", theItem.getPrice()));
         itemName.setText(theItem.getItemName());
         thumbsCounter.setText(Integer.toString(theItem.getLikes()));
 
