@@ -34,6 +34,8 @@ public class OrderFragment extends Fragment {
     OrderAdapter myAdapter;
     MyButtonListener myButtonListener;
 
+    TextView subTotal, tax, total;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_order_screen, container, false);
@@ -53,6 +55,9 @@ public class OrderFragment extends Fragment {
         submit.setOnClickListener(myButtonListener);
         CheckBox all_chk = (CheckBox) view.findViewById(R.id.all_checkbox);
         all_chk.setOnClickListener(myButtonListener);
+
+        subTotal = (TextView) view.findViewById(R.id.CS_totalBeforeTax);
+        setSubtotal();
         return view;
     }
 
@@ -65,6 +70,10 @@ public class OrderFragment extends Fragment {
                 myAdapter.remove(temp);
             }
         }
+    }
+
+    private void setSubtotal() {
+        subTotal.setText(String.format("%.2f", Order.getSubtotal()));
     }
 
     private class OrderAdapter extends ArrayAdapter<OrderDetail> {
@@ -187,11 +196,13 @@ public class OrderFragment extends Fragment {
                     if(Q != 1) {
                         int newQ = --Q;
                         theOrder.get(position).setQuantity(newQ);
+                        setSubtotal();
                     }
                     break;
                 case R.id.right:
                     int newQ = ++Q;
                     theOrder.get(position).setQuantity(newQ);
+                    setSubtotal();
                     break;
             }
             myAdapter.notifyDataSetChanged();

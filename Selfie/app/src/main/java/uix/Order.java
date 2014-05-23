@@ -36,7 +36,6 @@ public class Order {
     public static void remove(int position) {
         theOrder.remove(position);
         for(int i=0; i<theOrder.size(); i++) {
-            Log.e("*****ORDER*****", theOrder.get(i).getTheItem().getItemName());
         }
     }
 
@@ -56,5 +55,15 @@ public class Order {
             names[i] = theOrder.get(i).getTheItem().getItemName();
         }
         return names;
+    }
+
+    public static float getSubtotal() {
+        float temp = 0;
+        float singleItem = 0;
+        for(int i=0; i<theOrder.size(); i++) {
+            singleItem = (float)theOrder.get(i).getQuantity() * theOrder.get(i).getTheItem().getPrice();
+            temp += singleItem;
+        }
+        return temp;
     }
 }
