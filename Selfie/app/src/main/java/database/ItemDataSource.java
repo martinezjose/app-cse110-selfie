@@ -326,6 +326,9 @@ public class ItemDataSource {
             }while(cursor.moveToNext());
         }
 
+        //close database
+        db.close();
+
         //return populated smallItemList
         return smallItemList;
     }
