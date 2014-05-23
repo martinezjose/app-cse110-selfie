@@ -28,10 +28,12 @@ import database.ItemDataSource;
 public class MenuItemList extends ListFragment {
 
     final static String ARG_CATEGORY_ID = "ARG_CATEGORY_ID";
+    final static String ARG_ITEM_ID = "ARG_ITEM_ID";
 
     ItemDataSource itemDataSource;
 
     int categoryId = -1;
+    int itemId = -1;
     String [] names = null;
     ArrayList<SmallItem> list;
 
@@ -41,19 +43,26 @@ public class MenuItemList extends ListFragment {
 
         Bundle args = getArguments();
         categoryId = args.getInt(ARG_CATEGORY_ID);
+        itemId = args.getInt(ARG_ITEM_ID);
         itemDataSource = new ItemDataSource(getActivity());
 
-        list = itemDataSource.getSmallItemFromCategory(++categoryId);
+        list = itemDataSource.getSmallItemFromCategory(categoryId);
         itemDataSource.close();
 
         Bundle firstArgs = new Bundle();
-        firstArgs.putInt(DetailFragment.ARG_ITEM_ID, list.get(0).getItemID());
+        if(itemId == -1) {
+            firstArgs.putInt(DetailFragment.ARG_ITEM_ID, list.get(0).getItemID());
+            itemId = list.get(0).getItemID();
+        }
+        else
+            firstArgs.putInt(DetailFragment.ARG_ITEM_ID, itemId);
+
         DetailFragment firstItem = new DetailFragment();
         firstItem.setArguments(firstArgs);
         FragmentTransaction fTransaction = getActivity().getSupportFragmentManager().beginTransaction();
         fTransaction.replace(R.id.MSfragment_detailContainer, firstItem)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                .addToBackStack("Detail " +Integer.toString(list.get(0).getItemID()))
+                .addToBackStack("Detail " +Integer.toString(itemId))
                 .commit();
 
         names = getNames(list);

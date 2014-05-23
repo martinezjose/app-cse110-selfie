@@ -35,7 +35,8 @@ public class CategoryFragment extends ListFragment{
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         Bundle argMenu = new Bundle();
-        argMenu.putInt(MenuItemList.ARG_CATEGORY_ID, position);
+        argMenu.putInt(MenuItemList.ARG_CATEGORY_ID, ++position);
+        argMenu.putInt(MenuItemList.ARG_ITEM_ID, -1);
         MenuItemList menu = new MenuItemList();
         menu.setArguments(argMenu);
 

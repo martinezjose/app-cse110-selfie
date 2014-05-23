@@ -26,6 +26,7 @@ import cse110.selfie.app.UI.R;
 
 public class OrderFragment extends Fragment {
 
+    final static float TAX = 0.0825f;
     ArrayList<OrderDetail> theOrder;
     ArrayList<View> listView;
     String[] names;
@@ -57,7 +58,9 @@ public class OrderFragment extends Fragment {
         all_chk.setOnClickListener(myButtonListener);
 
         subTotal = (TextView) view.findViewById(R.id.CS_totalBeforeTax);
-        setSubtotal();
+        tax = (TextView) view.findViewById(R.id.CS_tax);
+        total = (TextView) view.findViewById(R.id.CS_total);
+        setCheck();
         return view;
     }
 
@@ -72,8 +75,12 @@ public class OrderFragment extends Fragment {
         }
     }
 
-    private void setSubtotal() {
+    private void setCheck() {
+        float Tax = TAX * Order.getSubtotal();
+        float Total = Tax + Order.getSubtotal();
         subTotal.setText(String.format("%.2f", Order.getSubtotal()));
+        tax.setText(String.format("%.2f", Tax));
+        total.setText(String.format("%.2f", Total));
     }
 
     private class OrderAdapter extends ArrayAdapter<OrderDetail> {
@@ -151,6 +158,7 @@ public class OrderFragment extends Fragment {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     removeSelected();
+                                    setCheck();
                                 }
                             })
                             .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -179,10 +187,6 @@ public class OrderFragment extends Fragment {
                 case R.id.all_checkbox:
                     CheckBox cb = (CheckBox) view;
                     int itemCount = lv.getCount();
-                    for(int j=0; j<listView.size(); j++) {
-                        TextView x1 = (TextView)((View)listView.get(j)).findViewById(R.id.checkout_itemName);
-                        Log.e("alksjdlkf" , x1.getText().toString());
-                    }
                     for(int i=1; i<=itemCount; i++) {
                         CheckBox c = (CheckBox) listView.get(i).findViewById(R.id.checkout_checkBox);
                         c.setChecked(cb.isChecked());
@@ -196,13 +200,13 @@ public class OrderFragment extends Fragment {
                     if(Q != 1) {
                         int newQ = --Q;
                         theOrder.get(position).setQuantity(newQ);
-                        setSubtotal();
+                        setCheck();
                     }
                     break;
                 case R.id.right:
                     int newQ = ++Q;
                     theOrder.get(position).setQuantity(newQ);
-                    setSubtotal();
+                    setCheck();
                     break;
             }
             myAdapter.notifyDataSetChanged();

@@ -5,18 +5,19 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="center">
+    android:layout_gravity="center_vertical"
+    android:gravity= "center">
 
     <HorizontalScrollView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="120dp"
         android:layout_gravity="center"
         android:paddingLeft="10dp"
         android:paddingRight="10dp">
         <LinearLayout
             android:id="@+id/imageGallery"
             android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
+            android:layout_height="match_parent"
             android:padding="10dp"
             android:orientation="horizontal"
             android:layout_gravity="center"

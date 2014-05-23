@@ -9,10 +9,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 import java.util.ArrayList;
+import java.io.File;
 
+import classes.SmallItem;
 import cse110.selfie.app.UI.R;
+import database.ItemDataSource;
 
 /**
  * Created by JuanJ on 5/1/2014.
@@ -21,21 +26,30 @@ import cse110.selfie.app.UI.R;
 public class SpecialTabFragment extends Fragment {
 
     WeightController weightController;
+    ItemDataSource itemDataSource;
     private LinearLayout specialGallery;
-    private ArrayList<item> specials;
+    private ArrayList<SmallItem> specials;
 
-    //public ArrayList<SmallItem> dailySpecials;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_special_tab, container, false);
 
-        specials = Test.getSpecials();
+        itemDataSource = new ItemDataSource(getActivity());
+        specials = itemDataSource.getSpecialSmallItem();
+
         weightController = new WeightController(getActivity());
         specialGallery = (LinearLayout) view.findViewById(R.id.imageGallery);
 
         for(int i=0; i<specials.size(); i++) {
             ImageView iv1 = new ImageView(specialGallery.getContext());
-            iv1.setImageResource(R.drawable.ic_launcher);
+            File img1 = new File(specials.get(i).getThumbnail());
+            if(img1.exists()) {
+                Bitmap pic1 = BitmapFactory.decodeFile(img1.getAbsolutePath());
+                iv1.setImageBitmap(pic1);
+            }
+            else
+                iv1.setImageResource(R.drawable.ic_launcher);
+
             iv1.setLayoutParams(new ViewGroup.LayoutParams(100, 100));
             iv1.setId(i);
             iv1.setOnClickListener(new View.OnClickListener() {
@@ -43,18 +57,13 @@ public class SpecialTabFragment extends Fragment {
                 public void onClick(View view) {
                     int pos = view.getId();
                     Bundle argMenu = new Bundle();
-                    argMenu.putInt(MenuItemList.ARG_CATEGORY_ID, specials.get(pos).getiCategory());
+                    argMenu.putInt(MenuItemList.ARG_CATEGORY_ID, specials.get(pos).getCategoryID());
+                    argMenu.putInt(MenuItemList.ARG_ITEM_ID, specials.get(pos).getItemID());
                     MenuItemList m = new MenuItemList();
                     m.setArguments(argMenu);
 
-                    Bundle argDetail = new Bundle();
-                    argDetail.putInt(DetailFragment.ARG_ITEM_ID, specials.get(pos).getiId());
-                    DetailFragment d = new DetailFragment();
-                    d.setArguments(argDetail);
-
                     FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
                     ft.replace(R.id.MSfragment_listContainer, m)
-                            .replace(R.id.MSfragment_detailContainer, d)
                             .addToBackStack("Menu " + Integer.toString(pos))
                             .commit();
                     weightController.changeLayoutWeight(1);

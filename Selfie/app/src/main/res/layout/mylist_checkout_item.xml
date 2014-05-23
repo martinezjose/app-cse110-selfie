@@ -19,11 +19,11 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Small Text"
         android:id="@+id/checkout_quantityCounter"
+        android:layout_marginLeft="800dp"
         android:layout_marginRight="102dp"
         android:enabled="false"
         android:singleLine="true"
-        android:layout_alignTop="@+id/right"
-        android:layout_toLeftOf="@+id/checkout_itemPrice" />
+        android:layout_alignTop="@+id/right"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -54,9 +54,9 @@
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:id="@+id/right"
+        android:layout_marginLeft="700dp"
         android:layout_marginRight="60dp"
         android:layout_alignTop="@+id/checkout_checkBox"
-        android:layout_toLeftOf="@+id/checkout_quantityCounter"
         android:focusable="false"
         android:focusableInTouchMode="false" />
 
@@ -65,7 +65,7 @@
         android:layout_height="25dp"
         android:id="@+id/left"
         android:layout_alignTop="@+id/right"
-        android:layout_toLeftOf="@+id/right"
+        android:layout_marginLeft="670dp"
         android:layout_marginRight="20dp"
         android:focusable="false"
         android:focusableInTouchMode="false" />
