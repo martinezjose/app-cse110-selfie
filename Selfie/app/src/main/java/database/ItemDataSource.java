@@ -11,6 +11,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import classes.Category;
 import classes.Item;
 import classes.SmallItem;
 import tests.testItemDataSource;
@@ -29,6 +30,8 @@ public class ItemDataSource {
                                         //atabase extends.
     private String databasePath;        //storing the path where the database exists for existence
                                         //check
+
+    private CategoryDataSource categorySource;  //TODO: DELETE THIS
 
     //used to retrieve all columns for basic queries
     private String [] allColumns = {SelfieDatabase.KEY_ITEM_ID,
@@ -49,6 +52,9 @@ public class ItemDataSource {
         //instantiate a SelfieDatabase from this context
         myDB = new SelfieDatabase(context);
 
+        categorySource = new CategoryDataSource(context); //TODO: DELETE THIS
+
+
         //save the absolute path for the database
         databasePath = context.getDatabasePath(myDB.DATABASE_NAME).toString();
 
@@ -60,7 +66,7 @@ public class ItemDataSource {
     }
 
     /////////////////////////////////////////////////////////////////
-    //setUp()
+    //setUp() TODO: DELETE THIS
     //THIS IS ONLY FOR TESTING PURPOSES!!!!! DELETE THIS METHOD AFTER WE ACTUALLY HAVE A DATABASE...
     public void setUp() throws Exception{
 
@@ -81,6 +87,15 @@ public class ItemDataSource {
                 throw new Exception();  //throw exception if error adding item
         }
 
+        Category appetizers = new Category("Appetizers");
+        Category entrees = new Category("Entrees");
+        Category dessert = new Category("Dessert");
+        Category drinks = new Category("Drinks");
+
+        categorySource.addCategory(appetizers);
+        categorySource.addCategory(entrees);
+        categorySource.addCategory(dessert);
+        categorySource.addCategory(drinks);
     }
     ////////////////////////////////////////////////////////////////
 
