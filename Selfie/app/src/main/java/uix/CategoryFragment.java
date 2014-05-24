@@ -7,8 +7,11 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import java.util.List;
+
+import classes.Category;
 import cse110.selfie.app.UI.R;
-import database.ItemDataSource;
+import database.CategoryDataSource;
 
 
 /**
@@ -20,17 +23,18 @@ import database.ItemDataSource;
 public class CategoryFragment extends ListFragment{
 
     WeightController weightController;
-    ItemDataSource itemDataSource;
+    CategoryDataSource categoryDataSource;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         weightController = new WeightController(getActivity());
-        itemDataSource = new ItemDataSource(getActivity());
+        categoryDataSource = new CategoryDataSource(getActivity());
 
-        String [] category = getResources().getStringArray(R.array.cat_list);
+        List<Category> category = categoryDataSource.getAllCategories();
+        String[] cat = getNames(category);
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_list_item_1, category);
+                android.R.layout.simple_list_item_1, cat);
         setListAdapter(arrayAdapter);
     }
 
@@ -49,5 +53,13 @@ public class CategoryFragment extends ListFragment{
                 .addToBackStack("Menu " +Integer.toString(position))
                 .commit();
         weightController.changeLayoutWeight(1);
+    }
+
+    private String[] getNames(List<Category> l) {
+        String[] n = new String[l.size()];
+        for(int i=0; i<l.size(); i++) {
+            n[i] = l.get(i).getCategoryName();
+        }
+        return n;
     }
 }
