@@ -15,8 +15,12 @@ public class RecommendationDatabase extends SQLiteOpenHelper
     // table column names
     public static final String KEY_SRC_ITEM_ID = "src_item_id";
     public static final String KEY_TARGET_ITEM_IDS = "target_item_ids";
+    public ItemDataSource myItemDB;
     // constructor
-    public RecommendationDatabase(Context context){ super(context,DB_NAME,null,DB_VERSION); }
+    public RecommendationDatabase(Context context){
+        super(context,DB_NAME,null,DB_VERSION);
+        myItemDB = new ItemDataSource( context );
+    }
     // oncreate
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase){

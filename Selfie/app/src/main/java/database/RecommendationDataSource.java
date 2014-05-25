@@ -19,7 +19,9 @@ public class RecommendationDataSource {
     private String[] allCols = {RecommendationDatabase.KEY_SRC_ITEM_ID,
             RecommendationDatabase.KEY_TARGET_ITEM_IDS};
     // constructor
-    public RecommendationDataSource( Context context ) { myDB = new RecommendationDatabase(context); }
+    public RecommendationDataSource( Context context ) {
+        myDB = new RecommendationDatabase(context);
+    }
     // add a recommendation to the provided item
     public void addRecommendation(Item src, Item dest){
         // insert to the recommendation database table with provided id
@@ -84,9 +86,7 @@ public class RecommendationDataSource {
         ids = idList.split("\\s");
         for( int i = 0; i < ids.length; i++ )
         {
-            // problem*********
-            ItemDataSource a = new ItemDataSource();
-            itemList.add(a.getItem(Integer.parseInt(ids[i])));
+            itemList.add(myDB.myItemDB.getItem(Integer.parseInt(ids[i])));
         }
         return itemList;
     }
