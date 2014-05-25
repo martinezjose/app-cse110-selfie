@@ -1,6 +1,7 @@
 package classes;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 
@@ -13,29 +14,29 @@ import java.util.Locale;
  *      float Price
  *      int CategoryID
  *      int Likes
- *      int Shares
  *      boolean Active
  *      int Calories
  *      String Created
  *      String LastUpdated
  *      String Description
  *      boolean DailySpecial
- *      String ImagePath
+ *      String [] ImagePath
+ *      String Thumbnail
  */
 public class Item {
-    public int ItemID;
-    public String ItemName;
-    public float Price;
-    public int CategoryID;
-    public int Likes;
-    public int Shares;
-    public boolean Active;
-    public int Calories;
-    public String Created;
-    public String LastUpdated;
-    public String Description;
-    public boolean DailySpecial;
-    public String ImagePath;
+    protected int ItemID;
+    protected String ItemName;
+    private float Price;
+    protected int CategoryID;
+    private int Likes;
+    private boolean Active;
+    private int Calories;
+    private String Created;
+    private String LastUpdated;
+    private String Description;
+    protected boolean DailySpecial;
+    private String [] ImagePath;
+    protected String Thumbnail;
 
 
     /*
@@ -45,20 +46,19 @@ public class Item {
     }
 
     /*
-         * Getter Constructor
-         * :: All fields -- for retrieval
-         * Description: Used to retrieve information from the database. All fields have been
-         * populated.
-         */
-    public Item(int itemID, String itemName, float price, int categoryID, int likes, int shares,
+     * Getter Constructor
+     * :: All fields -- for retrieval
+     * Description: Used to retrieve information from the database. All fields have been
+     * populated.
+     */
+    public Item(int itemID, String itemName, float price, int categoryID, int likes,
                 boolean active, int calories,String created, String lastupdated,String description,
-                boolean dailySpecial, String imagePath) {
+                boolean dailySpecial, String [] imagePath, String thumbnail) {
         ItemID = itemID;
         ItemName = itemName;
         Price = price;
         CategoryID = categoryID;
         Likes = likes;
-        Shares = shares;
         Active = active;
         Calories = calories;
         Created = created;
@@ -66,6 +66,7 @@ public class Item {
         Description = description;
         DailySpecial = dailySpecial;
         ImagePath = imagePath;
+        Thumbnail = thumbnail;
     }
 
     /*
@@ -74,14 +75,13 @@ public class Item {
      * Description: Used to insert new Item to database.
      * Missing: ItemID, Created, LastUpdated
      */
-    public Item(String itemName, float price, int categoryID, int likes, int shares, boolean active,
+    public Item(String itemName, float price, int categoryID, int likes, boolean active,
                 int calories,String description, boolean dailySpecial,
-                String imagePath) {
+                String [] imagePath, String thumbnail) {
         ItemName = itemName;
         Price = price;
         CategoryID = categoryID;
         Likes = likes;
-        Shares = shares;
         Active = active;
         Calories = calories;
         Created = getDateTime();        //set current time
@@ -89,6 +89,7 @@ public class Item {
         Description = description;
         DailySpecial = dailySpecial;
         ImagePath = imagePath;
+        Thumbnail = thumbnail;
     }
 
     public int getItemID() {
@@ -131,14 +132,6 @@ public class Item {
         Likes = likes;
     }
 
-    public int getShares() {
-        return Shares;
-    }
-
-    public void setShares(int shares) {
-        Shares = shares;
-    }
-
     public boolean isActive() {
         return Active;
     }
@@ -179,9 +172,9 @@ public class Item {
         DailySpecial = dailySpecial;
     }
 
-    public String getImagePath() { return ImagePath; }
+    public String [] getImagePath() { return ImagePath; }
 
-    public void setImagePath(String imagePath) { ImagePath = imagePath; }
+    public void setImagePath(String [] imagePath) { ImagePath = imagePath; }
 
     public String getCreated() {
         return Created;
@@ -191,18 +184,51 @@ public class Item {
         Created = created;
     }
 
+    public String getThumbnail() { return Thumbnail; }
+
+    public void setThumbnail(String thumbnail) { Thumbnail = thumbnail; }
+
     /* getDateTime()
-     * Description: returns a formatted String in datetime format yyyy-MM-dd HH:mm:ss
-     * PRECONDITION: none
-     * POSTCONDITION: a String in the format "yyyy-MM-dd HH:mm:ss" of the current time is returned.
-     * RETURNS: String in the format "yyyy-MM-dd HH:mm:ss" of the current time
-     * Status: works. tested (not thoroughly)
-     * Keywords: date, get date, getdate, getdatetime, current time, now
-     */
+         * Description: returns a formatted String in datetime format yyyy-MM-dd HH:mm:ss
+         * PRECONDITION: none
+         * POSTCONDITION: a String in the format "yyyy-MM-dd HH:mm:ss" of the current time is returned.
+         * RETURNS: String in the format "yyyy-MM-dd HH:mm:ss" of the current time
+         * Status: works. tested (not thoroughly)
+         * Keywords: date, get date, getdate, getdatetime, current time, now
+         */
     static public String getDateTime(){
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",
                 Locale.getDefault());
         Date date = new Date();
         return dateFormat.format(date);
+    }
+
+    /* equals
+     * Overriden method to be used for testing purposes
+     */
+    @Override
+    public boolean equals(Object other){
+        if(this==other) return true;
+
+        if(other==null | (this.getClass() != other.getClass())) return false;
+
+
+
+        Item that = (Item) other;
+
+        //custom equality check
+        return  (this.ItemID == that.getItemID())
+                && (this.ItemName == that.getItemName())
+                && (this.Price == that.getPrice())
+                && (this.CategoryID == that.getCategoryID())
+                && (this.Likes == that.getLikes())
+                && (this.Active == that.isActive())
+                && (this.Calories == that.getCalories())
+                && (this.Created == that.getCreated())
+                && (this.LastUpdated == that.getLastUpdated())
+                && (this.Description == that.getDescription())
+                && (this.DailySpecial == that.isDailySpecial())
+                && ((Arrays.equals(this.ImagePath, that.getImagePath())))
+                && (this.Thumbnail == that.getThumbnail());
     }
 }

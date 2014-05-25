@@ -33,8 +33,8 @@ public class CategoryListActivity extends FragmentActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_category_list);
 
+        setContentView(R.layout.activity_category_list);
 
         if (findViewById(R.id.category_detail_container) != null) {
             // The detail container view will be present only in the
