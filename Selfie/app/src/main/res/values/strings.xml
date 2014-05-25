@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Selfie</string>
-    <string name="title_category_detail">Category Detail</string>
+    <string name="app_name">Lobsters and Nachos</string>
+
+    <!-- category -->
+    <string-array name="cat_list">
+        <item>Appetizers</item>
+        <item>Entrees</item>
+        <item>Desserts</item>
+        <item>Drinks</item>
+    </string-array>
+
+    <string name="welcome">Welcome</string>
+    <string name="order_button">Order</string>
+    <string name="waiter_button">Waiter!</string>
+    <string name="link_button">Link</string>
 
 </resources>
