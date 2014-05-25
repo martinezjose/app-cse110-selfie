@@ -5,8 +5,6 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 
 
-
-
 /**
  * An activity representing a list of Categories. This activity
  * has different presentations for handset and tablet-size devices. On
@@ -35,6 +33,7 @@ public class CategoryListActivity extends FragmentActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_category_list);
 
         if (findViewById(R.id.category_detail_container) != null) {
