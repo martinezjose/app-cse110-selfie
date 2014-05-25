@@ -3,8 +3,17 @@ package classes;
 /**
  * Created by edwinmo on 5/10/14.
  */
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 public class Category {
+
+    @SerializedName("CategoryID")
+    @Expose
     public int CategoryID;
+
+    @SerializedName("CategoryName")
+    @Expose
     public String CategoryName;
 
     /*
