@@ -17,6 +17,7 @@ android {
         }
     }
 }
+//this is new
 
 dependencies {
     compile 'com.android.support:appcompat-v7:19.1.0'
