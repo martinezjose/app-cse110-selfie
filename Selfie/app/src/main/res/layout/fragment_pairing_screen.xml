@@ -23,7 +23,7 @@
         android:layout_centerHorizontal="true"
         android:hint="Pairing Code"
         android:maxLength="20"
-        android:inputType="text" />
+        android:inputType="number" />
 
     <Button
         android:layout_width="wrap_content"

@@ -14,6 +14,7 @@ import classes.Item;
 public class Order {
     private static ArrayList<OrderDetail> theOrder = new ArrayList<OrderDetail>();
     private static int TABLE_ID = 1;
+    private static int PAIRING_CODE = 0;
 
     //add item to the order
     public static void add(Item newItem, int quantity) {
@@ -67,4 +68,8 @@ public class Order {
     public static void setTableId (int tableId) {
         TABLE_ID = tableId;
     }
+
+    public static void setPairing_Code (int pairing_code) { PAIRING_CODE = pairing_code; }
+
+    public static int getPairing_Code () { return PAIRING_CODE; }
 }

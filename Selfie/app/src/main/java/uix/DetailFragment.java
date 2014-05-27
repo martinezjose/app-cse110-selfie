@@ -199,7 +199,7 @@ public class DetailFragment extends Fragment {
                             .beginTransaction();
                     ft.replace(R.id.MSfragment_listContainer, m)
                             .replace(R.id.MSfragment_detailContainer, d)
-                            .addToBackStack("Menu 2")
+                            .addToBackStack("Detail " +ARG_ITEM_ID)
                             .commit();
                 }
             });

@@ -32,12 +32,12 @@ public class MenuItemList extends ListFragment {
 
     final static String ARG_CATEGORY_ID = "ARG_CATEGORY_ID";
     final static String ARG_ITEM_ID = "ARG_ITEM_ID";
+    final static String ARG_POSITION = "ARG_POSITION";
 
     ItemDataSource itemDataSource;
 
     int categoryId = -1;
     int itemId = -1;
-    String [] names = null;
     ArrayList<SmallItem> list;
 
     @Override
@@ -67,19 +67,17 @@ public class MenuItemList extends ListFragment {
                 .addToBackStack("Detail " +Integer.toString(itemId))
                 .commit();
 
-        names = getNames(list);
-
         myListAdapter myAdapter = new myListAdapter(list);
         setListAdapter(myAdapter);
     }
 
-    private class myListAdapter extends ArrayAdapter <String> {
+    private class myListAdapter extends ArrayAdapter <SmallItem> {
 
         // INCLUDES DATABASE
         ArrayList<SmallItem> newMenu;
 
         public myListAdapter(ArrayList<SmallItem> newMenu) {
-            super(getActivity(), android.R.layout.simple_list_item_1, names);
+            super(getActivity(), android.R.layout.simple_list_item_1, newMenu);
             this.newMenu = newMenu;
         }
 

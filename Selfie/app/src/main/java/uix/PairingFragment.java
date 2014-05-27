@@ -36,15 +36,20 @@ public class PairingFragment extends FragmentActivity {
         linkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(linkCodeET.getText().length() < 5) {
+                if(linkCodeET.getText().length() < 4) {
                     errorMessage.setVisibility(TextView.VISIBLE);
                     errorMessage.setText("Too Short");
+                    linkCodeET.setText("");
+                }
+                else if(linkCodeET.getText().length() > 5) {
+                    errorMessage.setVisibility(TextView.VISIBLE);
+                    errorMessage.setText("Too Long");
                     linkCodeET.setText("");
                 }
                 else {
                     errorMessage.setVisibility(TextView.INVISIBLE);
                     linkCode = linkCodeET.getText().toString();
-                    Order.setTableId(Integer.parseInt(linkCode));
+                    Order.setPairing_Code(Integer.parseInt(linkCode));
                     Intent intent = new Intent(getApplicationContext(), HomeScreenActivity.class);
                     startActivity(intent);
                 }

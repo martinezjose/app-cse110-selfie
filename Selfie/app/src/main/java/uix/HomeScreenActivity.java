@@ -114,11 +114,11 @@ public class HomeScreenActivity extends FragmentActivity {
         if(fManager.getBackStackEntryCount() > 1) {
             FragmentManager.BackStackEntry mPrevious = fManager.getBackStackEntryAt(
                     fManager.getBackStackEntryCount()-2);
-            fManager.popBackStack();
             if(mPrevious.getName() == "Home") {
                 weightController.changeLayoutWeight(0);
             }
             else if(mPrevious.getName().startsWith("Menu ")) {
+                fManager.popBackStack();
                 fManager.popBackStack();
                 weightController.changeLayoutWeight(0);
             }
