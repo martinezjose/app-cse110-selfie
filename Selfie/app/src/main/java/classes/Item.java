@@ -4,6 +4,9 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 
 /**
  * Created by edwinmo on 5/6/14.
@@ -24,18 +27,47 @@ import java.util.Locale;
  *      String Thumbnail
  */
 public class Item {
+
+
+
+    @SerializedName("ItemID")
+    @Expose
     protected int ItemID;
+    @SerializedName("ItemName")
+    @Expose
     protected String ItemName;
+    @SerializedName("Price")
+    @Expose
     private float Price;
+    @SerializedName("CategoryID")
+    @Expose
     protected int CategoryID;
+    @SerializedName("Likes")
+    @Expose
     private int Likes;
+    @SerializedName("Active")
+    @Expose
     private boolean Active;
+    @SerializedName("Calories")
+    @Expose
     private int Calories;
+    @SerializedName("Created")
+    @Expose
     private String Created;
+    @SerializedName("LastUpdated")
+    @Expose
     private String LastUpdated;
+    @SerializedName("Description")
+    @Expose
     private String Description;
+    @SerializedName("DailySpecial")
+    @Expose
     protected boolean DailySpecial;
+    @SerializedName("ImagePath")
+    @Expose
     private String [] ImagePath;
+    @SerializedName("Thumbnail")
+    @Expose
     protected String Thumbnail;
 
 
