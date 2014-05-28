@@ -15,6 +15,7 @@ public class Order {
     private static ArrayList<OrderDetail> theOrder = new ArrayList<OrderDetail>();
     private static int TABLE_ID = 1;
     private static int PAIRING_CODE = 0;
+    private static float TAX = 0.0825f;
 
     //add item to the order
     public static void add(Item newItem, int quantity) {
@@ -46,15 +47,6 @@ public class Order {
         return theOrder;
     }
 
-    //gets the names of the items in the order
-    public static String[] getNames() {
-        String[] names = new String[theOrder.size()];
-        for(int i=0; i<theOrder.size(); i++) {
-            names[i] = theOrder.get(i).getTheItem().getItemName();
-        }
-        return names;
-    }
-
     public static float getSubtotal() {
         float temp = 0;
         float singleItem = 0;
@@ -65,9 +57,15 @@ public class Order {
         return temp;
     }
 
+    public static void setTax (float tax) { TAX = tax; }
+
+    public static float getTax () { return TAX; }
+
     public static void setTableId (int tableId) {
         TABLE_ID = tableId;
     }
+
+    public static int getTableId () { return TABLE_ID; }
 
     public static void setPairing_Code (int pairing_code) { PAIRING_CODE = pairing_code; }
 

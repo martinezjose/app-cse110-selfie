@@ -17,12 +17,13 @@ import cse110.selfie.app.UI.R;
  */
 public class PairingFragment extends FragmentActivity {
 
-    EditText linkCodeET;
-    TextView errorMessage;
-    Button linkButton;
-    String linkCode;
+    private EditText linkCodeET;
+    private TextView errorMessage;
+    private Button linkButton;
+    private String linkCode;
 
     @Override
+    //instantiate the components and listens to link button
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_pairing_screen);
@@ -36,16 +37,19 @@ public class PairingFragment extends FragmentActivity {
         linkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //check if it's less than 4
                 if(linkCodeET.getText().length() < 4) {
                     errorMessage.setVisibility(TextView.VISIBLE);
                     errorMessage.setText("Too Short");
                     linkCodeET.setText("");
                 }
+                //check if it's greater than 5
                 else if(linkCodeET.getText().length() > 5) {
                     errorMessage.setVisibility(TextView.VISIBLE);
                     errorMessage.setText("Too Long");
                     linkCodeET.setText("");
                 }
+                //right answer
                 else {
                     errorMessage.setVisibility(TextView.INVISIBLE);
                     linkCode = linkCodeET.getText().toString();

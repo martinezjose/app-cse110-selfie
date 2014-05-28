@@ -22,10 +22,11 @@ import database.CategoryDataSource;
  */
 public class CategoryFragment extends ListFragment{
 
-    WeightController weightController;
-    CategoryDataSource categoryDataSource;
+    private WeightController weightController;
+    private CategoryDataSource categoryDataSource;
 
     @Override
+    //instantiation of classes
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         weightController = new WeightController(getActivity());
@@ -38,7 +39,19 @@ public class CategoryFragment extends ListFragment{
         setListAdapter(arrayAdapter);
     }
 
+    //helper function to get the categories' names
+    //required since the ListView is not custom and the rows are instantiated by the app
+    private String[] getNames(List<Category> l) {
+        String[] n = new String[l.size()];
+        for(int i=0; i<l.size(); i++) {
+            n[i] = l.get(i).getCategoryName();
+        }
+        return n;
+    }
+
     @Override
+    //listener for the row selection
+    //sends the category position and a default itemId
     public void onListItemClick(ListView l, View v, int position, long id) {
         Bundle argMenu = new Bundle();
         argMenu.putInt(MenuItemList.ARG_CATEGORY_ID, ++position);
@@ -53,13 +66,5 @@ public class CategoryFragment extends ListFragment{
                 .addToBackStack("Menu " +Integer.toString(position))
                 .commit();
         weightController.changeLayoutWeight(1);
-    }
-
-    private String[] getNames(List<Category> l) {
-        String[] n = new String[l.size()];
-        for(int i=0; i<l.size(); i++) {
-            n[i] = l.get(i).getCategoryName();
-        }
-        return n;
     }
 }

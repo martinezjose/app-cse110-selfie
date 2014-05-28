@@ -28,14 +28,16 @@ import database.ItemDataSource;
  */
 public class SpecialTabFragment extends Fragment {
 
-    WeightController weightController;
-    ItemDataSource itemDataSource;
+    private WeightController weightController;
+    private ItemDataSource itemDataSource;
 
     private LinearLayout specialGallery;
     private ImageView logo;
+
     private ArrayList<SmallItem> specials;
 
     @Override
+    //instantiate classes and populates the HorizontalScrollView and logo
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_special_tab, container, false);
 
@@ -43,7 +45,11 @@ public class SpecialTabFragment extends Fragment {
         specials = itemDataSource.getSpecialSmallItem();
 
         weightController = new WeightController(getActivity());
+
+        //there will be a function to retrieve the logo
         logo = (ImageView) view.findViewById(R.id.logo);
+        logo.setImageResource(R.drawable.ic_launcher);
+
         specialGallery = (LinearLayout) view.findViewById(R.id.imageGallery);
 
         for(int i=0; i<specials.size(); i++) {
@@ -55,9 +61,11 @@ public class SpecialTabFragment extends Fragment {
             }
             else
                 iv1.setImageResource(R.drawable.ic_launcher);
-
+            //the size is arbitrary (100 by 100 dp)
             iv1.setLayoutParams(new ViewGroup.LayoutParams(100, 100));
             iv1.setId(i);
+            //if picture is clicked, the user will be taken to the menu and detail corresponding to
+            //the item
             iv1.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -70,7 +78,7 @@ public class SpecialTabFragment extends Fragment {
 
                     FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
                     ft.replace(R.id.MSfragment_listContainer, m)
-                            .addToBackStack("Menu " + Integer.toString(pos))
+                            .addToBackStack("Detail " + Integer.toString(pos))
                             .commit();
                     weightController.changeLayoutWeight(1);
                 }
