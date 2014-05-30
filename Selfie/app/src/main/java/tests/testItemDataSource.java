@@ -11,7 +11,10 @@ import java.util.Random;
 import classes.Item;
 import classes.SmallItem;
 import database.Download;
+import database.InsertToDatabaseException;
 import database.ItemDataSource;
+import database.RetrieveFromDatabaseException;
+import database.SelfieDatabase;
 
 /**
  * Created by edwinmo on 5/11/14.
@@ -40,9 +43,7 @@ public class testItemDataSource extends AndroidTestCase{
         //populate the database
         for(int i =0; i<MAX_RECORDS; ++i){
             Item item = startItem();
-            long result = itemSource.addItem(item);
-            if(result==-1)
-                throw new Exception();
+            itemSource.addItem(item);
         }
     }
 
@@ -63,14 +64,16 @@ public class testItemDataSource extends AndroidTestCase{
     /* testAddItem()
      * Tests the insertion of an Item into the Item table
      */
-    public void testAddItem() throws Exception{
+    public void testAddItem() {
 
         Item item = startItem();
 
-        long result = itemSource.addItem(item);
-
-        //assert that the insert was successful
-        assertTrue(result!=-1);
+        try{
+            itemSource.addItem(item);
+        } catch (InsertToDatabaseException e){
+            //if exception is thrown, fail test...
+            fail("Failed inserting <"+item.getItemName()+"> to table "+ SelfieDatabase.TABLE_ALL_ITEMS);
+        }
     }
 
     /* testGetItem()
@@ -81,24 +84,14 @@ public class testItemDataSource extends AndroidTestCase{
         int ItemID = 1;
 
         //retrieve from table
-        Item retrievedItem = itemSource.getItem(ItemID);
+        Item retrievedItem = null;
 
-        assertTrue(retrievedItem!=null);
-        Log.d("testGetItem()","retrieved " + retrievedItem.getItemName());
-    }
-
-    /* testAddGetItem()
-     * Tests insertion and retrieval of an Item
-     */
-    public void testAddGetItem(){
-
-        Item newItem = startItem();
-        Log.d("testAddGetItem()","Inserting item... " + newItem.getItemName());
-        int itemID = (int)itemSource.addItem(newItem);
-
-        Log.d("testAddGetItem()", "Retrieving item... ");
-        Item retrievedItem = itemSource.getItem(itemID);
-        Log.d("testAddGetItem()", "Retrieved " + retrievedItem.getItemName());
+        try{
+            retrievedItem = itemSource.getItem(ItemID);
+        } catch (RetrieveFromDatabaseException e){
+            //if exception is thrown while retrieving...
+            fail("Failed retrieving <"+ItemID+"> from table " + SelfieDatabase.TABLE_ALL_ITEMS);
+        }
     }
 
     /* testGetSmallItemFromCategory()

@@ -9,6 +9,8 @@ import classes.Item;
 import database.ImageDataSource;
 import database.InsertToDatabaseException;
 import database.ItemDataSource;
+import database.RetrieveFromDatabaseException;
+import database.SelfieDatabase;
 
 /**
  * Created by edwinmo on 5/25/14.
@@ -41,9 +43,7 @@ public class testImageDataSource extends AndroidTestCase {
         //populate the database with objects first
         for(int i=0; i<MAX_RECORDS; ++i){
             Item item = testItemDataSource.startItem();
-            long result = itemSource.addItem(item);
-            if(result==-1)
-                throw new Exception();
+            itemSource.addItem(item);
         }
     }
 
@@ -62,9 +62,16 @@ public class testImageDataSource extends AndroidTestCase {
     public void testSingleAddImage(){
 
         /*********TEST VALID INSERT********/
+        Item retrievedItem = null;      //initialize it to something
         int ItemID = 1;
+
         //retrieve the item from the table
-        Item retrievedItem = itemSource.getItem(ItemID);
+        try{
+            retrievedItem = itemSource.getItem(ItemID);
+        } catch (RetrieveFromDatabaseException e){
+            //if exception thrown, UNEXPECTED... fail test
+            fail("Failed to retrieve <"+ItemID+"> from table " + SelfieDatabase.TABLE_ALL_ITEMS);
+        }
 
 
         //test valid single ImagePaths insert
@@ -110,9 +117,15 @@ public class testImageDataSource extends AndroidTestCase {
     public void testGetImagePaths(){
 
         /*********TEST VALID RETRIEVE********/
+        Item retrievedItem = null;
         int ItemID = 1; //we will grab the very first Item
 
-        Item retrievedItem = itemSource.getItem(ItemID);
+        try{
+            retrievedItem = itemSource.getItem(ItemID);
+        } catch (RetrieveFromDatabaseException e){
+            //if exception is thrown, UNEXPECTED! fail test.
+            fail("Failed retrieving <"+ItemID+"> from table "+SelfieDatabase.TABLE_ALL_ITEMS);
+        }
 
         //insert ImagePaths to the image table first
         try {
@@ -135,7 +148,12 @@ public class testImageDataSource extends AndroidTestCase {
         ItemID = 3; //grab third item
 
         //retrieve this Item
-        retrievedItem = itemSource.getItem(ItemID);
+        try{
+            retrievedItem = itemSource.getItem(ItemID);
+        } catch(RetrieveFromDatabaseException e){
+            //if exception is thrown, unexpected! fail test.
+            fail("Failed retrieving <"+ItemID+"> from table "+SelfieDatabase.TABLE_ALL_ITEMS);
+        }
         //DON'T ADD IMAGE PATHS FOR THIS ITEM
 
         //attempt to retrieve ImagePaths for this Item
