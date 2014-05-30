@@ -86,6 +86,7 @@ public class ItemDataSource {
 
         int numberOfItems = 100;
         final String [] imagePath = {"/res/image1","/res/thumb1","www.locomoco.com/what.jpg"};
+        final int [] recommendations = {3,4,1,6};
 
         //check whether a database exists already
         File database = new File(databasePath);
@@ -99,14 +100,14 @@ public class ItemDataSource {
         //loop numberOfItems times.
         for(int i =0; i<numberOfItems; ++i) {
             Item insertItem = testItemDataSource.startItem();
-            addItem(insertItem);
+            int ItemID = (int)addItem(insertItem);
             //add an ImagePath to odd Items
             if(i%2==1){
-               imageSource.addImage(insertItem.getItemID(),imagePath);
+               imageSource.addImage(ItemID,imagePath);
             }
             //add recommendations to multiples of 3
             if(i%3==0){
-                recommendationSource.addRecommendation(insertItem.getItemID(),new int []{3,1,4,5});
+                recommendationSource.addRecommendation(ItemID,recommendations);
             }
         }
 
@@ -127,15 +128,15 @@ public class ItemDataSource {
 
     /******************************************* CRUD *********************************************/
 
-    /* public void addItem(Item item) throws InsertToDatabaseException -- Create
+    /* public int addItem(Item item) throws InsertToDatabaseException -- Create
      * Parameters: Item item
      * Description: adds an item to the database
      * PRECONDITION: item is created with no ID (through setter constructor)
      * POSTCONDITION: item is added to the database
-     * Returns: nothing
+     * Returns: int id
      * Status: works and tested!
      */
-    public void addItem(Item item) throws InsertToDatabaseException{
+    public long addItem(Item item) throws InsertToDatabaseException{
 
         //get writable database
         open_write();
@@ -151,6 +152,8 @@ public class ItemDataSource {
         if(ReturnValue == -1)
             throw new InsertToDatabaseException("Failed inserting Item <"+item.getItemName()+
                     "> to table " + SelfieDatabase.TABLE_ALL_ITEMS);
+
+        return ReturnValue;
     }
 
     /* public Item getItem(int id) throws RetrieveFromDatabaseException -- Read

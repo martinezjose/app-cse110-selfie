@@ -39,34 +39,6 @@ public class RecommendationDataSource {
 
     /******************************************* CRUD *********************************************/
 
-    /* public void addRecommendation(int ItemID, int RecommendedItemID) throws InsertToDatabaseException
-     * Paremeters: int ItemID, int RecommendedItemID
-     * Description: inserts the RecommendedItemID to the database, linked to 'ItemID' (foreign key)
-     * PRECONDITION: ItemID and RecommendedItemID are obtained legally (through getItem or equivalent)
-     * POSTCONDITION: the RecommendedItemID is inserted into the Recommendations table
-     * Returns: nothing
-     * Status: untested
-     */
-    public void addRecommendation(int ItemID, int RecommendedItemID) throws InsertToDatabaseException{
-        //open the database for writing (sets foreign key constraints!)
-        open_write();
-
-        //add RecommendedItem and ItemID to ContentValues
-        ContentValues values = new ContentValues();
-        values.put(SelfieDatabase.KEY_RECOMMENDED_ITEM,RecommendedItemID);
-        values.put(SelfieDatabase.KEY_ITEM_TRACK_ID,ItemID);
-
-        //insert to database
-        long ReturnValue = db.insert(SelfieDatabase.TABLE_RECOMMENDATIONS,null,values);
-
-        //if error adding, throw exception
-        if(ReturnValue==-1)
-            throw new InsertToDatabaseException("Inserting recommendation <" + RecommendedItemID +
-            "> to table " + SelfieDatabase.TABLE_RECOMMENDATIONS + " linked to " + ItemID);
-        //close database
-        close();
-    }
-
     /* OVERLOADED METHOD --- accepts an array of RecommendedItemIDs
     *public void addRecommendation(int ItemID, int [] RecommendedItemIDs) throws InsertToDatabaseException
     * Paremeters: int ItemID, int [] RecommendedItemIDs
@@ -94,9 +66,9 @@ public class RecommendationDataSource {
             if (ReturnValue == -1)
                 throw new InsertToDatabaseException("Inserting recommendation <" + element +
                         "> to table " + SelfieDatabase.TABLE_RECOMMENDATIONS + " linked to " + ItemID);
-            //close database
-            close();
         }
+        //close database
+        close();
     }
 
     /* public int [] getRecommendations(int ItemID)
