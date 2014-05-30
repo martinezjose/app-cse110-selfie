@@ -79,7 +79,16 @@ public class MenuItemList extends ListFragment {
         if(getFragmentManager().findFragmentById(R.id.MSfragment_listContainer) != null) {
             getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         }
-        getListView().setItemChecked(0, true);
+        getListView().setItemChecked(getPosition(itemId), true);
+    }
+
+    private int getPosition(int itemId) {
+        int position = 0;
+        for(int i=0; i<list.size(); i++) {
+            if(list.get(i).getItemID() == itemId)
+                position = i;
+        }
+        return position;
     }
 
     @Override

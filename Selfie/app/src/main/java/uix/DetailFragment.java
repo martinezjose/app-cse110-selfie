@@ -128,19 +128,14 @@ public class DetailFragment extends Fragment {
                 public void onClick(View view) {
                     Bundle argMenu = new Bundle();
                     argMenu.putInt(MenuItemList.ARG_CATEGORY_ID, 1);
+                    argMenu.putInt(MenuItemList.ARG_ITEM_ID, -1);
                     MenuItemList m = new MenuItemList();
                     m.setArguments(argMenu);
-
-                    Bundle argDetail = new Bundle();
-                    argDetail.putInt(DetailFragment.ARG_ITEM_ID, 1);
-                    DetailFragment d = new DetailFragment();
-                    d.setArguments(argDetail);
 
                     FragmentTransaction ft = getActivity().getSupportFragmentManager()
                             .beginTransaction();
                     ft.replace(R.id.MSfragment_listContainer, m)
-                            .replace(R.id.MSfragment_detailContainer, d)
-                            .addToBackStack("Detail " +ARG_ITEM_ID)
+                            .addToBackStack("Detail 1")
                             .commit();
                 }
             });

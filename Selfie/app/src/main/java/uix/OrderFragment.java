@@ -24,6 +24,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.CheckBox;
 import android.util.SparseBooleanArray;
+import android.util.Log;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -63,7 +65,7 @@ public class OrderFragment extends Fragment {
         subTotal = (TextView) view.findViewById(R.id.CS_totalBeforeTax);
         tax = (TextView) view.findViewById(R.id.CS_tax);
         total = (TextView) view.findViewById(R.id.CS_total);
-        setCheck();
+        setBill();
         return view;
     }
 
@@ -73,14 +75,16 @@ public class OrderFragment extends Fragment {
 
         for(int i=checked.size()-1; i>=0; i--) {
             if(checked.valueAt(i)) {
+                Log.e("keyAt", Integer.toString(checked.keyAt(i)));
                 OrderDetail temp = myAdapter.getItem(checked.keyAt(i));
+                checked.delete(i);
                 myAdapter.remove(temp);
             }
         }
     }
 
     //helper function that updates the subtotal, tax, and total
-    private void setCheck() {
+    private void setBill() {
         float Tax = Order.getTax() * Order.getSubtotal();
         float Total = Tax + Order.getSubtotal();
         subTotal.setText(String.format("%.2f", Order.getSubtotal()));
@@ -135,6 +139,8 @@ public class OrderFragment extends Fragment {
         //notifies the array of selected items
         public void toggleSelection(int position) {
             selectedView(position, !mSelectedIds.get(position));
+
+            Log.e("aksjdflkasd", Integer.toString(mSelectedIds.size()));
         }
 
         //determines if the row is selected
@@ -150,6 +156,15 @@ public class OrderFragment extends Fragment {
         public SparseBooleanArray getSelected() {
             return mSelectedIds;
         }
+
+        //check if any is selected
+        public boolean isAnySelected() {
+            for(int i=0; i<mSelectedIds.size(); i++) {
+                if(mSelectedIds.valueAt(i))
+                    return true;
+            }
+            return false;
+        }
     }
 
     //listener to removeSelected, submitOrder, check all, individual checkboxes, increment and
@@ -164,22 +179,27 @@ public class OrderFragment extends Fragment {
             switch (view.getId()) {
                 //shows a dialog confirming the removal of items
                 case R.id.CS_removeSelected:
-                    new AlertDialog.Builder(view.getContext())
-                            .setTitle("Remove Confirmation")
-                            .setMessage("Removing Items")
-                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    removeSelected();
-                                    setCheck();
-                                }
-                            })
-                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                 @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                }
-                            })
-                            .show();
+                    if(myAdapter.isAnySelected()) {
+                        new AlertDialog.Builder(view.getContext())
+                                .setTitle("Remove Confirmation")
+                                .setMessage("Removing Items")
+                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        removeSelected();
+                                        uncheck();
+                                        setBill();
+                                    }
+                                })
+                                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                    }
+                                })
+                                .show();
+                    }
+                    else
+                        Toast.makeText(getActivity(), "No Item Selected", Toast.LENGTH_SHORT).show();
                     break;
                 //submits the order
                 case R.id.CS_summitOrder:
@@ -190,7 +210,7 @@ public class OrderFragment extends Fragment {
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     //send order
                                     //clear order
-                                    setCheck();
+                                    setBill();
                                 }
                             })
                             .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -203,14 +223,12 @@ public class OrderFragment extends Fragment {
                 //check all the checkboxes in the ListView
                 case R.id.all_checkbox:
                     CheckBox cb = (CheckBox) view;
-                    int itemCount = lv.getCount();
-                    for(int i=1; i<=itemCount; i++) {
-                        CheckBox c = (CheckBox) listView.get(i).findViewById(R.id.checkout_checkBox);
-                        c.setChecked(cb.isChecked());
-                        myAdapter.toggleSelection(i-1);
-                    }
+                    if(cb.isChecked())
+                        check();
+                    else
+                        uncheck();
                     break;
-                //check the CheckBo in the corresponding row
+                //check the CheckBox in the corresponding row
                 case R.id.checkout_checkBox:
                     myAdapter.toggleSelection(position);
                     break;
@@ -220,18 +238,40 @@ public class OrderFragment extends Fragment {
                     if(Q != 1) {
                         int newQ = --Q;
                         theOrder.get(position).setQuantity(newQ);
-                        setCheck();
+                        setBill();
                     }
                     break;
                 //increase the quantity, and updates the price, subtotal, tax, and total
                 case R.id.right:
                     int newQ = ++Q;
                     theOrder.get(position).setQuantity(newQ);
-                    setCheck();
+                    setBill();
                     break;
             }
             //method that updates the ListView
             myAdapter.notifyDataSetChanged();
+        }
+
+        //unchecks all CheckBoxes
+        private void uncheck() {
+            for(int i=1; i<=lv.getCount(); i++) {
+                CheckBox cb = (CheckBox) listView.get(i).findViewById(R.id.checkout_checkBox);
+                if(cb.isChecked()) {
+                    cb.setChecked(false);
+                    myAdapter.toggleSelection(i - 1);
+                }
+            }
+        }
+
+        //checks all CheckBoxes
+        private void check() {
+            for(int i=1; i<=lv.getCount(); i++) {
+                CheckBox cb = (CheckBox) listView.get(i).findViewById(R.id.checkout_checkBox);
+                if(!cb.isChecked()) {
+                    cb.setChecked(true);
+                    myAdapter.toggleSelection(i - 1);
+                }
+            }
         }
     }
 }

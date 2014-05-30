@@ -37,14 +37,27 @@ public class PairingFragment extends FragmentActivity {
         linkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String input = linkCodeET.getText().toString();
+                int code = 0;
+
+                //check if the input is integer
+                try {
+                    code = Integer.parseInt(input);
+                } catch (Exception e) {
+                    errorMessage.setVisibility(TextView.VISIBLE);
+                    errorMessage.setText("Wrong Input");
+                    linkCodeET.setText("");
+                    return;
+                }
+
                 //check if it's less than 4
-                if(linkCodeET.getText().length() < 4) {
+                if(input.length() < 4) {
                     errorMessage.setVisibility(TextView.VISIBLE);
                     errorMessage.setText("Too Short");
                     linkCodeET.setText("");
                 }
                 //check if it's greater than 5
-                else if(linkCodeET.getText().length() > 5) {
+                else if(input.length() > 5) {
                     errorMessage.setVisibility(TextView.VISIBLE);
                     errorMessage.setText("Too Long");
                     linkCodeET.setText("");
