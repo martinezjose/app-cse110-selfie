@@ -85,6 +85,7 @@ public class ItemDataSource {
     public void setUp() throws InsertToDatabaseException{
 
         int numberOfItems = 100;
+        final String [] imagePath = {"/res/image1","/res/thumb1","www.locomoco.com/what.jpg"};
 
         //check whether a database exists already
         File database = new File(databasePath);
@@ -97,7 +98,16 @@ public class ItemDataSource {
 
         //loop numberOfItems times.
         for(int i =0; i<numberOfItems; ++i) {
-           addItem(testItemDataSource.startItem());
+            Item insertItem = testItemDataSource.startItem();
+            addItem(insertItem);
+            //add an ImagePath to odd Items
+            if(i%2==1){
+               imageSource.addImage(insertItem.getItemID(),imagePath);
+            }
+            //add recommendations to multiples of 3
+            if(i%3==0){
+                recommendationSource.addRecommendation(insertItem.getItemID(),new int []{3,1,4,5});
+            }
         }
 
         Category appetizers = new Category("Appetizers");
