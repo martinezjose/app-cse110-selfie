@@ -32,14 +32,15 @@ public class MenuItemList extends ListFragment {
     final static String ARG_CATEGORY_ID = "ARG_CATEGORY_ID";
     final static String ARG_ITEM_ID = "ARG_ITEM_ID";
 
-    ItemDataSource itemDataSource;
+    private ItemDataSource itemDataSource;
 
-    int categoryId = -1;
-    int itemId = -1;
-    String [] names = null;
-    ArrayList<SmallItem> list;
+    private ArrayList<SmallItem> list;
+    
+    private int categoryId = -1, itemId = -1;
 
     @Override
+    //instantiate classes and retrieve the categoryId and itemId to display
+    //if itemId equals -1, the first item in that category is displayed
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -66,53 +67,23 @@ public class MenuItemList extends ListFragment {
                 .addToBackStack("Detail " +Integer.toString(itemId))
                 .commit();
 
-        names = getNames(list);
-
         myListAdapter myAdapter = new myListAdapter(list);
         setListAdapter(myAdapter);
     }
 
-    private class myListAdapter extends ArrayAdapter <String> {
-
-        // INCLUDES DATABASE
-        ArrayList<SmallItem> newMenu;
-
-        public myListAdapter(ArrayList<SmallItem> newMenu) {
-            super(getActivity(), android.R.layout.simple_list_item_1, names);
-            this.newMenu = newMenu;
+    @Override
+    //sets single choice mode and highlights the first item
+    public void onStart() {
+        super.onStart();
+        if(getFragmentManager().findFragmentById(R.id.MSfragment_listContainer) != null) {
+            getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            if(convertView == null) {
-                convertView = getActivity().getLayoutInflater().inflate(
-                        R.layout.mylist_menu_item, null);
-            }
-            TextView textView = (TextView) convertView.findViewById(R.id.textView);
-            textView.setText(newMenu.get(position).getItemName());
-
-            ImageView imageView = (ImageView) convertView.findViewById(R.id.imageView);
-            File thumbnail = new File(newMenu.get(position).getThumbnail());
-            if(thumbnail.exists()) {
-                Bitmap img = BitmapFactory.decodeFile(thumbnail.getAbsolutePath());
-                imageView.setImageBitmap(img);
-            }
-            else {
-                imageView.setImageResource(R.drawable.ic_launcher);
-            }
-
-            ImageView imageView1 = (ImageView) convertView.findViewById(R.id.imageView2);
-            imageView1.setImageResource(R.drawable.yellow_star);
-            if(newMenu.get(position).isDailySpecial())
-                imageView1.setAlpha(1f);
-            else
-                imageView1.setAlpha(0f);
-
-            return convertView;
-        }
+        getListView().setItemChecked(0, true);
     }
 
     @Override
+    //listener for row clicked
+    //sends the corresponding itemId and calls the detail screen
     public void onListItemClick(ListView l, View v, int position, long id) {
         Bundle arguments = new Bundle();
         arguments.putInt(DetailFragment.ARG_ITEM_ID, list.get(position).getItemID());
@@ -125,19 +96,43 @@ public class MenuItemList extends ListFragment {
                 .commit();
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        if(getFragmentManager().findFragmentById(R.id.MSfragment_listContainer) != null) {
-            getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-        }
-    }
+    //custom adapter: contains 1 TextView(name), 2 ImageViews(special, picture)
+    private class myListAdapter extends ArrayAdapter <SmallItem> {
 
-    public String[] getNames(ArrayList<SmallItem> tempMenu) {
-        String[] tempNames = new String[tempMenu.size()];
-        for(int i=0; i<tempMenu.size(); i++) {
-            tempNames[i] = tempMenu.get(i).getItemName();
+        public myListAdapter(ArrayList<SmallItem> newMenu) {
+            super(getActivity(), android.R.layout.simple_list_item_1, newMenu);
         }
-        return tempNames;
+
+        @Override
+        //instantiates each row in the list
+        //checks if the image exists
+        //checks if item is special to display the star that designates daily special
+        public View getView(int position, View convertView, ViewGroup parent) {
+            if(convertView == null) {
+                convertView = getActivity().getLayoutInflater().inflate(
+                        R.layout.mylist_menu_item, null);
+            }
+            TextView textView = (TextView) convertView.findViewById(R.id.textView);
+            textView.setText(list.get(position).getItemName());
+
+            ImageView imageView = (ImageView) convertView.findViewById(R.id.imageView);
+            File thumbnail = new File(list.get(position).getThumbnail());
+            if(thumbnail.exists()) {
+                Bitmap img = BitmapFactory.decodeFile(thumbnail.getAbsolutePath());
+                imageView.setImageBitmap(img);
+            }
+            else {
+                imageView.setImageResource(R.drawable.ic_launcher);
+            }
+
+            ImageView imageView1 = (ImageView) convertView.findViewById(R.id.imageView2);
+            imageView1.setImageResource(R.drawable.yellow_star);
+            if(list.get(position).isDailySpecial())
+                imageView1.setAlpha(1f);
+            else
+                imageView1.setAlpha(0f);
+
+            return convertView;
+        }
     }
 }

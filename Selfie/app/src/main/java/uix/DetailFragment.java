@@ -20,7 +20,6 @@ import java.io.File;
 
 import cse110.selfie.app.UI.R;
 import classes.Item;
-import database.ImageDataSource;
 import database.ItemDataSource;
 
 /**
@@ -37,18 +36,17 @@ public class DetailFragment extends Fragment {
 
     final static String ARG_ITEM_ID = "ARG_ITEM_ID";
 
-    ItemDataSource itemDataSource;
-    ImageDataSource imageDataSource;
-    WeightController myController;
+    private WeightController myController;
+    private ItemDataSource itemDataSource;
+    private Item theItem;
 
-    Item theItem;
-    int itemId = -1;
+    private int itemId = -1;
 
-    public TextView itemName, itemDescription, quantityCounter, thumbsCounter, priceDisplay;
-    public ImageButton quantityUp, quantityDown;
-    public ImageView thumbsUp, iv1, iv2;;
-    public Button addToOrder;
-    public LinearLayout recommendedGallery;
+    private TextView itemName, itemDescription, quantityCounter, thumbsCounter, priceDisplay;
+    private ImageButton quantityUp, quantityDown;
+    private ImageView thumbsUp, iv1, iv2;
+    private Button addToOrder;
+    private LinearLayout recommendedGallery;
 
     @Override
     //gets and initializes components in fragment
@@ -59,7 +57,6 @@ public class DetailFragment extends Fragment {
 
         myController = new WeightController(getActivity());
         itemDataSource = new ItemDataSource(getActivity());
-        imageDataSource = new ImageDataSource(getActivity());
         theItem = itemDataSource.getItem(itemId);
         itemDataSource.close();
 
@@ -95,15 +92,72 @@ public class DetailFragment extends Fragment {
         return view;
     }
 
+    //fills the components with the corresponding information
+    //checks if the images exist
+    private void updateDetail() {
+        String[] images = theItem.getImagePath();
+        if(images.length != 0) {
+            File img1 = new File(images[0]);
+            if (img1.exists()) {
+                Bitmap bit1 = BitmapFactory.decodeFile(img1.getAbsolutePath());
+                iv1.setImageBitmap(bit1);
+            }
+
+            File img2 = new File(images[1]);
+            if (img2.exists()) {
+                Bitmap bit2 = BitmapFactory.decodeFile(img1.getAbsolutePath());
+                iv2.setImageBitmap(bit2);
+            }
+        }
+        else {
+            iv1.setImageResource(R.drawable.ic_launcher);
+            iv2.setImageResource(R.drawable.ic_launcher);
+        }
+
+        itemDescription.setText(theItem.getDescription());
+        priceDisplay.setText("$ " + String.format("%.2f", theItem.getPrice()));
+        itemName.setText(theItem.getItemName());
+        thumbsCounter.setText(Integer.toString(theItem.getLikes()));
+
+        for (int i = 0; i < 8; i++) {
+            ImageView rg1 = new ImageView(recommendedGallery.getContext());
+            rg1.setLayoutParams(new ViewGroup.LayoutParams(100, 100));
+            rg1.setImageResource(R.drawable.ic_launcher);
+            rg1.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Bundle argMenu = new Bundle();
+                    argMenu.putInt(MenuItemList.ARG_CATEGORY_ID, 1);
+                    MenuItemList m = new MenuItemList();
+                    m.setArguments(argMenu);
+
+                    Bundle argDetail = new Bundle();
+                    argDetail.putInt(DetailFragment.ARG_ITEM_ID, 1);
+                    DetailFragment d = new DetailFragment();
+                    d.setArguments(argDetail);
+
+                    FragmentTransaction ft = getActivity().getSupportFragmentManager()
+                            .beginTransaction();
+                    ft.replace(R.id.MSfragment_listContainer, m)
+                            .replace(R.id.MSfragment_detailContainer, d)
+                            .addToBackStack("Detail " +ARG_ITEM_ID)
+                            .commit();
+                }
+            });
+            recommendedGallery.addView(rg1);
+        }
+    }
+
     //custom button listener for up, down, and addToOrder
     private class MyButtonListener implements View.OnClickListener {
 
-        int CurrentQuantity;
+        private int CurrentQuantity;
 
         @Override
         public void onClick(View view) {
             switch (view.getId()) {
-                //just shows an alert dialog
+                //displays an alert asking whether the users wants to continue adding items
+                //or is done to show the order screen
                 case R.id.itemDetail_addToOrder:
                     CurrentQuantity = Integer.parseInt(quantityCounter.getText().toString());
                     Order.add(theItem, CurrentQuantity);
@@ -133,80 +187,26 @@ public class DetailFragment extends Fragment {
                             })
                             .show();
                     break;
+                //increments the quantity and updates the price accordingly
                 case R.id.itemDetail_quantityUpOne:
                     CurrentQuantity = Integer.parseInt(quantityCounter.getText().toString());
                     quantityCounter.setText(Integer.toString(++CurrentQuantity));
-                    priceDisplay.setText(Float.toString(newPrice()));
+                    priceDisplay.setText("$ " +String.format("%.2f", newPrice()));
                     break;
+                //decrements the quantity and updates the price accordingly
+                //doesn't allow to go below 1
                 case R.id.itemDetail_quantityDownOne:
                     CurrentQuantity = Integer.parseInt(quantityCounter.getText().toString());
                     if (CurrentQuantity != 1)
                         quantityCounter.setText(Integer.toString(--CurrentQuantity));
-                    priceDisplay.setText(Float.toString(newPrice()));
+                    priceDisplay.setText("$ " +String.format("%.2f", newPrice()));
                     break;
             }
         }
-
+        //helper function to calculate the price
         private float newPrice() {
             return (float) Integer.parseInt(quantityCounter.getText().toString())
                     * theItem.getPrice();
-        }
-    }
-
-    //will be taken out
-    private void updateDetail() {
-        //get details from DB and replace
-
-        String[] images = theItem.getImagePaths();
-        File img1 = new File(images[0]);
-        if(img1.exists()) {
-            Bitmap bit1 = BitmapFactory.decodeFile(img1.getAbsolutePath());
-            iv1.setImageBitmap(bit1);
-        }
-        else {
-            iv1.setImageResource(R.drawable.ic_launcher);
-        }
-        File img2 = new File(images[1]);
-        if(img2.exists()) {
-            Bitmap bit2 = BitmapFactory.decodeFile(img1.getAbsolutePath());
-            iv2.setImageBitmap(bit2);
-        }
-        else {
-            iv2.setImageResource(R.drawable.ic_launcher);
-        }
-
-
-        itemDescription.setText(theItem.getDescription());
-        priceDisplay.setText("$ " + String.format("%.2f", theItem.getPrice()));
-        itemName.setText(theItem.getItemName());
-        thumbsCounter.setText(Integer.toString(theItem.getLikes()));
-
-        for (int i = 0; i < 8; i++) {
-            ImageView rg1 = new ImageView(recommendedGallery.getContext());
-            rg1.setLayoutParams(new ViewGroup.LayoutParams(100, 100));
-            rg1.setImageResource(R.drawable.ic_launcher);
-            rg1.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Bundle argMenu = new Bundle();
-                    argMenu.putInt(MenuItemList.ARG_CATEGORY_ID, 1);
-                    MenuItemList m = new MenuItemList();
-                    m.setArguments(argMenu);
-
-                    Bundle argDetail = new Bundle();
-                    argDetail.putInt(DetailFragment.ARG_ITEM_ID, 1);
-                    DetailFragment d = new DetailFragment();
-                    d.setArguments(argDetail);
-
-                    FragmentTransaction ft = getActivity().getSupportFragmentManager()
-                            .beginTransaction();
-                    ft.replace(R.id.MSfragment_listContainer, m)
-                            .replace(R.id.MSfragment_detailContainer, d)
-                            .addToBackStack("Menu 2")
-                            .commit();
-                }
-            });
-            recommendedGallery.addView(rg1);
         }
     }
 }
