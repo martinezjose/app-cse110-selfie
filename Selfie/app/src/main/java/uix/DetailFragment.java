@@ -157,7 +157,7 @@ public class DetailFragment extends Fragment {
     private void updateDetail() {
         //get details from DB and replace
 
-        String[] images = imageDataSource.getImage(theItem);
+        String[] images = theItem.getImagePaths();
         File img1 = new File(images[0]);
         if(img1.exists()) {
             Bitmap bit1 = BitmapFactory.decodeFile(img1.getAbsolutePath());
