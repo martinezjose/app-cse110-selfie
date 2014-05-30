@@ -5,89 +5,129 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import classes.Item;
-
 /**
  * Created by jmember on 5/11/14.
  */
 public class RecommendationDataSource {
-    private RecommendationDatabase myDB;
-    private SQLiteDatabase db;
-    private String[] allCols = {RecommendationDatabase.KEY_SRC_ITEM_ID,
-            RecommendationDatabase.KEY_TARGET_ITEM_IDS};
-    // constructor
-    public RecommendationDataSource( Context context ) {
-        myDB = new RecommendationDatabase(context);
+    private SelfieDatabase myDB;        //instance of the SelfieDatabase class
+    private SQLiteDatabase db;          //instance of the SQLiteDatabase class, from which SelfieD-
+                                        //atabase extends.
+
+    //all columns to be retrieved from the table
+    private String [] allColumns = {SelfieDatabase.KEY_RECOMMENDATION_ID,
+            SelfieDatabase.KEY_RECOMMENDED_ITEM,SelfieDatabase.KEY_ITEM_TRACK_ID};
+
+    //CONSTRUCTOR
+    public RecommendationDataSource(Context context){
+        //instantiate myDB to gain access to database
+        myDB = new SelfieDatabase(context);
     }
-    // add a recommendation to the provided item
-    public void addRecommendation(Item src, Item dest){
-        // insert to the recommendation database table with provided id
+
+    //open_read()
+    //open the database for reading
+    public void open_read(){ db = myDB.getReadableDatabase(); }
+
+    //open_write()
+    //open the database for writing. set the foreign key constraints!
+    public void open_write() {
         db = myDB.getWritableDatabase();
-        // get the ContentValues format
-        ContentValues tmp = new ContentValues();
-        tmp.put( RecommendationDatabase.KEY_TARGET_ITEM_IDS, src.getItemID() );
-        // if no recommendations have previously been added, directly add to the database*
-        if( getRecommendationsString( src.getItemID() ).isEmpty() )
-        {
-            // add recommendation to the the beginning of list
-            tmp.put( RecommendationDatabase.KEY_TARGET_ITEM_IDS, dest.getItemID() );
-            // insert the recommendation to database
-            db.insert(RecommendationDatabase.TABLE_RECOMMENDATIONS, null, tmp);
-        }
-        // otherwise, do an update
-        else
-        {
-            // add recommendation to previous list
-            tmp.put( RecommendationDatabase.KEY_TARGET_ITEM_IDS,
-                    getRecommendationsString( src.getItemID() ) + ' ' + dest.getItemID() );
-            db.update(RecommendationDatabase.TABLE_RECOMMENDATIONS, tmp,
-                    RecommendationDatabase.KEY_SRC_ITEM_ID + " = ?",
-                    new String[]{String.valueOf(src.getItemID( ))});
-        }
-        // close the db
-        db.close();
+        db.setForeignKeyConstraintsEnabled(true);   //enable foreign key constraints!
     }
-    // method to get the current recommendations of an item
-    private String getRecommendationsString( int id )
-    {
-        // get a readable db
-        db = myDB.getReadableDatabase();
-        // create a cursor pointing to item with given ID
-        Cursor cursor = db.query( RecommendationDatabase.TABLE_RECOMMENDATIONS, allCols,
-                RecommendationDatabase.KEY_SRC_ITEM_ID + " = ?",
-                new String[] {String.valueOf(id)}, null, null, null );
-        if( cursor != null )
-        {
-            cursor.moveToFirst();
-        }
-        // return the string of recommendations*
-        return cursor.getString( cursor.getColumnIndex(RecommendationDatabase.KEY_TARGET_ITEM_IDS));
+
+    //close()
+    public void close() { db.close(); }
+
+    /******************************************* CRUD *********************************************/
+
+    /* public void addRecommendation(int ItemID, int RecommendedItemID) throws InsertToDatabaseException
+     * Paremeters: int ItemID, int RecommendedItemID
+     * Description: inserts the RecommendedItemID to the database, linked to 'ItemID' (foreign key)
+     * PRECONDITION: ItemID and RecommendedItemID are obtained legally (through getItem or equivalent)
+     * POSTCONDITION: the RecommendedItemID is inserted into the Recommendations table
+     * Returns: nothing
+     * Status: untested
+     */
+    public void addRecommendation(int ItemID, int RecommendedItemID) throws InsertToDatabaseException{
+        //open the database for writing (sets foreign key constraints!)
+        open_write();
+
+        //add RecommendedItem and ItemID to ContentValues
+        ContentValues values = new ContentValues();
+        values.put(SelfieDatabase.KEY_RECOMMENDED_ITEM,RecommendedItemID);
+        values.put(SelfieDatabase.KEY_ITEM_TRACK_ID,ItemID);
+
+        //insert to database
+        long ReturnValue = db.insert(SelfieDatabase.TABLE_RECOMMENDATIONS,null,values);
+
+        //if error adding, throw exception
+        if(ReturnValue==-1)
+            throw new InsertToDatabaseException("Inserting recommendation <" + RecommendedItemID +
+            "> to table " + SelfieDatabase.TABLE_RECOMMENDATIONS + " linked to " + ItemID);
+        //close database
+        close();
     }
-    // get a list of items that are recommended to go with src item
-    public List<Item> getRecommendations(int itemID)
-    {
-        // for storing retreived items
-        List<Item> itemList = new ArrayList<Item>();
-        String idList, ids[];
-        // to allow access to database
-        db = myDB.getReadableDatabase();
-        // get cursor pointing to the item with provided id
-        Cursor myCursor = db.query(RecommendationDatabase.TABLE_RECOMMENDATIONS,allCols,
-                RecommendationDatabase.KEY_SRC_ITEM_ID + "=?",new String[] {String.valueOf(itemID)},
+
+    /* OVERLOADED METHOD --- accepts an array of RecommendedItemIDs
+    *public void addRecommendation(int ItemID, int [] RecommendedItemIDs) throws InsertToDatabaseException
+    * Paremeters: int ItemID, int [] RecommendedItemIDs
+    * Description: inserts all elements in RecommendedItemID to the database, linked to 'ItemID' (foreign key)
+    * PRECONDITION: ItemID and all elements in RecommendedItemID are obtained legally (through getItem or equivalent)
+    * POSTCONDITION: all elements in RecommendedItemID is inserted into the Recommendations table
+    * Returns: nothing
+    * Status: untested
+    */
+    public void addRecommendation(int ItemID, int [] RecommendedItemIDs) throws InsertToDatabaseException{
+        //open the database for writing (sets foreign key constraints!)
+        open_write();
+
+        //iterate over all elements in RecommendedItemIDs
+        for(int element:RecommendedItemIDs) {
+            //add RecommendedItem and ItemID to ContentValues
+            ContentValues values = new ContentValues();
+            values.put(SelfieDatabase.KEY_RECOMMENDED_ITEM, element);
+            values.put(SelfieDatabase.KEY_ITEM_TRACK_ID, ItemID);
+
+            //insert to database
+            long ReturnValue = db.insert(SelfieDatabase.TABLE_RECOMMENDATIONS, null, values);
+
+            //if error adding, throw exception
+            if (ReturnValue == -1)
+                throw new InsertToDatabaseException("Inserting recommendation <" + element +
+                        "> to table " + SelfieDatabase.TABLE_RECOMMENDATIONS + " linked to " + ItemID);
+            //close database
+            close();
+        }
+    }
+
+    /* public int [] getRecommendations(int ItemID)
+     * Parameters: int ItemID
+     * Description: retrieves all recommendations for track_item_id ItemID
+     * PRECONDITION: ItemID was obtained legally through an Item obtained through getItem()
+     * POSTCONDITION: an array of int is returned
+     * Returns: int [] of RecommendedItems
+     * Status: untested
+     */
+    public int [] getRecommendations(int ItemID){
+        //open database
+        open_read();
+
+        //query table
+        Cursor cursor = db.query(SelfieDatabase.TABLE_RECOMMENDATIONS,allColumns,
+        SelfieDatabase.KEY_ITEM_TRACK_ID + " = ?",new String[] {String.valueOf(ItemID)},
                 null,null,null);
-        if(myCursor != null) {
-            myCursor.moveToFirst();
+
+        //create an array of int of size cursor.getCount()
+        int [] returnValue = new int[cursor.getCount()];
+
+        //iterate over all results
+        if(cursor.moveToFirst()){
+            int i = 0; //counter
+            do{
+                returnValue[i] = cursor.getInt(cursor.getColumnIndex(SelfieDatabase.KEY_RECOMMENDED_ITEM));
+            }while(cursor.moveToNext());
         }
-        idList =
-                myCursor.getString(myCursor.getColumnIndex(RecommendationDatabase.KEY_TARGET_ITEM_IDS));
-        ids = idList.split("\\s");
-        for( int i = 0; i < ids.length; i++ )
-        {
-            itemList.add(myDB.myItemDB.getItem(Integer.parseInt(ids[i])));
-        }
-        return itemList;
+
+        //return the populated array of int
+        return returnValue;
     }
 }

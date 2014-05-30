@@ -1,7 +1,6 @@
 package classes;
 
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 
@@ -20,8 +19,9 @@ import java.util.Locale;
  *      String LastUpdated
  *      String Description
  *      boolean DailySpecial
- *      String [] ImagePath
+ *      String [] ImagePaths
  *      String Thumbnail
+ *      int [] Recommendations
  */
 public class Item {
     protected int ItemID;
@@ -31,12 +31,12 @@ public class Item {
     private int Likes;
     private boolean Active;
     private int Calories;
-    private String Created;
     private String LastUpdated;
     private String Description;
     protected boolean DailySpecial;
-    private String [] ImagePath;
+    private String [] ImagePaths;
     protected String Thumbnail;
+    private int [] Recommendations;
 
 
     /*
@@ -52,8 +52,8 @@ public class Item {
      * populated.
      */
     public Item(int itemID, String itemName, float price, int categoryID, int likes,
-                boolean active, int calories,String created, String lastupdated,String description,
-                boolean dailySpecial, String [] imagePath, String thumbnail) {
+                boolean active, int calories, String lastupdated, String description,
+                boolean dailySpecial, String [] imagePaths, String thumbnail, int [] recommendations) {
         ItemID = itemID;
         ItemName = itemName;
         Price = price;
@@ -61,34 +61,32 @@ public class Item {
         Likes = likes;
         Active = active;
         Calories = calories;
-        Created = created;
         LastUpdated = lastupdated;
         Description = description;
         DailySpecial = dailySpecial;
-        ImagePath = imagePath;
+        ImagePaths = imagePaths;
         Thumbnail = thumbnail;
+        Recommendations = recommendations;
     }
 
     /*
      * Setter/inserting Constructor
      * :: No ItemID -- for insertion
      * Description: Used to insert new Item to database.
-     * Missing: ItemID, Created, LastUpdated
+     * Missing: ItemID, LastUpdated
      */
     public Item(String itemName, float price, int categoryID, int likes, boolean active,
                 int calories,String description, boolean dailySpecial,
-                String [] imagePath, String thumbnail) {
+                String thumbnail) {
         ItemName = itemName;
         Price = price;
         CategoryID = categoryID;
         Likes = likes;
         Active = active;
         Calories = calories;
-        Created = getDateTime();        //set current time
-        LastUpdated = Created;          //set current time
+        LastUpdated = getDateTime();
         Description = description;
         DailySpecial = dailySpecial;
-        ImagePath = imagePath;
         Thumbnail = thumbnail;
     }
 
@@ -172,63 +170,38 @@ public class Item {
         DailySpecial = dailySpecial;
     }
 
-    public String [] getImagePath() { return ImagePath; }
-
-    public void setImagePath(String [] imagePath) { ImagePath = imagePath; }
-
-    public String getCreated() {
-        return Created;
+    public String[] getImagePaths() {
+        return ImagePaths;
     }
 
-    public void setCreated(String created) {
-        Created = created;
+    public void setImagePaths(String[] imagePaths) {
+        ImagePaths = imagePaths;
     }
 
     public String getThumbnail() { return Thumbnail; }
 
     public void setThumbnail(String thumbnail) { Thumbnail = thumbnail; }
 
+    public int[] getRecommendations() {
+        return Recommendations;
+    }
+
+    public void setRecommendations(int[] recommendations) {
+        Recommendations = recommendations;
+    }
+
     /* getDateTime()
-         * Description: returns a formatted String in datetime format yyyy-MM-dd HH:mm:ss
-         * PRECONDITION: none
-         * POSTCONDITION: a String in the format "yyyy-MM-dd HH:mm:ss" of the current time is returned.
-         * RETURNS: String in the format "yyyy-MM-dd HH:mm:ss" of the current time
-         * Status: works. tested (not thoroughly)
-         * Keywords: date, get date, getdate, getdatetime, current time, now
-         */
+             * Description: returns a formatted String in datetime format yyyy-MM-dd HH:mm:ss
+             * PRECONDITION: none
+             * POSTCONDITION: a String in the format "yyyy-MM-dd HH:mm:ss" of the current time is returned.
+             * RETURNS: String in the format "yyyy-MM-dd HH:mm:ss" of the current time
+             * Status: works. tested (not thoroughly)
+             * Keywords: date, get date, getdate, getdatetime, current time, now
+             */
     static public String getDateTime(){
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",
                 Locale.getDefault());
         Date date = new Date();
         return dateFormat.format(date);
-    }
-
-    /* equals
-     * Overriden method to be used for testing purposes
-     */
-    @Override
-    public boolean equals(Object other){
-        if(this==other) return true;
-
-        if(other==null | (this.getClass() != other.getClass())) return false;
-
-
-
-        Item that = (Item) other;
-
-        //custom equality check
-        return  (this.ItemID == that.getItemID())
-                && (this.ItemName == that.getItemName())
-                && (this.Price == that.getPrice())
-                && (this.CategoryID == that.getCategoryID())
-                && (this.Likes == that.getLikes())
-                && (this.Active == that.isActive())
-                && (this.Calories == that.getCalories())
-                && (this.Created == that.getCreated())
-                && (this.LastUpdated == that.getLastUpdated())
-                && (this.Description == that.getDescription())
-                && (this.DailySpecial == that.isDailySpecial())
-                && ((Arrays.equals(this.ImagePath, that.getImagePath())))
-                && (this.Thumbnail == that.getThumbnail());
     }
 }

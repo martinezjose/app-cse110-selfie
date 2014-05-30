@@ -32,6 +32,8 @@ public class ItemDataSource {
                                         //check
 
     private CategoryDataSource categorySource;  //TODO: DELETE THIS
+    private ImageDataSource imageSource; //DAO to return image path for a specific item
+    private RecommendationDataSource recommendationSource;  //DAO to return recommendations for item
 
     //used to retrieve all columns for basic queries
     private String [] allColumns = {SelfieDatabase.KEY_ITEM_ID,
@@ -54,6 +56,8 @@ public class ItemDataSource {
 
         categorySource = new CategoryDataSource(context); //TODO: DELETE THIS
 
+        imageSource = new ImageDataSource(context);     //instantiate an ImageDataSource
+        recommendationSource = new RecommendationDataSource(context); //instantiate RecommendationsDataSource
 
         //save the absolute path for the database
         databasePath = context.getDatabasePath(myDB.DATABASE_NAME).toString();
@@ -76,9 +80,9 @@ public class ItemDataSource {
     }
 
     /////////////////////////////////////////////////////////////////
-    //setUp() TODO: DELETE THIS
+    //setUp() TODO: INSERT IMAGE PATHS
     //THIS IS ONLY FOR TESTING PURPOSES!!!!! DELETE THIS METHOD AFTER WE ACTUALLY HAVE A DATABASE...
-    public void setUp() throws Exception{
+    public void setUp() throws InsertToDatabaseException{
 
         int numberOfItems = 100;
 
@@ -93,8 +97,7 @@ public class ItemDataSource {
 
         //loop numberOfItems times.
         for(int i =0; i<numberOfItems; ++i) {
-            if (addItem(testItemDataSource.startItem()) == -1)
-                throw new Exception();  //throw exception if error adding item
+           addItem(testItemDataSource.startItem());
         }
 
         Category appetizers = new Category("Appetizers");
@@ -114,15 +117,15 @@ public class ItemDataSource {
 
     /******************************************* CRUD *********************************************/
 
-    /* public long addItem(Item item) -- Create
+    /* public void addItem(Item item) throws InsertToDatabaseException -- Create
      * Parameters: Item item
      * Description: adds an item to the database
      * PRECONDITION: item is created with no ID (through setter constructor)
      * POSTCONDITION: item is added to the database
-     * Returns: long ID of the newly inserted Item
-     * Status: works, tested but not thoroughly
+     * Returns: nothing
+     * Status: works and tested!
      */
-    public long addItem(Item item){
+    public void addItem(Item item) throws InsertToDatabaseException{
 
         //get writable database
         open_write();
@@ -135,18 +138,20 @@ public class ItemDataSource {
         //close database
         close();
 
-        return ReturnValue;
+        if(ReturnValue == -1)
+            throw new InsertToDatabaseException("Failed inserting Item <"+item.getItemName()+
+                    "> to table " + SelfieDatabase.TABLE_ALL_ITEMS);
     }
 
-    /* public Item getItem(int id) -- Read
+    /* public Item getItem(int id) throws RetrieveFromDatabaseException -- Read
      * Parameters: int id
      * Description: reads from the database; returns an Item.
-     * PRECONDITION: id for the target item is provided (somehow).
+     * PRECONDITION: id for the target item is obtained legally.
      * POSTCONDITION: Item object is returned
      * Returns: found item in the database is returned.
-     * Status: works, kinda tested
+     * Status: works, tested!
      */
-    public Item getItem(int id){
+    public Item getItem(int id) throws RetrieveFromDatabaseException{
 
         //get a readable database
         open_read();
@@ -155,6 +160,9 @@ public class ItemDataSource {
         Cursor cursor = db.query(SelfieDatabase.TABLE_ALL_ITEMS,allColumns,SelfieDatabase.KEY_ITEM_ID +
         " = ?",new String[] {String.valueOf(id)},null,null,null);
 
+        if(cursor==null)
+            throw new RetrieveFromDatabaseException("Failed retrieving <"+id+"> from table " +
+            SelfieDatabase.TABLE_ALL_ITEMS);
 
         if(cursor != null)
             cursor.moveToFirst();
@@ -387,7 +395,9 @@ public class ItemDataSource {
                 cursor.getString(cursor.getColumnIndex(SelfieDatabase.KEY_LAST_UPDATED)),
                 cursor.getString(cursor.getColumnIndex(SelfieDatabase.KEY_DESCRIPTION)),
                 (IsSpecial==1)?true:false,
-                cursor.getString(cursor.getColumnIndex(SelfieDatabase.KEY_THUMBNAIL))
+                imageSource.getImage(cursor.getInt(cursor.getColumnIndex(SelfieDatabase.KEY_ITEM_ID))),
+                cursor.getString(cursor.getColumnIndex(SelfieDatabase.KEY_THUMBNAIL)),
+                recommendationSource.getRecommendations(cursor.getInt(cursor.getColumnIndex(SelfieDatabase.KEY_ITEM_ID)))
         );
     }
 
