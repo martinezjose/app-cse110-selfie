@@ -173,7 +173,6 @@ public class testItemDataSource extends AndroidTestCase{
                                               "justo commodo. ",
                                         "Nam imperdiet mauris quis tristique euismod. Vestibulum " +
                                                 "nec sapien at elit malesuada congue."};
-        String [] ImagePath = {""}; //array of strings with one empty String
         Random myRandom = new Random();
 
         int randomNameIndex = myRandom.nextInt(EntreeNames.length-1);

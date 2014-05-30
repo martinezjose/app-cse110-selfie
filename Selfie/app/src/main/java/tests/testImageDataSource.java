@@ -7,6 +7,7 @@ import java.io.File;
 
 import classes.Item;
 import database.ImageDataSource;
+import database.InsertToDatabaseException;
 import database.ItemDataSource;
 
 /**
@@ -19,8 +20,8 @@ public class testImageDataSource extends AndroidTestCase {
     private final int MAX_RECORDS = 15;
 
     //test values
-    private String ImagePath = "/res/drawable-hdpi";
-    private final String [] ImagePaths = new String [] {"/res/drawable-hdpi/image1",
+    private final String [] SingleImagePath = {"/res/drawable-hdpi"};
+    private final String [] MultipleImagePaths = new String [] {"/res/drawable-hdpi/image1",
             "/res/drawable-hdpi/thumb1",
             "http://www.domain.com/image1z"};
 
@@ -66,39 +67,20 @@ public class testImageDataSource extends AndroidTestCase {
         Item retrievedItem = itemSource.getItem(ItemID);
 
 
+        //test valid single ImagePaths insert
+        try{
+            imageSource.addImage(retrievedItem.getItemID(),SingleImagePath);
+        } catch (InsertToDatabaseException e){
+            //if exception is thrown, UNEXPECTED!
+            fail("Failed adding valid single ImagePath");
+        }
 
-        long resultFromInsert = imageSource.addImage(retrievedItem,ImagePath);
-
-        //this should be false! if it's true, then error
-        assertFalse(resultFromInsert == -1);
-
-        /*********TEST INVALID INSERT********/
-        //invalid insert: foreign key dependency is violated.
-
-        //create an Item that is not in the database (illegal Item)
-        Item illegalItem = testItemDataSource.startItem();
-        illegalItem.setItemID(999); //fake ItemID
-
-        resultFromInsert = imageSource.addImage(illegalItem, ImagePath);
-
-        //this should be true! if it's false, then error
-        assertTrue(resultFromInsert == -1);
-    }
-
-    /* testMultipleAddImage()
-     * Tests adding mutiple ImagePaths to a single Item
-     */
-    public void testMultipleAddImage(){
-        /*********TEST VALID INSERT********/
-        int ItemID = 1;
-        //retrieve the item from the table
-        Item retrievedItem = itemSource.getItem(ItemID);
-
-
-        long resultFromInsert = imageSource.addImage(retrievedItem,ImagePaths);
-
-        //if resultFromInsert == -1, error! This insert should be successful!
-        assertTrue(resultFromInsert != -1);
+        //test valid multiple ImagePaths insert
+        try{
+            imageSource.addImage(retrievedItem.getItemID(),MultipleImagePaths);
+        } catch (InsertToDatabaseException e){
+            fail("Failed adding valid multiple ImagePaths");
+        }
 
         /*********TEST INVALID INSERT********/
         //invalid insert: foreign key dependency is violated.
@@ -107,16 +89,25 @@ public class testImageDataSource extends AndroidTestCase {
         Item illegalItem = testItemDataSource.startItem();
         illegalItem.setItemID(999); //fake ItemID
 
-        resultFromInsert = imageSource.addImage(illegalItem, ImagePaths);
+        //test invalid single ImagePath insert
+        try{
+            imageSource.addImage(illegalItem.getItemID(), SingleImagePath);
+        } catch(InsertToDatabaseException e){
+            //if exception is thrown, OK
+        }
 
-        //this should be true! if it's false, then error
-        assertTrue(resultFromInsert == -1);
+        //test invalid multiple ImagePath insert
+        try{
+            imageSource.addImage(illegalItem.getItemID(), MultipleImagePaths);
+        } catch(InsertToDatabaseException e){
+            //if exception is thrown, OK
+        }
     }
 
     /* testGetImagePaths()
      * tests retrieving ImagePaths from the database
      */
-    public void testGetImagePaths() throws Exception{
+    public void testGetImagePaths(){
 
         /*********TEST VALID RETRIEVE********/
         int ItemID = 1; //we will grab the very first Item
@@ -124,17 +115,21 @@ public class testImageDataSource extends AndroidTestCase {
         Item retrievedItem = itemSource.getItem(ItemID);
 
         //insert ImagePaths to the image table first
-        imageSource.addImage(retrievedItem,ImagePaths);
-
+        try {
+            imageSource.addImage(retrievedItem.getItemID(), MultipleImagePaths);
+        } catch (InsertToDatabaseException e){
+            fail("Error adding MultipleImagePaths to database for testing in testGetImagePaths");
+        }
         //now, retrieve from the table
-        String [] actual = imageSource.getImage(retrievedItem);
+        String [] actual = imageSource.getImage(retrievedItem.getItemID());
 
         //assert that actual is the same as ImagePaths
         assertTrue(actual.length != 0);
-        assertEquals(ImagePaths.length,actual.length);
-        assertEquals(ImagePaths[0],actual[0]);
-        assertEquals(ImagePaths[1],actual[1]);
-        assertEquals(ImagePaths[2],actual[2]);
+        assertEquals(MultipleImagePaths.length,actual.length);
+        assertEquals(MultipleImagePaths[0],actual[0]);
+        assertEquals(MultipleImagePaths[1],actual[1]);
+        assertEquals(MultipleImagePaths[2],actual[2]);
+
 
         /*********TEST INVALID RETRIEVE********/
         ItemID = 3; //grab third item
@@ -144,7 +139,7 @@ public class testImageDataSource extends AndroidTestCase {
         //DON'T ADD IMAGE PATHS FOR THIS ITEM
 
         //attempt to retrieve ImagePaths for this Item
-        actual = imageSource.getImage(retrievedItem);
+        actual = imageSource.getImage(retrievedItem.getItemID());
 
         //assert that the returned array of Strings is empty (length==0)
         assertTrue(actual.length == 0);
