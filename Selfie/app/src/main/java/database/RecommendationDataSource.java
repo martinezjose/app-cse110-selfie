@@ -18,7 +18,7 @@ public class RecommendationDataSource {
             SelfieDatabase.KEY_RECOMMENDED_ITEM,SelfieDatabase.KEY_ITEM_TRACK_ID};
 
     //CONSTRUCTOR
-    public RecommendationDataSource(Context context){
+    public RecommendationDataSource(Context context, ItemDataSource _itemSource){
         //instantiate myDB to gain access to database
         myDB = new SelfieDatabase(context);
     }
@@ -102,4 +102,22 @@ public class RecommendationDataSource {
         //return the populated array of int
         return returnValue;
     }
+
+    /* public static ArrayList<SmallItem> getRecommendedSmallItems(int ItemID)
+     * parameters: int ItemID
+     * Description: Returns an array list of SmallItem of recommendations retrieved from getRecommendations()
+     * PRECONDITION: ItemID is obtained legally and belongs to an Item currently in TABLE_ALL_ITEMS
+     * POSTCONDITION:
+     * Returns: ArrayList<SmallItem>
+     * Status: untested
+     *//*
+    public ArrayList<SmallItem> getRecommendedSmallItems(int ItemID){
+
+        ArrayList<SmallItem> returnArray = new ArrayList<SmallItem>();
+        int [] Recommendations = getRecommendations(ItemID);
+
+        for(int element_id:Recommendations){
+            returnArray.add(itemSource.get)
+        }
+    }*/
 }

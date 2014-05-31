@@ -14,7 +14,7 @@ import java.util.List;
 import classes.Category;
 import classes.Item;
 import classes.SmallItem;
-import tests.testItemDataSource;
+import tests.TestItemDataSource;
 
 /**
  * Data Access Object (DAO)-- Handles Record insertion and retrieval with Database.
@@ -50,14 +50,13 @@ public class ItemDataSource {
 
     //CONSTRUCTOR
     public ItemDataSource(Context context){
-
         //instantiate a SelfieDatabase from this context
         myDB = new SelfieDatabase(context);
 
         categorySource = new CategoryDataSource(context); //TODO: DELETE THIS
 
         imageSource = new ImageDataSource(context);     //instantiate an ImageDataSource
-        recommendationSource = new RecommendationDataSource(context); //instantiate RecommendationsDataSource
+        recommendationSource = new RecommendationDataSource(context,this); //instantiate RecommendationsDataSource
 
         //save the absolute path for the database
         databasePath = context.getDatabasePath(myDB.DATABASE_NAME).toString();
@@ -99,7 +98,7 @@ public class ItemDataSource {
 
         //loop numberOfItems times.
         for(int i =0; i<numberOfItems; ++i) {
-            Item insertItem = testItemDataSource.startItem();
+            Item insertItem = TestItemDataSource.startItem();
             int ItemID = (int)addItem(insertItem);
             //add an ImagePath to odd Items
             if(i%2==1){
@@ -377,6 +376,25 @@ public class ItemDataSource {
 
         //return populated smallItemList
         return smallItemList;
+    }
+
+    /* public SmallItem getSmallItem(int ItemID)
+     * Parameters: int ItemID
+     * Description: returns a SmallItem matching Item with ItemID
+     * PRECONDITION:
+     * POSTCONDITION:
+     * Returns:
+     * Status: untested
+     */
+    public SmallItem getSmallItem(int ItemID){
+        //open database for read
+        open_read();
+
+        //query: select item from table_all_items that match KEY_ITEM_ID == ItemID
+        Cursor cursor = db.query(SelfieDatabase.TABLE_ALL_ITEMS,smallColumns,SelfieDatabase.KEY_ITEM_ID +
+        " = ? ",new String [] {String.valueOf(ItemID)},null,null,null);
+        SmallItem smallItem = new SmallItem();
+        return smallItem;
     }
 
 
