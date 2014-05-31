@@ -19,7 +19,7 @@ import database.SelfieDatabase;
 /**
  * Created by edwinmo on 5/11/14.
  */
-public class testItemDataSource extends AndroidTestCase{
+public class TestItemDataSource extends AndroidTestCase{
 
     private ItemDataSource itemSource;
     private final String TEST_FILE_PREFIX = "test_";
