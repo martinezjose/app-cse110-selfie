@@ -77,7 +77,7 @@ public class ImageDataSource {
      */
     public String [] getImage(int ItemID){
         //get readable database
-        db = myDB.getReadableDatabase();
+        open_read();
 
         //create a cursor pointing to the first row identified by this query
         Cursor cursor = db.query(SelfieDatabase.TABLE_IMAGE_PATHS,allColumns,
@@ -95,6 +95,8 @@ public class ImageDataSource {
                 ++i;
             }while(cursor.moveToNext());
         }
+        //close database
+        close();
 
         //return the returnString
         return returnString;

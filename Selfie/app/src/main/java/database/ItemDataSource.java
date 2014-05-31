@@ -394,6 +394,9 @@ public class ItemDataSource {
         Cursor cursor = db.query(SelfieDatabase.TABLE_ALL_ITEMS,smallColumns,SelfieDatabase.KEY_ITEM_ID +
         " = ? ",new String [] {String.valueOf(ItemID)},null,null,null);
         SmallItem smallItem = new SmallItem();
+
+        //close database
+        close();
         return smallItem;
     }
 
