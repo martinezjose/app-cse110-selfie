@@ -10,7 +10,6 @@ import java.util.Random;
 
 import classes.Item;
 import classes.SmallItem;
-import database.Download;
 import database.InsertToDatabaseException;
 import database.ItemDataSource;
 import database.RetrieveFromDatabaseException;
@@ -117,15 +116,6 @@ public class TestItemDataSource extends AndroidTestCase{
     public void testGetCount() {
         int count = itemSource.getCount();
         assertEquals(MAX_RECORDS,count);
-    }
-
-    /* testSaveImageFromURL
-     *
-     */
-    public void testSaveImageFromURL(){
-            String imageURL = Download.saveImageFromURL(getContext(),
-                    "http://www.steveosbar.com/wp-content/uploads/Monday_Pasta_Special_9.99.jpg");
-            Log.d("testSaveImageFromURL","Downloaded image in " + imageURL);
     }
 
     /************************************** HELPER METHODS ****************************************/
