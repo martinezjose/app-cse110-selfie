@@ -42,14 +42,14 @@ public class TestImageDataSource extends AndroidTestCase {
 
         //populate the database with objects first
         for(int i=0; i<MAX_RECORDS; ++i){
-            Item item = testItemDataSource.startItem();
+            Item item = TestItemDataSource.startItem();
             itemSource.addItem(item);
         }
     }
 
     @Override
     protected void tearDown() throws Exception{
-        File database = new File(imageSource.databasePath);
+        File database = new File(itemSource.databasePath);
 
         //if the database exists, delete it
         if(database.exists())
@@ -93,7 +93,7 @@ public class TestImageDataSource extends AndroidTestCase {
         //invalid insert: foreign key dependency is violated.
 
         //create an Item that is not in the database (illegal Item)
-        Item illegalItem = testItemDataSource.startItem();
+        Item illegalItem = TestItemDataSource.startItem();
         illegalItem.setItemID(999); //fake ItemID
 
         //test invalid single ImagePath insert
