@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,13 +39,12 @@ public class DetailFragment extends Fragment {
 
     private WeightController myController;
     private ItemDataSource itemDataSource;
-    private Item theItem;
+    private Item theItem, temp;
 
     private int itemId = -1;
 
     private TextView itemName, itemDescription, quantityCounter, thumbsCounter, priceDisplay;
-    private ImageButton quantityUp, quantityDown;
-    private ImageView thumbsUp, iv1, iv2;
+    private ImageView thumbsUp, iv1, iv2, quantityUp, quantityDown;
     private Button addToOrder;
     private LinearLayout recommendedGallery;
 
@@ -57,8 +57,11 @@ public class DetailFragment extends Fragment {
 
         myController = new WeightController(getActivity());
         itemDataSource = new ItemDataSource(getActivity());
-        theItem = itemDataSource.getItem(itemId);
-        itemDataSource.close();
+        try {
+            theItem = itemDataSource.getItem(itemId);
+        } catch (Exception e) {
+            Log.e("Retrieve Item Exception", "Item #" +Integer.toString(itemId));
+        }
 
         //Top Layout
         iv1 = (ImageView) view.findViewById(R.id.itemDetail_pic1);
@@ -73,11 +76,11 @@ public class DetailFragment extends Fragment {
         thumbsCounter = (TextView) view.findViewById(R.id.itemDetail_thumbDisplay);
 
         MyButtonListener myButtonListener = new MyButtonListener();
-        quantityUp = (ImageButton) view.findViewById(R.id.itemDetail_quantityUpOne);
-        quantityUp.setImageResource(R.drawable.arrow_up);
+        quantityUp = (ImageView) view.findViewById(R.id.itemDetail_quantityUpOne);
+        quantityUp.setImageResource(R.drawable.arrow_up2);
         quantityUp.setOnClickListener(myButtonListener);
-        quantityDown = (ImageButton) view.findViewById(R.id.itemDetail_quantityDownOne);
-        quantityDown.setImageResource(R.drawable.arrow_down);
+        quantityDown = (ImageView) view.findViewById(R.id.itemDetail_quantityDownOne);
+        quantityDown.setImageResource(R.drawable.arrow_down2);
         quantityDown.setOnClickListener(myButtonListener);
         addToOrder = (Button) view.findViewById(R.id.itemDetail_addToOrder);
         addToOrder.setOnClickListener(myButtonListener);
@@ -92,26 +95,24 @@ public class DetailFragment extends Fragment {
         return view;
     }
 
+    //assigns picture to the corresponding placeholder
+    private void setImage(ImageView place, String path) {
+        File img1 = new File(path);
+        if(img1.exists()) {
+            Bitmap pic1 = BitmapFactory.decodeFile(img1.getAbsolutePath());
+            place.setImageBitmap(pic1);
+        }
+        else
+            place.setImageResource(R.drawable.ic_launcher);
+    }
+
     //fills the components with the corresponding information
     //checks if the images exist
     private void updateDetail() {
-        String[] images = theItem.getImagePath();
+        String[] images = theItem.getImagePaths();
         if(images.length != 0) {
-            File img1 = new File(images[0]);
-            if (img1.exists()) {
-                Bitmap bit1 = BitmapFactory.decodeFile(img1.getAbsolutePath());
-                iv1.setImageBitmap(bit1);
-            }
-
-            File img2 = new File(images[1]);
-            if (img2.exists()) {
-                Bitmap bit2 = BitmapFactory.decodeFile(img1.getAbsolutePath());
-                iv2.setImageBitmap(bit2);
-            }
-        }
-        else {
-            iv1.setImageResource(R.drawable.ic_launcher);
-            iv2.setImageResource(R.drawable.ic_launcher);
+            setImage(iv1, images[0]);
+            setImage(iv2, images[1]);
         }
 
         itemDescription.setText(theItem.getDescription());
@@ -119,23 +120,30 @@ public class DetailFragment extends Fragment {
         itemName.setText(theItem.getItemName());
         thumbsCounter.setText(Integer.toString(theItem.getLikes()));
 
-        for (int i = 0; i < 8; i++) {
+        int[] recommendations = theItem.getRecommendations();
+        for (int i = 0; i <recommendations.length; i++) {
             ImageView rg1 = new ImageView(recommendedGallery.getContext());
             rg1.setLayoutParams(new ViewGroup.LayoutParams(100, 100));
-            rg1.setImageResource(R.drawable.ic_launcher);
+            try {
+                temp = itemDataSource.getItem(recommendations[i]);
+            } catch (Exception e) {
+                Log.e("Item Retrieve Exception", Integer.toString(recommendations[i]));
+            }
+            setImage(rg1, temp.getThumbnail());
+
             rg1.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Bundle argMenu = new Bundle();
-                    argMenu.putInt(MenuItemList.ARG_CATEGORY_ID, 1);
-                    argMenu.putInt(MenuItemList.ARG_ITEM_ID, -1);
+                    argMenu.putInt(MenuItemList.ARG_CATEGORY_ID, temp.getCategoryID());
+                    argMenu.putInt(MenuItemList.ARG_ITEM_ID, temp.getItemID());
                     MenuItemList m = new MenuItemList();
                     m.setArguments(argMenu);
 
                     FragmentTransaction ft = getActivity().getSupportFragmentManager()
                             .beginTransaction();
                     ft.replace(R.id.MSfragment_listContainer, m)
-                            .addToBackStack("Detail 1")
+                            .addToBackStack("Detail " +Integer.toString(temp.getItemID()))
                             .commit();
                 }
             });

@@ -81,6 +81,7 @@ public class MenuItemList extends ListFragment {
         getListView().setItemChecked(getPosition(itemId), true);
     }
 
+    //get position to highlight
     private int getPosition(int itemId) {
         int position = 0;
         for(int i=0; i<list.size(); i++) {
@@ -117,31 +118,42 @@ public class MenuItemList extends ListFragment {
         //checks if the image exists
         //checks if item is special to display the star that designates daily special
         public View getView(int position, View convertView, ViewGroup parent) {
+            ViewHolder holder = null;
             if(convertView == null) {
                 convertView = getActivity().getLayoutInflater().inflate(
                         R.layout.mylist_menu_item, null);
+                holder = new ViewHolder();
+                holder.itemName = (TextView) convertView.findViewById(R.id.textView);
+                holder.specialStar = (ImageView) convertView.findViewById(R.id.imageView2);
+                holder.itemThumbnail = (ImageView) convertView.findViewById(R.id.imageView);
+                convertView.setTag(holder);
             }
-            TextView textView = (TextView) convertView.findViewById(R.id.textView);
-            textView.setText(list.get(position).getItemName());
+            else
+                holder = (ViewHolder) convertView.getTag();
 
-            ImageView imageView = (ImageView) convertView.findViewById(R.id.imageView);
+            holder.itemName.setText(list.get(position).getItemName());
+
             File thumbnail = new File(list.get(position).getThumbnail());
             if(thumbnail.exists()) {
                 Bitmap img = BitmapFactory.decodeFile(thumbnail.getAbsolutePath());
-                imageView.setImageBitmap(img);
+                holder.itemThumbnail.setImageBitmap(img);
             }
-            else {
-                imageView.setImageResource(R.drawable.ic_launcher);
-            }
-
-            ImageView imageView1 = (ImageView) convertView.findViewById(R.id.imageView2);
-            imageView1.setImageResource(R.drawable.yellow_star);
-            if(list.get(position).isDailySpecial())
-                imageView1.setAlpha(1f);
             else
-                imageView1.setAlpha(0f);
+                holder.itemThumbnail.setImageResource(R.drawable.ic_launcher);
+
+            holder.specialStar.setImageResource(R.drawable.yellow_star);
+            if(list.get(position).isDailySpecial())
+                holder.specialStar.setAlpha(1f);
+            else
+                holder.specialStar.setAlpha(0f);
 
             return convertView;
         }
+    }
+
+    //optimize render
+    private class ViewHolder {
+        public TextView itemName;
+        public ImageView specialStar, itemThumbnail;
     }
 }

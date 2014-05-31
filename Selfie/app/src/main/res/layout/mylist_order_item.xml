@@ -50,7 +50,7 @@
         android:layout_toRightOf="@+id/checkout_checkBox"
         android:layout_marginTop="6dp" />
 
-    <ImageButton
+    <ImageView
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:id="@+id/right"
@@ -60,7 +60,7 @@
         android:focusable="false"
         android:focusableInTouchMode="false" />
 
-    <ImageButton
+    <ImageView
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:id="@+id/left"
