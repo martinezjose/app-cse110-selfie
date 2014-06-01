@@ -15,8 +15,10 @@ import android.graphics.BitmapFactory;
 import java.util.ArrayList;
 import java.io.File;
 
+import classes.Category;
 import classes.SmallItem;
 import cse110.selfie.app.UI.R;
+import database.CategoryDataSource;
 import database.ItemDataSource;
 
 /**
@@ -61,17 +63,19 @@ public class SpecialTabFragment extends Fragment {
             }
             else
                 iv1.setImageResource(R.drawable.ic_launcher);
-            //the size is arbitrary (100 by 100 dp)
             iv1.setLayoutParams(new ViewGroup.LayoutParams(100, 100));
             iv1.setId(i);
-            //if picture is clicked, the user will be taken to the menu and detail corresponding to
-            //the item
             iv1.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     int pos = view.getId();
+                    int id = specials.get(pos).getCategoryID();
+                    CategoryDataSource cds = new CategoryDataSource(getActivity());
+                    ArrayList<Category> catName = cds.getAllCategories();
+
                     Bundle argMenu = new Bundle();
                     argMenu.putInt(MenuItemList.ARG_CATEGORY_ID, specials.get(pos).getCategoryID());
+                    argMenu.putString(MenuItemList.ARG_CATEGORY_NAME, catName.get(id-1).getCategoryName());
                     argMenu.putInt(MenuItemList.ARG_ITEM_ID, specials.get(pos).getItemID());
                     MenuItemList m = new MenuItemList();
                     m.setArguments(argMenu);

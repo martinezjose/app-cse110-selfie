@@ -28,12 +28,15 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import classes.Category;
 import cse110.selfie.app.UI.R;
+import database.CategoryDataSource;
 
 public class OrderFragment extends Fragment {
 
     private ArrayList<OrderDetail> theOrder;
     private ArrayList<ViewHolder> my_holder;
+    private ArrayList<Category> cat;
 
     private ListView lv;
     private OrderAdapter myAdapter;
@@ -49,6 +52,9 @@ public class OrderFragment extends Fragment {
         lv = (ListView)  view.findViewById(R.id.CS_selectedItems);
         theOrder = Order.getTheOrder();
         my_holder = new ArrayList<ViewHolder>();
+
+        CategoryDataSource cds = new CategoryDataSource(getActivity());
+        cat = cds.getAllCategories();
 
         myAdapter = new OrderAdapter(theOrder);
         lv.setAdapter(myAdapter);
@@ -140,6 +146,7 @@ public class OrderFragment extends Fragment {
                 holder.checkBox = (CheckBox) convertView.findViewById(R.id.checkout_checkBox);
                 holder.leftButton = (ImageView) convertView.findViewById(R.id.left);
                 holder.rightButton = (ImageView) convertView.findViewById(R.id.right);
+                holder.category = (TextView) convertView.findViewById(R.id.category);
 
                 convertView.setTag(holder);
             }
@@ -156,6 +163,8 @@ public class OrderFragment extends Fragment {
             holder.itemPrice.setText("$ " +String.format("%.2f", price));
 
             holder.quantity.setText(Integer.toString(theOrder.get(position).getQuantity()));
+
+            holder.category.setText(cat.get(od.getTheItem().getCategoryID()-1).getCategoryName());
 
             holder.checkBox.setOnClickListener(myButtonListener);
 
@@ -308,7 +317,7 @@ public class OrderFragment extends Fragment {
 
     //pattern to optimize rendering
     private class ViewHolder {
-        public TextView quantity, itemName, itemPrice;
+        public TextView quantity, itemName, itemPrice, category;
         public CheckBox checkBox;
         public ImageView leftButton, rightButton;
         public int itemId;

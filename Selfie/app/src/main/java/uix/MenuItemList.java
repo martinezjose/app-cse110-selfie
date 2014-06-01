@@ -12,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.io.File;
 import java.util.ArrayList;
 
@@ -30,6 +32,7 @@ import database.ItemDataSource;
 public class MenuItemList extends ListFragment {
 
     final static String ARG_CATEGORY_ID = "ARG_CATEGORY_ID";
+    final static String ARG_CATEGORY_NAME = "ARG_CATEGORY_NAME";
     final static String ARG_ITEM_ID = "ARG_ITEM_ID";
 
     private ItemDataSource itemDataSource;
@@ -37,6 +40,7 @@ public class MenuItemList extends ListFragment {
     private ArrayList<SmallItem> list;
     
     private int categoryId = -1, itemId = -1;
+    private String categoryName;
 
     @Override
     //instantiate classes and retrieve the categoryId and itemId to display
@@ -46,9 +50,14 @@ public class MenuItemList extends ListFragment {
 
         Bundle args = getArguments();
         categoryId = args.getInt(ARG_CATEGORY_ID);
+        categoryName = args.getString(ARG_CATEGORY_NAME);
         itemId = args.getInt(ARG_ITEM_ID);
-        itemDataSource = new ItemDataSource(getActivity());
 
+        TextView t = (TextView) getActivity().findViewById(R.id.MS_caterogory_name);
+        t.setText(categoryName);
+        t.setVisibility(TextView.VISIBLE);
+
+        itemDataSource = new ItemDataSource(getActivity());
         list = itemDataSource.getSmallItemFromCategory(categoryId);
 
         Bundle firstArgs = new Bundle();
@@ -123,7 +132,7 @@ public class MenuItemList extends ListFragment {
                 convertView = getActivity().getLayoutInflater().inflate(
                         R.layout.mylist_menu_item, null);
                 holder = new ViewHolder();
-                holder.itemName = (TextView) convertView.findViewById(R.id.textView);
+                holder.itemName = (TextView) convertView.findViewById(R.id.MS_caterogory_name);
                 holder.specialStar = (ImageView) convertView.findViewById(R.id.imageView2);
                 holder.itemThumbnail = (ImageView) convertView.findViewById(R.id.imageView);
                 convertView.setTag(holder);

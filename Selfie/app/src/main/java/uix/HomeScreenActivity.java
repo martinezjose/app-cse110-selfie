@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.util.Log;
+import android.widget.TextView;
 
 import cse110.selfie.app.UI.R;
 import database.ItemDataSource;
@@ -31,6 +32,8 @@ public class HomeScreenActivity extends FragmentActivity {
     private SpecialTabFragment specialTabFragment = new SpecialTabFragment();
     private OrderFragment orderFragment = new OrderFragment();
 
+    private TextView categoryName;
+
     @Override
     //instantiation of required classes
     public void onCreate(Bundle savedInstanceState) {
@@ -44,6 +47,9 @@ public class HomeScreenActivity extends FragmentActivity {
         } catch (Exception e) {
             Log.e("ITEMDATASOURCE", "SETUP EXCEPTION");
         }
+
+        categoryName = (TextView) findViewById(R.id.MS_caterogory_name);
+        categoryName.setVisibility(TextView.INVISIBLE);
 
         fTransaction = getSupportFragmentManager().beginTransaction();
         fTransaction.replace(R.id.MSfragment_listContainer, categoryFragment)
@@ -79,6 +85,7 @@ public class HomeScreenActivity extends FragmentActivity {
             if(mPrevious.getName() == "Home") {
                 fManager.popBackStack();
                 weightController.changeLayoutWeight(0);
+                categoryName.setVisibility(TextView.INVISIBLE);
             }
             else if(mPrevious.getName().startsWith("Menu ")) {
                 weightController.changeLayoutWeight(1);
@@ -131,6 +138,7 @@ public class HomeScreenActivity extends FragmentActivity {
                             .addToBackStack("Home")
                             .commit();
                     weightController.changeLayoutWeight(0);
+                    categoryName.setVisibility(TextView.INVISIBLE);
                 }
                 break;
             //takes the user to the "order screen" unless it's already there

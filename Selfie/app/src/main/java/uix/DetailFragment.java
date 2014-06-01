@@ -18,9 +18,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import java.io.File;
+import java.util.ArrayList;
 
+import classes.Category;
 import cse110.selfie.app.UI.R;
 import classes.Item;
+import database.CategoryDataSource;
 import database.ItemDataSource;
 
 /**
@@ -134,8 +137,12 @@ public class DetailFragment extends Fragment {
             rg1.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    CategoryDataSource cds = new CategoryDataSource(getActivity());
+                    ArrayList<Category> cat = cds.getAllCategories();
+
                     Bundle argMenu = new Bundle();
                     argMenu.putInt(MenuItemList.ARG_CATEGORY_ID, temp.getCategoryID());
+                    argMenu.putString(MenuItemList.ARG_CATEGORY_NAME, cat.get(temp.getCategoryID()-1).getCategoryName());
                     argMenu.putInt(MenuItemList.ARG_ITEM_ID, temp.getItemID());
                     MenuItemList m = new MenuItemList();
                     m.setArguments(argMenu);

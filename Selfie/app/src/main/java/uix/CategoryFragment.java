@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import classes.Category;
 import cse110.selfie.app.UI.R;
@@ -25,6 +25,8 @@ public class CategoryFragment extends ListFragment{
     private WeightController weightController;
     private CategoryDataSource categoryDataSource;
 
+    String[] cat;
+
     @Override
     //instantiation of classes
     public void onCreate(Bundle savedInstanceState) {
@@ -32,8 +34,8 @@ public class CategoryFragment extends ListFragment{
         weightController = new WeightController(getActivity());
         categoryDataSource = new CategoryDataSource(getActivity());
 
-        List<Category> category = categoryDataSource.getAllCategories();
-        String[] cat = getNames(category);
+        ArrayList<Category> category = categoryDataSource.getAllCategories();
+        cat = getNames(category);
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(),
                 android.R.layout.simple_list_item_1, cat);
         setListAdapter(arrayAdapter);
@@ -41,7 +43,7 @@ public class CategoryFragment extends ListFragment{
 
     //helper function to get the categories' names
     //required since the ListView is not custom and the rows are instantiated by the app
-    private String[] getNames(List<Category> l) {
+    private String[] getNames(ArrayList<Category> l) {
         String[] n = new String[l.size()];
         for(int i=0; i<l.size(); i++) {
             n[i] = l.get(i).getCategoryName();
@@ -54,7 +56,8 @@ public class CategoryFragment extends ListFragment{
     //sends the category position and a default itemId
     public void onListItemClick(ListView l, View v, int position, long id) {
         Bundle argMenu = new Bundle();
-        argMenu.putInt(MenuItemList.ARG_CATEGORY_ID, ++position);
+        argMenu.putInt(MenuItemList.ARG_CATEGORY_ID, position+1);
+        argMenu.putString(MenuItemList.ARG_CATEGORY_NAME, cat[position]);
         argMenu.putInt(MenuItemList.ARG_ITEM_ID, -1);
         MenuItemList menu = new MenuItemList();
         menu.setArguments(argMenu);

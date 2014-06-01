@@ -70,4 +70,15 @@
         android:focusable="false"
         android:focusableInTouchMode="false" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Small Text"
+        android:id="@+id/category"
+        android:layout_marginRight="74dp"
+        android:layout_alignTop="@+id/checkout_itemName"
+        android:layout_alignRight="@+id/left"
+        android:layout_alignEnd="@+id/left" />
+
 </RelativeLayout>

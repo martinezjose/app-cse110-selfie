@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Name"
-            android:id="@+id/textView"
+            android:id="@+id/MS_caterogory_name"
             android:layout_marginLeft="79dp"
             android:layout_alignTop="@+id/textView6"
             android:layout_toRightOf="@+id/all_checkbox" />
