@@ -52,7 +52,7 @@ public class HomeScreenActivity extends FragmentActivity {
         categoryName = (TextView) findViewById(R.id.MS_caterogory_name);
         categoryName.setTypeface(Helper.getFont(this, 0));
         categoryName.setVisibility(TextView.INVISIBLE);
-
+        //there is a comment
         ImageView homeIV = (ImageView) findViewById(R.id.MS_home_button);
         homeIV.setImageResource(R.drawable.home);
 
