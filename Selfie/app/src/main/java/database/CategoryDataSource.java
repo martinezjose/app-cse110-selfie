@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import classes.Category;
 
@@ -136,7 +135,7 @@ public class CategoryDataSource {
 
     /*********************************** EXTRA FUNCTIONALITY **************************************/
 
-    /* public List<Category> getAllCategories()
+    /* public ArrayList<Category> getAllCategories()
      * Parameters: none
      * Description: extra functionality. Returns a List of all rows (Category) in the database.
      * PRECONDITION: myDB exists
@@ -144,13 +143,13 @@ public class CategoryDataSource {
      * Returns: List of Categories
      * Status: works, not thoroughly tested
      */
-    public List<Category> getAllCategories(){
+    public ArrayList<Category> getAllCategories(){
 
         //get readable database
         db = myDB.getReadableDatabase();
 
         //List to store all rows of Items
-        List<Category> categoryList = new ArrayList<Category>();
+        ArrayList<Category> categoryList = new ArrayList<Category>();
 
         //select all rows
         String selectQuery = "SELECT * FROM " + SelfieDatabase.TABLE_CATEGORIES;
