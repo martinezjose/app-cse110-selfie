@@ -5,6 +5,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.util.ArrayList;
+
+import classes.SmallItem;
+
 /**
  * Created by jmember on 5/11/14.
  */
@@ -12,15 +16,18 @@ public class RecommendationDataSource {
     private SelfieDatabase myDB;        //instance of the SelfieDatabase class
     private SQLiteDatabase db;          //instance of the SQLiteDatabase class, from which SelfieD-
                                         //atabase extends.
+    private ItemDataSource itemSource;  //itemSource required to pull Items from RecommendationIDs
 
     //all columns to be retrieved from the table
     private String [] allColumns = {SelfieDatabase.KEY_RECOMMENDATION_ID,
             SelfieDatabase.KEY_RECOMMENDED_ITEM,SelfieDatabase.KEY_ITEM_TRACK_ID};
 
     //CONSTRUCTOR
-    public RecommendationDataSource(Context context){
+    public RecommendationDataSource(Context context, ItemDataSource _itemSource){
         //instantiate myDB to gain access to database
         myDB = new SelfieDatabase(context);
+        //instantiate itemSource
+        itemSource = _itemSource;
     }
 
     //open_read()
@@ -98,8 +105,31 @@ public class RecommendationDataSource {
                 returnValue[i] = cursor.getInt(cursor.getColumnIndex(SelfieDatabase.KEY_RECOMMENDED_ITEM));
             }while(cursor.moveToNext());
         }
+        //close database
+        close();
 
         //return the populated array of int
         return returnValue;
+    }
+    /***********************************Specific Querying******************************************/
+
+    /* public static ArrayList<SmallItem> getRecommendedSmallItems(int ItemID)
+     * parameters: int ItemID
+     * Description: Returns an array list of SmallItem of recommendations retrieved from getRecommendations()
+     * PRECONDITION: ItemID is obtained legally and belongs to an Item currently in TABLE_ALL_ITEMS
+     * POSTCONDITION:
+     * Returns: ArrayList<SmallItem>
+     * Status: untested
+     */
+    public ArrayList<SmallItem> getRecommendedSmallItems(int ItemID) throws RetrieveFromDatabaseException {
+
+        ArrayList<SmallItem> returnArray = new ArrayList<SmallItem>();
+        int [] Recommendations = getRecommendations(ItemID);
+
+        for(int element_id:Recommendations){
+            returnArray.add(itemSource.getSmallItem(element_id));
+        }
+
+        return returnArray;
     }
 }

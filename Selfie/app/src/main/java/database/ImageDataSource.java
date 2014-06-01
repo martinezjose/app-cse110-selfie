@@ -12,8 +12,6 @@ public class ImageDataSource {
     private SelfieDatabase myDB;        //instance of the SelfieDatabase class
     private SQLiteDatabase db;          //instance of the SQLiteDatabase class, from which SelfieD-
                                         //atabase extends.
-    public String databasePath;        //storing the path where the database exists for existence
-                                        //check
 
     //used to retrieve all columns for basic queries
     private String [] allColumns = {SelfieDatabase.KEY_IMAGE_ID,SelfieDatabase.KEY_IMAGE_PATH,
@@ -22,8 +20,6 @@ public class ImageDataSource {
     //CONSTRUCTOR
     public ImageDataSource(Context context){
         myDB = new SelfieDatabase(context);
-
-        databasePath = context.getDatabasePath(myDB.DATABASE_NAME).toString();
     }
 
     //open_read()
@@ -81,7 +77,7 @@ public class ImageDataSource {
      */
     public String [] getImage(int ItemID){
         //get readable database
-        db = myDB.getReadableDatabase();
+        open_read();
 
         //create a cursor pointing to the first row identified by this query
         Cursor cursor = db.query(SelfieDatabase.TABLE_IMAGE_PATHS,allColumns,
@@ -99,6 +95,8 @@ public class ImageDataSource {
                 ++i;
             }while(cursor.moveToNext());
         }
+        //close database
+        close();
 
         //return the returnString
         return returnString;
