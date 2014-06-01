@@ -55,12 +55,12 @@ public class RecommendationDataSource {
     * Returns: nothing
     * Status: untested
     */
-    public void addRecommendation(int ItemID, int [] RecommendedItemIDs) throws InsertToDatabaseException{
+    public void addRecommendation(long ItemID, long [] RecommendedItemIDs) throws InsertToDatabaseException{
         //open the database for writing (sets foreign key constraints!)
         open_write();
 
         //iterate over all elements in RecommendedItemIDs
-        for(int element:RecommendedItemIDs) {
+        for(long element:RecommendedItemIDs) {
             //add RecommendedItem and ItemID to ContentValues
             ContentValues values = new ContentValues();
             values.put(SelfieDatabase.KEY_RECOMMENDED_ITEM, element);
@@ -78,15 +78,15 @@ public class RecommendationDataSource {
         close();
     }
 
-    /* public int [] getRecommendations(int ItemID)
-     * Parameters: int ItemID
+    /* public long [] getRecommendations(long ItemID)
+     * Parameters: long ItemID
      * Description: retrieves all recommendations for track_item_id ItemID
      * PRECONDITION: ItemID was obtained legally through an Item obtained through getItem()
-     * POSTCONDITION: an array of int is returned
-     * Returns: int [] of RecommendedItems
+     * POSTCONDITION: an array of long is returned
+     * Returns: long [] of RecommendedItems
      * Status: untested
      */
-    public int [] getRecommendations(int ItemID){
+    public long [] getRecommendations(long ItemID){
         //open database
         open_read();
 
@@ -96,7 +96,7 @@ public class RecommendationDataSource {
                 null,null,null);
 
         //create an array of int of size cursor.getCount()
-        int [] returnValue = new int[cursor.getCount()];
+        long [] returnValue = new long[cursor.getCount()];
 
         //iterate over all results
         if(cursor.moveToFirst()){
@@ -124,9 +124,9 @@ public class RecommendationDataSource {
     public ArrayList<SmallItem> getRecommendedSmallItems(int ItemID) throws RetrieveFromDatabaseException {
 
         ArrayList<SmallItem> returnArray = new ArrayList<SmallItem>();
-        int [] Recommendations = getRecommendations(ItemID);
+        long [] Recommendations = getRecommendations(ItemID);
 
-        for(int element_id:Recommendations){
+        for(long element_id:Recommendations){
             returnArray.add(itemSource.getSmallItem(element_id));
         }
 

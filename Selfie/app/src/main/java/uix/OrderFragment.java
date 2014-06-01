@@ -44,6 +44,8 @@ public class OrderFragment extends Fragment {
 
     private TextView subTotal, tax, total;
 
+    private CategoryDataSource cds;
+
     @Override
     //instantiate the components
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -56,7 +58,7 @@ public class OrderFragment extends Fragment {
         theOrder = Order.getTheOrder();
         my_holder = new ArrayList<ViewHolder>();
 
-        CategoryDataSource cds = new CategoryDataSource(getActivity());
+        cds = new CategoryDataSource(getActivity());
         cat = cds.getAllCategories();
 
         myAdapter = new OrderAdapter(theOrder);
@@ -168,7 +170,7 @@ public class OrderFragment extends Fragment {
 
             holder.quantity.setText(Integer.toString(theOrder.get(position).getQuantity()));
 
-            holder.category.setText(cat.get(od.getTheItem().getCategoryID()-1).getCategoryName());
+            holder.category.setText(cds.getCategoryName(od.getTheItem().getCategoryID()));
 
             holder.checkBox.setOnClickListener(myButtonListener);
 

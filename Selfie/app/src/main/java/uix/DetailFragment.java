@@ -10,19 +10,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 
-import java.io.File;
 import java.util.ArrayList;
 
 import classes.Category;
-import cse110.selfie.app.UI.R;
 import classes.Item;
+import cse110.selfie.app.UI.R;
 import database.CategoryDataSource;
 import database.ItemDataSource;
 
@@ -101,7 +97,7 @@ public class DetailFragment extends Fragment {
     //fills the components with the corresponding information
     //checks if the images exist
     private void updateDetail() {
-        String[] images = theItem.getImagePaths();
+        String[] images = theItem.getImagePath();
         switch (images.length) {
             case 0:
                 Helper.getImage(iv1, "");
@@ -141,7 +137,7 @@ public class DetailFragment extends Fragment {
 
                     Bundle argMenu = new Bundle();
                     argMenu.putLong(MenuItemList.ARG_CATEGORY_ID, temp.getCategoryID());
-                    argMenu.putString(MenuItemList.ARG_CATEGORY_NAME, cat.get(temp.getCategoryID()-1).getCategoryName());
+                    argMenu.putString(MenuItemList.ARG_CATEGORY_NAME, cds.getCategoryName(temp.getCategoryID()));
                     argMenu.putLong(MenuItemList.ARG_ITEM_ID, temp.getItemID());
                     MenuItemList m = new MenuItemList();
                     m.setArguments(argMenu);

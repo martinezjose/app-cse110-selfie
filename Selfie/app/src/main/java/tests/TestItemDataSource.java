@@ -40,10 +40,12 @@ public class TestItemDataSource extends AndroidTestCase{
         itemSource = new ItemDataSource(context);
 
         //populate the database
+        ArrayList<Item> itemsList = new ArrayList<Item>();
         for(int i =0; i<MAX_RECORDS; ++i){
-            Item item = startItem();
-            itemSource.addItem(item);
+            itemsList.add(startItem());
         }
+        //add all items
+        itemSource.addItem(itemsList);
     }
 
 
@@ -65,10 +67,11 @@ public class TestItemDataSource extends AndroidTestCase{
      */
     public void testAddItem() {
 
-        Item item = startItem();
-
+        ArrayList<Item> itemsList = new ArrayList<Item>();
+        Item item = TestItemDataSource.startItem();
+        itemsList.add(item);
         try{
-            itemSource.addItem(item);
+            itemSource.addItem(itemsList);
         } catch (InsertToDatabaseException e){
             //if exception is thrown, fail test...
             fail("Failed inserting <"+item.getItemName()+"> to table "+ SelfieDatabase.TABLE_ALL_ITEMS);
@@ -80,7 +83,7 @@ public class TestItemDataSource extends AndroidTestCase{
      */
     public void testGetItem() throws Exception {
 
-        int ItemID = 1;
+        long ItemID = 1;
 
         //retrieve from table
         Item retrievedItem = null;
@@ -97,7 +100,7 @@ public class TestItemDataSource extends AndroidTestCase{
      * tests the method getSmallItemFromCategory()
      */
     public void testGetSmallItemFromCategory() throws Exception{
-        int CategoryID = 1;
+        long CategoryID = 1;
         ArrayList<SmallItem> list = itemSource.getSmallItemFromCategory(CategoryID);
         for(SmallItem item : list){
             //LogCat
@@ -162,6 +165,7 @@ public class TestItemDataSource extends AndroidTestCase{
         int randomDescriptionIndex = myRandom.nextInt(EntreeDescriptions.length-1);
 
         Item myItem = new Item();
+        myItem.setItemID(myRandom.nextLong());
         myItem.setItemName(EntreeNames[randomNameIndex]);
         myItem.setPrice(myRandom.nextFloat()+myRandom.nextInt(PriceLimit));
         myItem.setCategoryID(myRandom.nextInt(CategoryIDLimit) + 1);    //+1 to always avoid category 0
