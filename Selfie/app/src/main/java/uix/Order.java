@@ -36,12 +36,6 @@ public class Order {
         }
     }
 
-    public static void remove(int position) {
-        theOrder.remove(position);
-        for(int i=0; i<theOrder.size(); i++) {
-        }
-    }
-
     //gets the order
     public static ArrayList<OrderDetail> getTheOrder() {
         return theOrder;
