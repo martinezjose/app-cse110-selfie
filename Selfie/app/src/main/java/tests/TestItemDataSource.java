@@ -165,7 +165,10 @@ public class TestItemDataSource extends AndroidTestCase{
         int randomDescriptionIndex = myRandom.nextInt(EntreeDescriptions.length-1);
 
         Item myItem = new Item();
-        myItem.setItemID(myRandom.nextLong());
+        //set ItemID
+        long myItemID = myRandom.nextLong();
+        myItemID = (myItemID < 0) ? (-1) * myItemID : myItemID;
+        myItem.setItemID(myItemID);
         myItem.setItemName(EntreeNames[randomNameIndex]);
         myItem.setPrice(myRandom.nextFloat()+myRandom.nextInt(PriceLimit));
         myItem.setCategoryID(myRandom.nextInt(CategoryIDLimit) + 1);    //+1 to always avoid category 0

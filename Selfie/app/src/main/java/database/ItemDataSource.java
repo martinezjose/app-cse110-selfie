@@ -84,7 +84,7 @@ public class ItemDataSource {
     public void setUp() throws InsertToDatabaseException{
 
         int numberOfItems = 100;
-        final String [] imagePath = {"/res/image1","/res/thumb1","www.locomoco.com/what.jpg"};
+        final String [] imagePath = {"/res/image1","www.locomoco.com/what.jpg"};
         final long [] recommendations = {3,4,1,6};
 
         //check whether a database exists already
@@ -104,14 +104,16 @@ public class ItemDataSource {
             itemsList.add(TestItemDataSource.startItem());
         }
 
+        addItem(itemsList);
+
         int i = 0;
         //handle imagepath and recommendations
         for(Item item:itemsList){
             ++i;    //increment counter
             //add an ImagePath to odd Items
-            if(i%2==1){
                imageSource.addImage(item.getItemID(),imagePath);
-            }
+
+
             //add recommendations to multiples of 3
             if(i%3==0){
                 recommendationSource.addRecommendation(item.getItemID(),recommendations);
@@ -153,7 +155,7 @@ public class ItemDataSource {
             //convert Item object to ContentValues
             ContentValues values = itemToContentValues(element);
 
-            if (db.insert(SelfieDatabase.TABLE_ALL_ITEMS, null, values) == -1) ;
+            if (db.insert(SelfieDatabase.TABLE_ALL_ITEMS, null, values) == -1)
             throw new InsertToDatabaseException("Failed inserting Item <" + element.getItemName() +
                     "> to table " + SelfieDatabase.TABLE_ALL_ITEMS);
         }
@@ -438,7 +440,7 @@ public class ItemDataSource {
                 cursor.getString(cursor.getColumnIndex(SelfieDatabase.KEY_LAST_UPDATED)),
                 cursor.getString(cursor.getColumnIndex(SelfieDatabase.KEY_DESCRIPTION)),
                 (IsSpecial==1)?true:false,
-                imageSource.getImage(cursor.getInt(cursor.getColumnIndex(SelfieDatabase.KEY_ITEM_ID))),
+                imageSource.getImage(cursor.getLong(cursor.getColumnIndex(SelfieDatabase.KEY_ITEM_ID))),
                 cursor.getString(cursor.getColumnIndex(SelfieDatabase.KEY_THUMBNAIL)),
                 recommendationSource.getRecommendations(cursor.getLong(cursor.getColumnIndex(SelfieDatabase.KEY_ITEM_ID)))
         );
@@ -473,6 +475,7 @@ public class ItemDataSource {
      */
     private ContentValues itemToContentValues(Item item){
         ContentValues values = new ContentValues();
+        values.put(SelfieDatabase.KEY_ITEM_ID,item.getItemID());
         values.put(SelfieDatabase.KEY_ITEM_NAME,item.getItemName());
         values.put(SelfieDatabase.KEY_PRICE,item.getPrice());
         values.put(SelfieDatabase.KEY_CATEGORY_ID,item.getCategoryID());
