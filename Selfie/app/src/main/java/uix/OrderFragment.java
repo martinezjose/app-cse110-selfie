@@ -168,7 +168,7 @@ public class OrderFragment extends Fragment {
 
             holder.quantity.setText(Integer.toString(theOrder.get(position).getQuantity()));
 
-            holder.category.setText(cat.get(od.getTheItem().getCategoryID()-1).getCategoryName());
+            holder.category.setText(cat.get(od.getTheItem().getCategoryID()).getCategoryName());
 
             holder.checkBox.setOnClickListener(myButtonListener);
 

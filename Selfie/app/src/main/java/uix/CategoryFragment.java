@@ -48,7 +48,7 @@ public class CategoryFragment extends ListFragment{
     //sends the category position and a default itemId
     public void onListItemClick(ListView l, View v, int position, long id) {
         Bundle argMenu = new Bundle();
-        argMenu.putLong(MenuItemList.ARG_CATEGORY_ID, (long) position+1);
+        argMenu.putLong(MenuItemList.ARG_CATEGORY_ID, category.get(position).getCategoryID());
         argMenu.putString(MenuItemList.ARG_CATEGORY_NAME, category.get(position).getCategoryName());
         argMenu.putLong(MenuItemList.ARG_ITEM_ID, -1l);
         MenuItemList menu = new MenuItemList();
