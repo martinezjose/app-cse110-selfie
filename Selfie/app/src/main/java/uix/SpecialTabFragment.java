@@ -56,27 +56,21 @@ public class SpecialTabFragment extends Fragment {
 
         for(int i=0; i<specials.size(); i++) {
             ImageView iv1 = new ImageView(specialGallery.getContext());
-            File img1 = new File(specials.get(i).getThumbnail());
-            if(img1.exists()) {
-                Bitmap pic1 = BitmapFactory.decodeFile(img1.getAbsolutePath());
-                iv1.setImageBitmap(pic1);
-            }
-            else
-                iv1.setImageResource(R.drawable.ic_launcher);
+            Helper.getImage(iv1, specials.get(i).getThumbnail());
             iv1.setLayoutParams(new ViewGroup.LayoutParams(100, 100));
             iv1.setId(i);
             iv1.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     int pos = view.getId();
-                    int id = specials.get(pos).getCategoryID();
+                    int id = (int) specials.get(pos).getCategoryID();
                     CategoryDataSource cds = new CategoryDataSource(getActivity());
                     ArrayList<Category> catName = cds.getAllCategories();
 
                     Bundle argMenu = new Bundle();
-                    argMenu.putInt(MenuItemList.ARG_CATEGORY_ID, specials.get(pos).getCategoryID());
+                    argMenu.putLong(MenuItemList.ARG_CATEGORY_ID, specials.get(pos).getCategoryID());
                     argMenu.putString(MenuItemList.ARG_CATEGORY_NAME, catName.get(id-1).getCategoryName());
-                    argMenu.putInt(MenuItemList.ARG_ITEM_ID, specials.get(pos).getItemID());
+                    argMenu.putLong(MenuItemList.ARG_ITEM_ID, specials.get(pos).getItemID());
                     MenuItemList m = new MenuItemList();
                     m.setArguments(argMenu);
 

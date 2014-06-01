@@ -14,26 +14,24 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1">
-            <Button
+            <ImageView
                 android:id="@+id/MS_alert"
                 android:layout_width="150dp"
                 android:layout_height="50dp"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
-                android:text="@string/waiter_button"
                 android:onClick="myButtonListener"
                 android:singleLine="true" />
-            <Button
-                android:id="@+id/MS_checkout_button"
-                android:layout_width="150dp"
-                android:layout_height="50dp"
+            <ImageView
+                android:id="@+id/MS_order_button"
+                android:layout_width="70dp"
+                android:layout_height="60dp"
                 android:layout_marginRight="36dp"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
-                android:text="@string/order_button"
                 android:onClick="myButtonListener"/>
-            <ImageButton
+            <ImageView
                 android:id="@+id/MS_home_button"
                 android:layout_width="70dp"
                 android:layout_height="60dp"
@@ -44,10 +42,22 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Medium Text"
+                android:textSize="35dp"
                 android:id="@+id/MS_caterogory_name"
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@+id/MS_home_button"
                 android:layout_marginLeft="41dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Medium Text"
+                android:id="@+id/MS_order_amount"
+                android:layout_centerVertical="true"
+                android:layout_alignLeft="@+id/MS_order_button"
+                android:layout_alignStart="@+id/MS_order_button"
+                android:layout_marginLeft="48dp" />
         </RelativeLayout>
 
         <LinearLayout

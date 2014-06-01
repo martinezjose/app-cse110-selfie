@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import cse110.selfie.app.UI.R;
@@ -49,7 +50,20 @@ public class HomeScreenActivity extends FragmentActivity {
         }
 
         categoryName = (TextView) findViewById(R.id.MS_caterogory_name);
+        categoryName.setTypeface(Helper.getFont(this, 0));
         categoryName.setVisibility(TextView.INVISIBLE);
+
+        ImageView homeIV = (ImageView) findViewById(R.id.MS_home_button);
+        homeIV.setImageResource(R.drawable.home);
+
+        ImageView waiterIV = (ImageView) findViewById(R.id.MS_alert);
+        waiterIV.setImageResource(R.drawable.waiter);
+
+        ImageView orderIV = (ImageView) findViewById(R.id.MS_order_button);
+        orderIV.setImageResource(R.drawable.order);
+
+        TextView orderAmountTV = (TextView) findViewById(R.id.MS_order_amount);
+        orderAmountTV.setText("(" + Integer.toString(Order.getSize()) + ")");
 
         fTransaction = getSupportFragmentManager().beginTransaction();
         fTransaction.replace(R.id.MSfragment_listContainer, categoryFragment)
@@ -142,7 +156,7 @@ public class HomeScreenActivity extends FragmentActivity {
                 }
                 break;
             //takes the user to the "order screen" unless it's already there
-            case R.id.MS_checkout_button:
+            case R.id.MS_order_button:
                 if(fManager.getBackStackEntryAt(
                     fManager.getBackStackEntryCount()-1).getName() != "Order") {
                     fTransaction.replace(R.id.MSfragment_listContainer, orderFragment)

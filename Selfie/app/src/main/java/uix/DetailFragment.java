@@ -44,7 +44,7 @@ public class DetailFragment extends Fragment {
     private ItemDataSource itemDataSource;
     private Item theItem, temp;
 
-    private int itemId = -1;
+    private long itemId = -1;
 
     private TextView itemName, itemDescription, quantityCounter, thumbsCounter, priceDisplay;
     private ImageView thumbsUp, iv1, iv2, quantityUp, quantityDown;
@@ -55,7 +55,7 @@ public class DetailFragment extends Fragment {
     //gets and initializes components in fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Bundle args = getArguments();
-        itemId = args.getInt(ARG_ITEM_ID);
+        itemId = args.getLong(ARG_ITEM_ID);
         View view = inflater.inflate(R.layout.fragment_detail_screen, container, false);
 
         myController = new WeightController(getActivity());
@@ -63,7 +63,7 @@ public class DetailFragment extends Fragment {
         try {
             theItem = itemDataSource.getItem(itemId);
         } catch (Exception e) {
-            Log.e("Retrieve Item Exception", "Item #" +Integer.toString(itemId));
+            Log.e("Retrieve Item Exception", "Item #" + Long.toString(itemId));
         }
 
         //Top Layout
@@ -98,24 +98,23 @@ public class DetailFragment extends Fragment {
         return view;
     }
 
-    //assigns picture to the corresponding placeholder
-    private void setImage(ImageView place, String path) {
-        File img1 = new File(path);
-        if(img1.exists()) {
-            Bitmap pic1 = BitmapFactory.decodeFile(img1.getAbsolutePath());
-            place.setImageBitmap(pic1);
-        }
-        else
-            place.setImageResource(R.drawable.ic_launcher);
-    }
-
     //fills the components with the corresponding information
     //checks if the images exist
     private void updateDetail() {
         String[] images = theItem.getImagePaths();
-        if(images.length != 0) {
-            setImage(iv1, images[0]);
-            setImage(iv2, images[1]);
+        switch (images.length) {
+            case 0:
+                Helper.getImage(iv1, "");
+                Helper.getImage(iv2, "");
+                break;
+            case 1:
+                Helper.getImage(iv1, images[0]);
+                Helper.getImage(iv2, "");
+                break;
+            case 2:
+                Helper.getImage(iv1, images[0]);
+                Helper.getImage(iv2, images[1]);
+                break;
         }
 
         itemDescription.setText(theItem.getDescription());
@@ -123,16 +122,16 @@ public class DetailFragment extends Fragment {
         itemName.setText(theItem.getItemName());
         thumbsCounter.setText(Integer.toString(theItem.getLikes()));
 
-        int[] recommendations = theItem.getRecommendations();
+        long[] recommendations = theItem.getRecommendations();
         for (int i = 0; i <recommendations.length; i++) {
             ImageView rg1 = new ImageView(recommendedGallery.getContext());
             rg1.setLayoutParams(new ViewGroup.LayoutParams(100, 100));
             try {
                 temp = itemDataSource.getItem(recommendations[i]);
             } catch (Exception e) {
-                Log.e("Item Retrieve Exception", Integer.toString(recommendations[i]));
+                Log.e("Item Retrieve Exception", Long.toString(recommendations[i]));
             }
-            setImage(rg1, temp.getThumbnail());
+            Helper.getImage(rg1, temp.getThumbnail());
 
             rg1.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -141,16 +140,16 @@ public class DetailFragment extends Fragment {
                     ArrayList<Category> cat = cds.getAllCategories();
 
                     Bundle argMenu = new Bundle();
-                    argMenu.putInt(MenuItemList.ARG_CATEGORY_ID, temp.getCategoryID());
+                    argMenu.putLong(MenuItemList.ARG_CATEGORY_ID, temp.getCategoryID());
                     argMenu.putString(MenuItemList.ARG_CATEGORY_NAME, cat.get(temp.getCategoryID()-1).getCategoryName());
-                    argMenu.putInt(MenuItemList.ARG_ITEM_ID, temp.getItemID());
+                    argMenu.putLong(MenuItemList.ARG_ITEM_ID, temp.getItemID());
                     MenuItemList m = new MenuItemList();
                     m.setArguments(argMenu);
 
                     FragmentTransaction ft = getActivity().getSupportFragmentManager()
                             .beginTransaction();
                     ft.replace(R.id.MSfragment_listContainer, m)
-                            .addToBackStack("Detail " +Integer.toString(temp.getItemID()))
+                            .addToBackStack("Detail " +Long.toString(temp.getItemID()))
                             .commit();
                 }
             });
@@ -196,6 +195,8 @@ public class DetailFragment extends Fragment {
                                 }
                             })
                             .show();
+                    TextView orderAmountTV = (TextView) getActivity().findViewById(R.id.MS_order_amount);
+                    orderAmountTV.setText("(" +Integer.toString(Order.getSize()) +")");
                     break;
                 //increments the quantity and updates the price accordingly
                 case R.id.itemDetail_quantityUpOne:

@@ -12,8 +12,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import java.io.File;
 import java.util.ArrayList;
 
@@ -36,10 +34,12 @@ public class MenuItemList extends ListFragment {
     final static String ARG_ITEM_ID = "ARG_ITEM_ID";
 
     private ItemDataSource itemDataSource;
-
     private ArrayList<SmallItem> list;
+    private ArrayList<ViewHolder> views;
+
+        MenuAdapter myAdapter;
     
-    private int categoryId = -1, itemId = -1;
+    private long categoryId = -1, itemId = -1;
     private String categoryName;
 
     @Override
@@ -49,9 +49,9 @@ public class MenuItemList extends ListFragment {
         super.onCreate(savedInstanceState);
 
         Bundle args = getArguments();
-        categoryId = args.getInt(ARG_CATEGORY_ID);
+        categoryId = args.getLong(ARG_CATEGORY_ID);
         categoryName = args.getString(ARG_CATEGORY_NAME);
-        itemId = args.getInt(ARG_ITEM_ID);
+        itemId = args.getLong(ARG_ITEM_ID);
 
         TextView t = (TextView) getActivity().findViewById(R.id.MS_caterogory_name);
         t.setText(categoryName);
@@ -59,24 +59,25 @@ public class MenuItemList extends ListFragment {
 
         itemDataSource = new ItemDataSource(getActivity());
         list = itemDataSource.getSmallItemFromCategory(categoryId);
+        views = new ArrayList<ViewHolder>();
 
         Bundle firstArgs = new Bundle();
         if(itemId == -1) {
-            firstArgs.putInt(DetailFragment.ARG_ITEM_ID, list.get(0).getItemID());
+            firstArgs.putLong(DetailFragment.ARG_ITEM_ID, list.get(0).getItemID());
             itemId = list.get(0).getItemID();
         }
         else
-            firstArgs.putInt(DetailFragment.ARG_ITEM_ID, itemId);
+            firstArgs.putLong(DetailFragment.ARG_ITEM_ID, itemId);
 
         DetailFragment firstItem = new DetailFragment();
         firstItem.setArguments(firstArgs);
         FragmentTransaction fTransaction = getActivity().getSupportFragmentManager().beginTransaction();
         fTransaction.replace(R.id.MSfragment_detailContainer, firstItem)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                .addToBackStack("Detail " +Integer.toString(itemId))
+                .addToBackStack("Detail " +Long.toString(itemId))
                 .commit();
 
-        myListAdapter myAdapter = new myListAdapter(list);
+        myAdapter = new MenuAdapter(list);
         setListAdapter(myAdapter);
     }
 
@@ -91,7 +92,7 @@ public class MenuItemList extends ListFragment {
     }
 
     //get position to highlight
-    private int getPosition(int itemId) {
+    private int getPosition(long itemId) {
         int position = 0;
         for(int i=0; i<list.size(); i++) {
             if(list.get(i).getItemID() == itemId)
@@ -105,7 +106,7 @@ public class MenuItemList extends ListFragment {
     //sends the corresponding itemId and calls the detail screen
     public void onListItemClick(ListView l, View v, int position, long id) {
         Bundle arguments = new Bundle();
-        arguments.putInt(DetailFragment.ARG_ITEM_ID, list.get(position).getItemID());
+        arguments.putLong(DetailFragment.ARG_ITEM_ID, list.get(position).getItemID());
         DetailFragment fragment = new DetailFragment();
         fragment.setArguments(arguments);
 
@@ -116,9 +117,9 @@ public class MenuItemList extends ListFragment {
     }
 
     //custom adapter: contains 1 TextView(name), 2 ImageViews(special, picture)
-    private class myListAdapter extends ArrayAdapter <SmallItem> {
+    private class MenuAdapter extends ArrayAdapter <SmallItem> {
 
-        public myListAdapter(ArrayList<SmallItem> newMenu) {
+        public MenuAdapter(ArrayList<SmallItem> newMenu) {
             super(getActivity(), android.R.layout.simple_list_item_1, newMenu);
         }
 
@@ -132,7 +133,7 @@ public class MenuItemList extends ListFragment {
                 convertView = getActivity().getLayoutInflater().inflate(
                         R.layout.mylist_menu_item, null);
                 holder = new ViewHolder();
-                holder.itemName = (TextView) convertView.findViewById(R.id.MS_caterogory_name);
+                holder.itemName = (TextView) convertView.findViewById(R.id.item_name);
                 holder.specialStar = (ImageView) convertView.findViewById(R.id.imageView2);
                 holder.itemThumbnail = (ImageView) convertView.findViewById(R.id.imageView);
                 convertView.setTag(holder);
@@ -141,14 +142,9 @@ public class MenuItemList extends ListFragment {
                 holder = (ViewHolder) convertView.getTag();
 
             holder.itemName.setText(list.get(position).getItemName());
+            holder.itemName.setTypeface(Helper.getFont(getActivity(), 1));
 
-            File thumbnail = new File(list.get(position).getThumbnail());
-            if(thumbnail.exists()) {
-                Bitmap img = BitmapFactory.decodeFile(thumbnail.getAbsolutePath());
-                holder.itemThumbnail.setImageBitmap(img);
-            }
-            else
-                holder.itemThumbnail.setImageResource(R.drawable.ic_launcher);
+            Helper.getImage(holder.itemThumbnail, list.get(position).getThumbnail());
 
             holder.specialStar.setImageResource(R.drawable.yellow_star);
             if(list.get(position).isDailySpecial())

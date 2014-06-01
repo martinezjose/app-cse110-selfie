@@ -8,13 +8,13 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Large Text"
-        android:id="@+id/MS_caterogory_name"
+        android:id="@+id/item_name"
         android:padding="5dp"
-        android:layout_marginTop="42dp"
-        android:layout_alignParentTop="true"
+        android:textSize="35dp"
+        android:layout_marginLeft="19dp"
+        android:layout_below="@+id/imageView2"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginLeft="37dp"/>
+        android:layout_alignParentStart="true" />
 
     <ImageView
         android:layout_width="150dp"
@@ -26,10 +26,11 @@
         android:layout_alignParentEnd="true" />
 
     <ImageView
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:id="@+id/imageView2"
-        android:layout_marginRight="20dp"
-        android:layout_alignBottom="@+id/MS_caterogory_name"
-        android:layout_toLeftOf="@+id/imageView" />
+        android:layout_marginTop="21dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignLeft="@+id/imageView"
+        android:layout_alignStart="@+id/imageView" />
 </RelativeLayout>

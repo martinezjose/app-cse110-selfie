@@ -49,6 +49,9 @@ public class OrderFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_order_screen, container, false);
 
+        TextView t = (TextView) getActivity().findViewById(R.id.MS_caterogory_name);
+        t.setVisibility(TextView.INVISIBLE);
+
         lv = (ListView)  view.findViewById(R.id.CS_selectedItems);
         theOrder = Order.getTheOrder();
         my_holder = new ArrayList<ViewHolder>();
@@ -114,7 +117,8 @@ public class OrderFragment extends Fragment {
         total.setText(String.format("%.2f", Total));
     }
 
-    private boolean validateUnique(int itemId) {
+    //validate uniqueness of id
+    public boolean validateUnique(long itemId) {
         boolean dup = false;
         for(int i=0; i<my_holder.size(); i++) {
             if(itemId == my_holder.get(i).itemId)
@@ -168,10 +172,10 @@ public class OrderFragment extends Fragment {
 
             holder.checkBox.setOnClickListener(myButtonListener);
 
-            holder.leftButton.setImageResource(R.drawable.arrow_left);
+            holder.leftButton.setImageResource(R.drawable.arrow_left2);
             holder.leftButton.setOnClickListener(myButtonListener);
 
-            holder.rightButton.setImageResource(R.drawable.arrow_right);
+            holder.rightButton.setImageResource(R.drawable.arrow_right2);
             holder.rightButton.setOnClickListener(myButtonListener);
 
             if(!validateUnique(holder.itemId)) {
@@ -232,6 +236,8 @@ public class OrderFragment extends Fragment {
                                         removeSelected();
                                         checkbox(false);
                                         setBill();
+                                        TextView orderAmountTV = (TextView) getActivity().findViewById(R.id.MS_order_amount);
+                                        orderAmountTV.setText("(" +Integer.toString(Order.getSize()) +")");
                                     }
                                 })
                                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -320,6 +326,6 @@ public class OrderFragment extends Fragment {
         public TextView quantity, itemName, itemPrice, category;
         public CheckBox checkBox;
         public ImageView leftButton, rightButton;
-        public int itemId;
+        public long itemId;
     }
 }

@@ -47,6 +47,10 @@ public class Order {
         return theOrder;
     }
 
+    public static int getSize() {
+        return theOrder.size();
+    }
+
     public static float getSubtotal() {
         float temp = 0;
         float singleItem = 0;

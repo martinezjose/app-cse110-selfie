@@ -4,8 +4,12 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -25,7 +29,7 @@ public class CategoryFragment extends ListFragment{
     private WeightController weightController;
     private CategoryDataSource categoryDataSource;
 
-    String[] cat;
+    ArrayList<Category> category;
 
     @Override
     //instantiation of classes
@@ -34,21 +38,9 @@ public class CategoryFragment extends ListFragment{
         weightController = new WeightController(getActivity());
         categoryDataSource = new CategoryDataSource(getActivity());
 
-        ArrayList<Category> category = categoryDataSource.getAllCategories();
-        cat = getNames(category);
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_list_item_1, cat);
-        setListAdapter(arrayAdapter);
-    }
-
-    //helper function to get the categories' names
-    //required since the ListView is not custom and the rows are instantiated by the app
-    private String[] getNames(ArrayList<Category> l) {
-        String[] n = new String[l.size()];
-        for(int i=0; i<l.size(); i++) {
-            n[i] = l.get(i).getCategoryName();
-        }
-        return n;
+        category = categoryDataSource.getAllCategories();
+        CategoryAdapter myAdapter = new CategoryAdapter(category);
+        setListAdapter(myAdapter);
     }
 
     @Override
@@ -56,9 +48,9 @@ public class CategoryFragment extends ListFragment{
     //sends the category position and a default itemId
     public void onListItemClick(ListView l, View v, int position, long id) {
         Bundle argMenu = new Bundle();
-        argMenu.putInt(MenuItemList.ARG_CATEGORY_ID, position+1);
-        argMenu.putString(MenuItemList.ARG_CATEGORY_NAME, cat[position]);
-        argMenu.putInt(MenuItemList.ARG_ITEM_ID, -1);
+        argMenu.putLong(MenuItemList.ARG_CATEGORY_ID, (long) position+1);
+        argMenu.putString(MenuItemList.ARG_CATEGORY_NAME, category.get(position).getCategoryName());
+        argMenu.putLong(MenuItemList.ARG_ITEM_ID, -1l);
         MenuItemList menu = new MenuItemList();
         menu.setArguments(argMenu);
 
@@ -69,5 +61,37 @@ public class CategoryFragment extends ListFragment{
                 .addToBackStack("Menu " +Integer.toString(position))
                 .commit();
         weightController.changeLayoutWeight(1);
+    }
+
+    //custom adapter contains 1 textview
+    private class CategoryAdapter extends ArrayAdapter<Category> {
+
+        public CategoryAdapter(ArrayList<Category> c) {
+            super(getActivity(), android.R.layout.simple_list_item_1, c);
+        }
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            ViewHolder holder = null;
+            if(convertView == null) {
+                convertView = getActivity().getLayoutInflater().inflate(
+                        R.layout.mylist_category_item, null);
+
+                holder = new ViewHolder();
+                holder.t = (TextView) convertView.findViewById(R.id.categoryLabel);
+
+                convertView.setTag(holder);
+            }
+            else
+                holder = (ViewHolder)convertView.getTag();
+
+            holder.t.setText(category.get(position).getCategoryName());
+            holder.t.setTypeface(Helper.getFont(getActivity(), 2));
+
+            return convertView;
+        }
+    }
+
+    private class ViewHolder {
+        public TextView t;
     }
 }
