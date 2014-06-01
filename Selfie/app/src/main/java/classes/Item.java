@@ -1,8 +1,14 @@
 package classes;
 
+
 import java.text.SimpleDateFormat;
+
 import java.util.Date;
 import java.util.Locale;
+
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 
 /**
  * Created by edwinmo on 5/6/14.
@@ -24,19 +30,46 @@ import java.util.Locale;
  *      int [] Recommendations
  */
 public class Item {
-    protected int ItemID;
-    protected String ItemName;
-    private float Price;
-    protected int CategoryID;
-    private int Likes;
-    private boolean Active;
-    private int Calories;
-    private String LastUpdated;
-    private String Description;
-    protected boolean DailySpecial;
-    private String [] ImagePaths;
-    protected String Thumbnail;
-    private int [] Recommendations;
+    @SerializedName("Created")
+    @Expose
+    private String created;
+    @SerializedName("Calories")
+    @Expose
+    private Integer calories;
+    @SerializedName("ItemName")
+    @Expose
+    protected String itemName;
+    @SerializedName("ItemID")
+    @Expose
+    protected long itemID;
+    @SerializedName("ImagePath")
+    @Expose
+    private String[] imagePath;
+    @SerializedName("Description")
+    @Expose
+    private String description;
+    @SerializedName("Price")
+    @Expose
+    private float price;
+    @SerializedName("LastUpdated")
+    @Expose
+    private String lastUpdated;
+    @SerializedName("DailySpecial")
+    @Expose
+    protected Boolean dailySpecial;
+    @SerializedName("Likes")
+    @Expose
+    private Integer likes;
+    @SerializedName("Active")
+    @Expose
+    private Boolean active;
+    @SerializedName("CategoryID")
+    @Expose
+    protected long categoryID;
+
+    protected String thumbnail;
+
+    private long [] recommendations;
 
 
     /*
@@ -51,22 +84,22 @@ public class Item {
      * Description: Used to retrieve information from the database. All fields have been
      * populated.
      */
-    public Item(int itemID, String itemName, float price, int categoryID, int likes,
-                boolean active, int calories, String lastupdated, String description,
-                boolean dailySpecial, String [] imagePaths, String thumbnail, int [] recommendations) {
-        ItemID = itemID;
-        ItemName = itemName;
-        Price = price;
-        CategoryID = categoryID;
-        Likes = likes;
-        Active = active;
-        Calories = calories;
-        LastUpdated = lastupdated;
-        Description = description;
-        DailySpecial = dailySpecial;
-        ImagePaths = imagePaths;
-        Thumbnail = thumbnail;
-        Recommendations = recommendations;
+     public Item(long ItemID, String ItemName, float Price, long CategoryID, int Likes, boolean Active,
+     int Calories, String LastUpdated, String Description, boolean DailySpecial,
+     String [] ImagePath, String Thumbnail, long [] Recommendations) {
+         itemName = ItemName;
+         price = Price;
+         categoryID = CategoryID;
+         likes = Likes;
+         active = Active;
+         calories = Calories;
+         created = getDateTime();        //set current time
+         lastUpdated = created;          //set current time
+         description = Description;
+         dailySpecial = DailySpecial;
+         imagePath = ImagePath;
+         thumbnail = Thumbnail;
+         recommendations = Recommendations;
     }
 
     /*
@@ -75,119 +108,136 @@ public class Item {
      * Description: Used to insert new Item to database.
      * Missing: ItemID, LastUpdated
      */
-    public Item(String itemName, float price, int categoryID, int likes, boolean active,
-                int calories,String description, boolean dailySpecial,
-                String thumbnail) {
-        ItemName = itemName;
-        Price = price;
-        CategoryID = categoryID;
-        Likes = likes;
-        Active = active;
-        Calories = calories;
-        LastUpdated = getDateTime();
-        Description = description;
-        DailySpecial = dailySpecial;
-        Thumbnail = thumbnail;
+    public Item(String ItemName, float Price, long CategoryID, int Likes, boolean Active,
+                int Calories, String Description, boolean DailySpecial,
+                String [] ImagePath, String Thumbnail) {
+        itemName = ItemName;
+        price = Price;
+        categoryID = CategoryID;
+        likes = Likes;
+        active = Active;
+        calories = Calories;
+        created = getDateTime();        //set current time
+        lastUpdated = created;          //set current time
+        description = Description;
+        dailySpecial = DailySpecial;
+        imagePath = ImagePath;
+        thumbnail = Thumbnail;
     }
 
-    public int getItemID() {
-        return ItemID;
+
+    public void setCreated(String created) {
+        this.created = created;
     }
 
-    public void setItemID(int itemID) {
-        ItemID = itemID;
+    public String getCreated() {
+        return this.created;
+    }
+
+    public Integer getCalories() {
+        return calories;
+    }
+
+    public void setCalories(Integer calories) {
+        this.calories = calories;
     }
 
     public String getItemName() {
-        return ItemName;
+        return itemName;
     }
 
     public void setItemName(String itemName) {
-        ItemName = itemName;
+        this.itemName = itemName;
     }
 
-    public float getPrice() {
-        return Price;
+    public long getItemID() {
+        return itemID;
     }
 
-    public void setPrice(float price) {
-        Price = price;
+    public void setItemID(long itemID) {
+        this.itemID = itemID;
     }
 
-    public int getCategoryID() {
-        return CategoryID;
+    public String[] getImagePath() {
+        return imagePath;
     }
 
-    public void setCategoryID(int categoryID) {
-        CategoryID = categoryID;
-    }
-
-    public int getLikes() {
-        return Likes;
-    }
-
-    public void setLikes(int likes) {
-        Likes = likes;
-    }
-
-    public boolean isActive() {
-        return Active;
-    }
-
-    public void setActive(boolean active) {
-        Active = active;
-    }
-
-    public int getCalories() {
-        return Calories;
-    }
-
-    public void setCalories(int calories) {
-        Calories = calories;
-    }
-
-    public String getLastUpdated() {
-        return LastUpdated;
-    }
-
-    public void setLastUpdated(String lastUpdated) {
-        LastUpdated = lastUpdated;
+    public void setImagePath(String[] imagePath) {
+        this.imagePath = imagePath;
     }
 
     public String getDescription() {
-        return Description;
+        return description;
     }
 
     public void setDescription(String description) {
-        Description = description;
+        this.description = description;
     }
 
-    public boolean isDailySpecial() {
-        return DailySpecial;
+    public float getPrice() {
+        return price;
     }
 
-    public void setDailySpecial(boolean dailySpecial) {
-        DailySpecial = dailySpecial;
+    public void setPrice(float price) {
+        this.price = price;
     }
 
-    public String[] getImagePaths() {
-        return ImagePaths;
+    public String getLastUpdated() {
+        return lastUpdated;
     }
 
-    public void setImagePaths(String[] imagePaths) {
-        ImagePaths = imagePaths;
+    public void setLastUpdated(String lastUpdated) {
+        this.lastUpdated = lastUpdated;
     }
 
-    public String getThumbnail() { return Thumbnail; }
 
-    public void setThumbnail(String thumbnail) { Thumbnail = thumbnail; }
-
-    public int[] getRecommendations() {
-        return Recommendations;
+    public Boolean isDailySpecial() {
+        return dailySpecial;
     }
 
-    public void setRecommendations(int[] recommendations) {
-        Recommendations = recommendations;
+    public void setDailySpecial(Boolean dailySpecial) {
+        this.dailySpecial = dailySpecial;
+    }
+
+    public Integer getLikes() {
+        return likes;
+    }
+
+    public void setLikes(Integer likes) {
+        this.likes = likes;
+    }
+
+    public Boolean isActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
+
+    public long getCategoryID() {
+        return categoryID;
+    }
+
+    public void setCategoryID(long categoryID) {
+        this.categoryID = categoryID;
+    }
+
+    public void setThumbnail(String thumbnail) {
+        this.thumbnail = thumbnail;
+    }
+
+    public String getThumbnail()
+    {
+        return this.thumbnail;
+    }
+
+    public long[] getRecommendations() {
+        return recommendations;
+    }
+
+    public void setRecommendations(long[] Recommendations) {
+        recommendations = recommendations;
     }
 
     /* getDateTime()

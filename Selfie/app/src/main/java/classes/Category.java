@@ -3,55 +3,62 @@ package classes;
 /**
  * Created by edwinmo on 5/10/14.
  */
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+
 public class Category {
 
+    @SerializedName("Created")
+    @Expose
+    private String created;
     @SerializedName("CategoryID")
     @Expose
-    public int CategoryID;
-
+    private Long categoryID;
+    @SerializedName("LastUpdated")
+    @Expose
+    private String lastUpdated;
     @SerializedName("CategoryName")
     @Expose
-    public String CategoryName;
+    private String categoryName;
 
-    /*
-     * Default constructor
-     */
-    public Category() {
+    public Category(long id, String name)
+    {
+        this.categoryID = id;
+        this.categoryName = name;
     }
 
-    /* Getter constructor
-     * :: All fields -- for retrieval
-     * Description: used to retrieve a category from the database.
-     */
-    public Category(int categoryID, String categoryName) {
-        CategoryID = categoryID;
-        CategoryName = categoryName;
+    public String getCreated() {
+        return created;
     }
 
-    /* Setter/insert constructor
-     * :: Only CategoryName field -- for insertion
-     * Description: used to insert a category to the database
-     */
-    public Category(String categoryName) {
-        CategoryName = categoryName;
+    public void setCreated(String created) {
+        this.created = created;
     }
 
-    public int getCategoryID() {
-        return CategoryID;
+    public Long getCategoryID() {
+        return categoryID;
     }
 
-    public void setCategoryID(int categoryID) {
-        CategoryID = categoryID;
+    public void setCategoryID(Long categoryID) {
+        this.categoryID = categoryID;
+    }
+
+    public String getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public void setLastUpdated(String lastUpdated) {
+        this.lastUpdated = lastUpdated;
     }
 
     public String getCategoryName() {
-        return CategoryName;
+        return categoryName;
     }
 
     public void setCategoryName(String categoryName) {
-        CategoryName = categoryName;
+        this.categoryName = categoryName;
     }
+
 }
