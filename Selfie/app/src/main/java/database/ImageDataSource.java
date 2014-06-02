@@ -39,8 +39,8 @@ public class ImageDataSource {
     /******************************************* CRUD *********************************************/
 
     /* OVERLOADED --- accepts an array of ImagePaths
-     * public void addImage(int ItemID, String [] ImagePaths) throws InsertToDatabaseException-- Create
-     * Parameters: int ItemID, String [] ImageURLs
+     * public void addImage(long ItemID, String [] ImagePaths) throws InsertToDatabaseException-- Create
+     * Parameters: long ItemID, String [] ImageURLs
      * Description: inserts all ImageURLs linked to ItemID. This is the overloaded method
      *              addImage for an array of ImageURLs.
      * PRECONDITION: ItemID was obtained legally through a legally obtained Item
@@ -48,7 +48,7 @@ public class ImageDataSource {
      * Returns: nothing
      * Status: tested, works
      */
-    public void addImage(int ItemID, String [] ImagePaths) throws InsertToDatabaseException{
+    public void addImage(long ItemID, String [] ImagePaths) throws InsertToDatabaseException{
         //get writable database
         open_write();
 
@@ -67,15 +67,15 @@ public class ImageDataSource {
         }
     }
 
-    /* public String [] getImage(int ItemID) -- Read
-     * Parameters: int ItemID
+    /* public String [] getImage(long ItemID) -- Read
+     * Parameters: long ItemID
      * Description: retrieves all Images for an Item object
      * PRECONDITION: ItemID was obtained legally from an Item retrieved with getItem()
      * POSTCONDITION: an array of Strings is returned
      * Returns: an array of Strings containing ImagePaths, the array may be empty
      * Status: tested, works
      */
-    public String [] getImage(int ItemID){
+    public String [] getImage(long ItemID){
         //get readable database
         open_read();
 

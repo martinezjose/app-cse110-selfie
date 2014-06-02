@@ -1,33 +1,32 @@
 package classes;
 
 
-import java.text.SimpleDateFormat;
-
-import java.util.Date;
-import java.util.Locale;
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 
 /**
  * Created by edwinmo on 5/6/14.
  * Class: Item
  * Fields:
- *      int ItemID
- *      String ItemName
- *      float Price
- *      int CategoryID
- *      int Likes
- *      boolean Active
- *      int Calories
- *      String Created
- *      String LastUpdated
- *      String Description
- *      boolean DailySpecial
- *      String [] ImagePaths
- *      String Thumbnail
- *      int [] Recommendations
+ *      long itemID
+ *      String itemName
+ *      float price
+ *      long categoryID
+ *      int likes
+ *      boolean active
+ *      int calories
+ *      String created
+ *      String lastUpdated
+ *      String description
+ *      boolean dailySpecial
+ *      String [] imagePath
+ *      String thumbnail
+ *      int [] recommendations
  */
 public class Item {
     @SerializedName("Created")

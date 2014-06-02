@@ -84,8 +84,8 @@ public class ItemDataSource {
     public void setUp() throws InsertToDatabaseException{
 
         int numberOfItems = 100;
-        final String [] imagePath = {"/res/image1","/res/thumb1","www.locomoco.com/what.jpg"};
-        final int [] recommendations = {3,4,1,6};
+        final String [] imagePath = {"/res/image1","www.locomoco.com/what.jpg"};
+        final long [] recommendations = {3,4,1,6};
 
         //check whether a database exists already
         File database = new File(databasePath);
@@ -96,24 +96,34 @@ public class ItemDataSource {
             return;
         }
 
+        //
+        ArrayList<Item> itemsList = new ArrayList<Item>();
+
         //loop numberOfItems times.
         for(int i =0; i<numberOfItems; ++i) {
-            Item insertItem = TestItemDataSource.startItem();
-            int ItemID = (int)addItem(insertItem);
+            itemsList.add(TestItemDataSource.startItem());
+        }
+
+        addItem(itemsList);
+
+        int i = 0;
+        //handle imagepath and recommendations
+        for(Item item:itemsList){
+            ++i;    //increment counter
             //add an ImagePath to odd Items
-            if(i%2==1){
-               imageSource.addImage(ItemID,imagePath);
-            }
+               imageSource.addImage(item.getItemID(),imagePath);
+
+
             //add recommendations to multiples of 3
             if(i%3==0){
-                recommendationSource.addRecommendation(ItemID,recommendations);
+                recommendationSource.addRecommendation(item.getItemID(),recommendations);
             }
         }
 
-        Category appetizers = new Category("Appetizers");
-        Category entrees = new Category("Entrees");
-        Category dessert = new Category("Dessert");
-        Category drinks = new Category("Drinks");
+        Category appetizers = new Category(1,"Appetizers");
+        Category entrees = new Category(2,"Entrees");
+        Category dessert = new Category(3,"Dessert");
+        Category drinks = new Category(4,"Drinks");
 
         categorySource.addCategory(appetizers);
         categorySource.addCategory(entrees);
@@ -127,43 +137,42 @@ public class ItemDataSource {
 
     /******************************************* CRUD *********************************************/
 
-    /* public int addItem(Item item) throws InsertToDatabaseException -- Create
-     * Parameters: Item item
-     * Description: adds an item to the database
-     * PRECONDITION: item is created with no ID (through setter constructor)
-     * POSTCONDITION: item is added to the database
-     * Returns: int id
+    /* public void addItem(ArrayList<Item> items) throws InsertToDatabaseException -- Create
+     * Parameters: ArrayList<Item> items
+     * Description: adds all elements in 'items' to the database
+     * PRECONDITION: all elements in 'items' were created legally
+     * POSTCONDITION: all elements in 'items' are added to database
+     * Returns: none
      * Status: works and tested!
      */
-    public long addItem(Item item) throws InsertToDatabaseException{
+    public void addItem(ArrayList<Item> items) throws InsertToDatabaseException{
 
         //get writable database
         open_write();
 
-        //convert Item object to ContentValues
-        ContentValues values = itemToContentValues(item);
+        for(Item element:items) {
 
-        long ReturnValue = db.insert(SelfieDatabase.TABLE_ALL_ITEMS,null,values);
+            //convert Item object to ContentValues
+            ContentValues values = itemToContentValues(element);
+
+            if (db.insert(SelfieDatabase.TABLE_ALL_ITEMS, null, values) == -1)
+            throw new InsertToDatabaseException("Failed inserting Item <" + element.getItemName() +
+                    "> to table " + SelfieDatabase.TABLE_ALL_ITEMS);
+        }
 
         //close database
         close();
-
-        if(ReturnValue == -1)
-            throw new InsertToDatabaseException("Failed inserting Item <"+item.getItemName()+
-                    "> to table " + SelfieDatabase.TABLE_ALL_ITEMS);
-
-        return ReturnValue;
     }
 
-    /* public Item getItem(int id) throws RetrieveFromDatabaseException -- Read
-     * Parameters: int id
+    /* public Item getItem(long id) throws RetrieveFromDatabaseException -- Read
+     * Parameters: long id
      * Description: reads from the database; returns an Item.
      * PRECONDITION: id for the target item is obtained legally.
      * POSTCONDITION: Item object is returned
      * Returns: found item in the database is returned.
      * Status: works, tested!
      */
-    public Item getItem(int id) throws RetrieveFromDatabaseException{
+    public Item getItem(long id) throws RetrieveFromDatabaseException{
 
         //get a readable database
         open_read();
@@ -176,8 +185,8 @@ public class ItemDataSource {
             throw new RetrieveFromDatabaseException("Failed retrieving <"+id+"> from table " +
             SelfieDatabase.TABLE_ALL_ITEMS);
 
-        if(cursor != null)
-            cursor.moveToFirst();
+        //else, move the cursor to first target
+        cursor.moveToFirst();
 
         //obtain an Item from cursor
         Item returnItem = cursorToItem(cursor);
@@ -228,15 +237,17 @@ public class ItemDataSource {
      * Returns: None
      * STATUS: works, but may change implementation. Dependencies are not handled.
      */
-    public void deleteItem(Item item){
+    public void deleteItem(Item item) throws DeleteFromDatabaseException{
 
         //get writable database
         open_write();
 
         //delete the record in the database matching item.ID
-        db.delete(SelfieDatabase.TABLE_ALL_ITEMS,SelfieDatabase.KEY_ITEM_ID + " =?",
+        int success = db.delete(SelfieDatabase.TABLE_ALL_ITEMS,SelfieDatabase.KEY_ITEM_ID + " =?",
                 new String[] {String.valueOf(item.getItemID())});
 
+        if(success == 0)
+            throw new DeleteFromDatabaseException();
         //close database
         close();
     }
@@ -313,15 +324,15 @@ public class ItemDataSource {
 
     /************************************ Specific Querying ***************************************/
 
-    /* public ArrayList<SmallItem> getSmallItemFromCategory(int categoryID)
-     * Parameters: int categoryID
+    /* public ArrayList<SmallItem> getSmallItemFromCategory(long categoryID)
+     * Parameters: long categoryID
      * Description: returns an ArrayList of SmallItems that match this categoryID
      * PRECONDITION: categoryID is a valid ID
      * POSTCONDITION: an ArrayList of SmallItems is returned
      * Returns: an ArrayList of SmallItems
      * Status: no error-checking
      */
-    public ArrayList<SmallItem> getSmallItemFromCategory(int categoryID){
+    public ArrayList<SmallItem> getSmallItemFromCategory(long categoryID){
 
         open_read();
 
@@ -378,15 +389,15 @@ public class ItemDataSource {
         return smallItemList;
     }
 
-    /* public SmallItem getSmallItem(int ItemID)
-     * Parameters: int ItemID
+    /* public SmallItem getSmallItem(long ItemID)
+     * Parameters: long ItemID
      * Description: returns a SmallItem matching Item with ItemID
      * PRECONDITION:
      * POSTCONDITION:
      * Returns:
      * Status: untested
      */
-    public SmallItem getSmallItem(int ItemID){
+    public SmallItem getSmallItem(long ItemID){
         //open database for read
         open_read();
 
@@ -419,7 +430,7 @@ public class ItemDataSource {
 
         //getter Constructor
         return new Item(
-                cursor.getInt(cursor.getColumnIndex(SelfieDatabase.KEY_ITEM_ID)),
+                cursor.getLong(cursor.getColumnIndex(SelfieDatabase.KEY_ITEM_ID)),
                 cursor.getString(cursor.getColumnIndex(SelfieDatabase.KEY_ITEM_NAME)),
                 cursor.getFloat((cursor.getColumnIndex(SelfieDatabase.KEY_PRICE))),
                 cursor.getInt((cursor.getColumnIndex(SelfieDatabase.KEY_CATEGORY_ID))),
@@ -429,9 +440,9 @@ public class ItemDataSource {
                 cursor.getString(cursor.getColumnIndex(SelfieDatabase.KEY_LAST_UPDATED)),
                 cursor.getString(cursor.getColumnIndex(SelfieDatabase.KEY_DESCRIPTION)),
                 (IsSpecial==1)?true:false,
-                imageSource.getImage(cursor.getInt(cursor.getColumnIndex(SelfieDatabase.KEY_ITEM_ID))),
+                imageSource.getImage(cursor.getLong(cursor.getColumnIndex(SelfieDatabase.KEY_ITEM_ID))),
                 cursor.getString(cursor.getColumnIndex(SelfieDatabase.KEY_THUMBNAIL)),
-                recommendationSource.getRecommendations(cursor.getInt(cursor.getColumnIndex(SelfieDatabase.KEY_ITEM_ID)))
+                recommendationSource.getRecommendations(cursor.getLong(cursor.getColumnIndex(SelfieDatabase.KEY_ITEM_ID)))
         );
     }
 
@@ -464,6 +475,7 @@ public class ItemDataSource {
      */
     private ContentValues itemToContentValues(Item item){
         ContentValues values = new ContentValues();
+        values.put(SelfieDatabase.KEY_ITEM_ID,item.getItemID());
         values.put(SelfieDatabase.KEY_ITEM_NAME,item.getItemName());
         values.put(SelfieDatabase.KEY_PRICE,item.getPrice());
         values.put(SelfieDatabase.KEY_CATEGORY_ID,item.getCategoryID());

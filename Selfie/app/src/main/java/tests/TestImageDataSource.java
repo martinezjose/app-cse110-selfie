@@ -4,6 +4,7 @@ import android.test.AndroidTestCase;
 import android.test.RenamingDelegatingContext;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import classes.Item;
 import database.ImageDataSource;
@@ -41,10 +42,13 @@ public class TestImageDataSource extends AndroidTestCase {
         imageSource = new ImageDataSource(context);
 
         //populate the database with objects first
+        ArrayList<Item> itemsList = new ArrayList<Item>();
         for(int i=0; i<MAX_RECORDS; ++i){
-            Item item = TestItemDataSource.startItem();
-            itemSource.addItem(item);
+            itemsList.add(TestItemDataSource.startItem());
         }
+
+        //add all items
+        itemSource.addItem(itemsList);
     }
 
     @Override
@@ -63,7 +67,7 @@ public class TestImageDataSource extends AndroidTestCase {
 
         /*********TEST VALID INSERT********/
         Item retrievedItem = null;      //initialize it to something
-        int ItemID = 1;
+        long ItemID = 1;
 
         //retrieve the item from the table
         try{
@@ -118,7 +122,7 @@ public class TestImageDataSource extends AndroidTestCase {
 
         /*********TEST VALID RETRIEVE********/
         Item retrievedItem = null;
-        int ItemID = 1; //we will grab the very first Item
+        long ItemID = 1; //we will grab the very first Item
 
         try{
             retrievedItem = itemSource.getItem(ItemID);
