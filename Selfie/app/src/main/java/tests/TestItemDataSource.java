@@ -4,18 +4,21 @@ import android.test.AndroidTestCase;
 import android.test.RenamingDelegatingContext;
 import android.util.Log;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Random;
 
-import database.Download;
 import classes.Item;
 import classes.SmallItem;
+import database.InsertToDatabaseException;
 import database.ItemDataSource;
+import database.RetrieveFromDatabaseException;
+import database.SelfieDatabase;
 
 /**
  * Created by edwinmo on 5/11/14.
  */
-public class testItemDataSource extends AndroidTestCase{
+public class TestItemDataSource extends AndroidTestCase{
 
     private ItemDataSource itemSource;
     private final String TEST_FILE_PREFIX = "test_";
@@ -35,18 +38,24 @@ public class testItemDataSource extends AndroidTestCase{
 
         //create an ItemDataSource on test context/db
         itemSource = new ItemDataSource(context);
-        itemSource.open();
 
         //populate the database
+        ArrayList<Item> itemsList = new ArrayList<Item>();
         for(int i =0; i<MAX_RECORDS; ++i){
-            Item item = startItem();
-            long result = itemSource.addItem(item);
-            if(result==-1)
-                throw new Exception();
-            else
-                Log.d("testItemDataSource::Setup", result + " " + item.getItemName() + " "
-                + item.getCategoryID() + " " + item.getLikes());
+            itemsList.add(startItem());
         }
+        //add all items
+        itemSource.addItem(itemsList);
+    }
+
+
+    @Override
+    protected void tearDown() throws Exception{
+        File database = new File(itemSource.databasePath);
+
+        //if the database exists, delete it
+        if(database.exists())
+            database.delete();
     }
 
 
@@ -56,14 +65,17 @@ public class testItemDataSource extends AndroidTestCase{
     /* testAddItem()
      * Tests the insertion of an Item into the Item table
      */
-    public void testAddItem() throws Exception{
+    public void testAddItem() {
 
-        Item item = startItem();
-
-        long result = itemSource.addItem(item);
-
-        //assert that the insert was successful
-        assertTrue(result!=-1);
+        ArrayList<Item> itemsList = new ArrayList<Item>();
+        Item item = TestItemDataSource.startItem();
+        itemsList.add(item);
+        try{
+            itemSource.addItem(itemsList);
+        } catch (InsertToDatabaseException e){
+            //if exception is thrown, fail test...
+            fail("Failed inserting <"+item.getItemName()+"> to table "+ SelfieDatabase.TABLE_ALL_ITEMS);
+        }
     }
 
     /* testGetItem()
@@ -71,34 +83,24 @@ public class testItemDataSource extends AndroidTestCase{
      */
     public void testGetItem() throws Exception {
 
-        int ItemID = 1;
+        long ItemID = 1;
 
         //retrieve from table
-        Item retrievedItem = itemSource.getItem(ItemID);
+        Item retrievedItem = null;
 
-        assertTrue(retrievedItem!=null);
-        Log.d("testGetItem()","retrieved " + retrievedItem.getItemName());
-    }
-
-    /* testAddGetItem()
-     * Tests insertion and retrieval of an Item
-     */
-    public void testAddGetItem(){
-
-        Item newItem = startItem();
-        Log.d("testAddGetItem()","Inserting item... " + newItem.getItemName());
-        int itemID = (int)itemSource.addItem(newItem);
-
-        Log.d("testAddGetItem()", "Retrieving item... ");
-        Item retrievedItem = itemSource.getItem(itemID);
-        Log.d("testAddGetItem()", "Retrieved " + retrievedItem.getItemName());
+        try{
+            retrievedItem = itemSource.getItem(ItemID);
+        } catch (RetrieveFromDatabaseException e){
+            //if exception is thrown while retrieving...
+            fail("Failed retrieving <"+ItemID+"> from table " + SelfieDatabase.TABLE_ALL_ITEMS);
+        }
     }
 
     /* testGetSmallItemFromCategory()
      * tests the method getSmallItemFromCategory()
      */
     public void testGetSmallItemFromCategory() throws Exception{
-        int CategoryID = 1;
+        long CategoryID = 1;
         ArrayList<SmallItem> list = itemSource.getSmallItemFromCategory(CategoryID);
         for(SmallItem item : list){
             //LogCat
@@ -117,15 +119,6 @@ public class testItemDataSource extends AndroidTestCase{
     public void testGetCount() {
         int count = itemSource.getCount();
         assertEquals(MAX_RECORDS,count);
-    }
-
-    /* testSaveImageFromURL
-     *
-     */
-    public void testSaveImageFromURL(){
-            String imageURL = Download.saveImageFromURL(getContext(),
-                    "http://www.steveosbar.com/wp-content/uploads/Monday_Pasta_Special_9.99.jpg");
-            Log.d("testSaveImageFromURL","Downloaded image in " + imageURL);
     }
 
     /************************************** HELPER METHODS ****************************************/
@@ -166,27 +159,28 @@ public class testItemDataSource extends AndroidTestCase{
                                               "justo commodo. ",
                                         "Nam imperdiet mauris quis tristique euismod. Vestibulum " +
                                                 "nec sapien at elit malesuada congue."};
-        String [] ImagePath = {"N/A","/res/drawables/image.jpeg","/res/drawables/image2.jpeg",
-                "/home/sdcard/data/cse110.selfie/.hiddenfolder/image3.jpeg"};
         Random myRandom = new Random();
 
         int randomNameIndex = myRandom.nextInt(EntreeNames.length-1);
         int randomDescriptionIndex = myRandom.nextInt(EntreeDescriptions.length-1);
 
         Item myItem = new Item();
+        //set ItemID
+        /*
+        long myItemID = myRandom.nextLong();
+        myItemID = (myItemID < 0) ? (-1) * myItemID : myItemID;
+        myItem.setItemID(myItemID);*/
+        //myItem.setItemID(myRandom.nextInt());
         myItem.setItemName(EntreeNames[randomNameIndex]);
         myItem.setPrice(myRandom.nextFloat()+myRandom.nextInt(PriceLimit));
         myItem.setCategoryID(myRandom.nextInt(CategoryIDLimit) + 1);    //+1 to always avoid category 0
         myItem.setLikes(myRandom.nextInt(LikesLimit));
         myItem.setActive(myRandom.nextBoolean());
         myItem.setCalories(myRandom.nextInt(CaloriesLimit));
-        myItem.setCreated(myItem.getDateTime());
-        myItem.setLastUpdated(myItem.getCreated());
+        myItem.setLastUpdated(myItem.getDateTime());
         myItem.setDescription(EntreeDescriptions[randomDescriptionIndex]);
         myItem.setDailySpecial(myRandom.nextBoolean());
-        myItem.setImagePath(ImagePath);
         myItem.setThumbnail("/res/drawables/thumb_image.jpeg");
-
         return myItem;
     }
 

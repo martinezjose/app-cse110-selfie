@@ -1,4 +1,5 @@
 package database;
+
 import android.content.Context;
 
 import java.io.File;
@@ -25,10 +26,8 @@ public class Download {
      * Status: unhandled exceptions (they are only being caught)
      * Returns: a String of the path to the image
      */
-    public static String saveImageFromURL(Context context, String imageURL) {
-        //get the fileName from the imageURL
-        String [] splitURL = imageURL.split("/");
-        String imageName = "." + splitURL[splitURL.length-1];
+    public static String saveImageFromURL(Context context, String imageURL, String _imageName) {
+        String imageName = "."+_imageName;      //imageName will be the provided name + a prefixed "." to make it hidden
         String storagePath = "";
 
         //create a URL object from the imageURL
@@ -59,6 +58,7 @@ public class Download {
         } catch (MalformedURLException e2){
             e2.printStackTrace();
         }
-        return storagePath + imageName;
+        //storagePath does not trail/end with a "/". Append it here!
+        return storagePath+"/"+imageName;
     }
 }

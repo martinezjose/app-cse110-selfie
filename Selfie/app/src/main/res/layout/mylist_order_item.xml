@@ -18,6 +18,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Small Text"
+        android:textColor="#000000"
         android:id="@+id/checkout_quantityCounter"
         android:layout_marginLeft="800dp"
         android:layout_marginRight="102dp"
@@ -30,6 +31,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Small Text"
+        android:textColor="#000000"
         android:id="@+id/checkout_itemPrice"
         android:layout_marginRight="52dp"
         android:numeric="decimal"
@@ -44,13 +46,14 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Medium Text"
+        android:textColor="#000000"
         android:id="@+id/checkout_itemName"
         android:layout_marginLeft="66dp"
         android:layout_alignTop="@+id/checkout_checkBox"
         android:layout_toRightOf="@+id/checkout_checkBox"
         android:layout_marginTop="6dp" />
 
-    <ImageButton
+    <ImageView
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:id="@+id/right"
@@ -60,7 +63,7 @@
         android:focusable="false"
         android:focusableInTouchMode="false" />
 
-    <ImageButton
+    <ImageView
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:id="@+id/left"
@@ -69,5 +72,17 @@
         android:layout_marginRight="20dp"
         android:focusable="false"
         android:focusableInTouchMode="false" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Small Text"
+        android:textColor="#000000"
+        android:id="@+id/category"
+        android:layout_marginRight="74dp"
+        android:layout_alignTop="@+id/checkout_itemName"
+        android:layout_alignRight="@+id/left"
+        android:layout_alignEnd="@+id/left" />
 
 </RelativeLayout>

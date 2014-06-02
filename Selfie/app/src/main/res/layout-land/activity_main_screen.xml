@@ -1,4 +1,5 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -13,40 +14,56 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            android:background="#034">
-            <Button
+            android:layout_weight="1">
+            <ImageView
                 android:id="@+id/MS_alert"
                 android:layout_width="150dp"
                 android:layout_height="50dp"
-                android:padding="@dimen/component_padding"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
-                android:background="#FFFFFF"
-                android:text="@string/waiter_button"
                 android:onClick="myButtonListener"
                 android:singleLine="true" />
-            <Button
-                android:id="@+id/MS_checkout_button"
-                android:layout_width="150dp"
-                android:layout_height="50dp"
-                android:padding="@dimen/component_padding"
-                android:layout_marginRight="36dp"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:background="#FFFFFF"
-                android:text="@string/order_button"
-                android:onClick="myButtonListener"/>
-            <ImageButton
+            <ImageView
+                android:id="@+id/MS_order_button"
+                android:layout_width="70dp"
+                android:layout_height="60dp"
+                android:layout_marginRight="69dp"
+                android:onClick="myButtonListener"
+                android:layout_alignParentTop="true"
+                android:layout_alignRight="@+id/MS_order_amount"
+                android:layout_alignEnd="@+id/MS_order_amount" />
+            <ImageView
                 android:id="@+id/MS_home_button"
                 android:layout_width="70dp"
                 android:layout_height="60dp"
                 android:onClick="myButtonListener"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Medium Text"
+                android:textSize="35dp"
+                android:id="@+id/MS_caterogory_name"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/MS_home_button"
+                android:layout_marginLeft="41dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Medium Text"
+                android:id="@+id/MS_order_amount"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="11dp" />
         </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
+            android:background="#FFFFFF"
             android:layout_height="0dp"
             android:layout_weight="11"
             android:layout_gravity="bottom|center_horizontal"

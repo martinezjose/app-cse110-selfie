@@ -12,6 +12,8 @@ package uix;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -19,37 +21,47 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.CheckBox;
 import android.util.SparseBooleanArray;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import classes.Category;
 import cse110.selfie.app.UI.R;
+import database.CategoryDataSource;
 
 public class OrderFragment extends Fragment {
 
-    final static float TAX = 0.0825f;
-    ArrayList<OrderDetail> theOrder;
-    ArrayList<View> listView;
-    String[] names;
+    private ArrayList<OrderDetail> theOrder;
+    private ArrayList<ViewHolder> my_holder;
 
-    ListView lv;
-    OrderAdapter myAdapter;
-    MyButtonListener myButtonListener;
+    private ListView lv;
+    private OrderAdapter myAdapter;
+    private MyButtonListener myButtonListener;
 
-    TextView subTotal, tax, total;
+    private TextView subTotal, tax, total;
+
+    private CategoryDataSource cds;
 
     @Override
+    //instantiate the components
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_order_screen, container, false);
 
+        TextView t = (TextView) getActivity().findViewById(R.id.MS_caterogory_name);
+        t.setVisibility(TextView.INVISIBLE);
+
         lv = (ListView)  view.findViewById(R.id.CS_selectedItems);
+        lv.setDivider(new ColorDrawable(Color.BLACK));
+        lv.setDividerHeight(6);
         theOrder = Order.getTheOrder();
-        listView = new ArrayList<View>();
-        names = Order.getNames();
+        my_holder = new ArrayList<ViewHolder>();
+
+        cds = new CategoryDataSource(getActivity());
 
         myAdapter = new OrderAdapter(theOrder);
         lv.setAdapter(myAdapter);
@@ -65,75 +77,137 @@ public class OrderFragment extends Fragment {
         subTotal = (TextView) view.findViewById(R.id.CS_totalBeforeTax);
         tax = (TextView) view.findViewById(R.id.CS_tax);
         total = (TextView) view.findViewById(R.id.CS_total);
-        setCheck();
+        setBill();
         return view;
     }
 
+    //gets the name of the items selected to be removed
+    private String displaySelected() {
+        SparseBooleanArray checked = myAdapter.getSelected();
+        String m = new String();
+        for(int i=0; i<checked.size(); i++) {
+            if(checked.valueAt(i)) {
+                OrderDetail temp = myAdapter.getItem(checked.keyAt(i));
+                m += "\n";
+                m += temp.getTheItem().getItemName();
+            }
+        }
+        return m;
+    }
+
+    //helper function that remove the rows in the ListView that are checked
     private void removeSelected() {
         SparseBooleanArray checked = myAdapter.getSelected();
-
+        int[] pos = new int[checked.size()];
         for(int i=checked.size()-1; i>=0; i--) {
             if(checked.valueAt(i)) {
                 OrderDetail temp = myAdapter.getItem(checked.keyAt(i));
+                pos[i] = checked.keyAt(i);
                 myAdapter.remove(temp);
             }
         }
+
+        for(int j=pos.length-1; j>=0; j--) {
+            myAdapter.toggleSelected(pos[j]);
+            checked.delete(pos[j]);
+            my_holder.get(pos[j]).checkBox.setChecked(false);
+            my_holder.remove(pos[j]);
+        }
     }
 
-    private void setCheck() {
-        float Tax = TAX * Order.getSubtotal();
+    //helper function that updates the subtotal, tax, and total
+    private void setBill() {
+        float Tax = Order.getTax() * Order.getSubtotal();
         float Total = Tax + Order.getSubtotal();
         subTotal.setText(String.format("%.2f", Order.getSubtotal()));
         tax.setText(String.format("%.2f", Tax));
         total.setText(String.format("%.2f", Total));
     }
 
+    //validate uniqueness of id
+    public boolean validateUnique(long itemId) {
+        boolean dup = false;
+        for(int i=0; i<my_holder.size(); i++) {
+            if(itemId == my_holder.get(i).itemId)
+                dup = true;
+        }
+        return dup;
+    }
+
+    //checks or unchecks all CheckBoxes
+    private void checkbox(boolean all) {
+        for(int i=0; i<my_holder.size(); i++) {
+            CheckBox cb = my_holder.get(i).checkBox;
+            if(cb.isChecked() != all) {
+                cb.setChecked(all);
+                myAdapter.selectedView(i, all);
+            }
+            myAdapter.notifyDataSetChanged();
+        }
+
+    }
+
+    //custom adapter for the ListView
     private class OrderAdapter extends ArrayAdapter<OrderDetail> {
-        public TextView quantity, itemName, itemPrice;
-        public CheckBox checkBox;
-        public ImageButton leftButton, rightButton;
-        SparseBooleanArray mSelectedIds = new SparseBooleanArray();
+        private ViewHolder holder = null;
+        private SparseBooleanArray mSelectedIds = new SparseBooleanArray();
 
         public OrderAdapter(ArrayList<OrderDetail> order) {
             super(getActivity(), android.R.layout.simple_list_item_1, order);
         }
 
         @Override
+        //instantiate each row from items in the Order.class
         public View getView(int position, View convertView, ViewGroup parent) {
             if(convertView == null) {
                 convertView = getActivity().getLayoutInflater()
                         .inflate(R.layout.mylist_order_item, null);
+
+                holder = new ViewHolder();
+                holder.itemName = (TextView) convertView.findViewById(R.id.checkout_itemName);
+                holder.itemPrice = (TextView) convertView.findViewById(R.id.checkout_itemPrice);
+                holder.quantity = (TextView) convertView.findViewById(R.id.checkout_quantityCounter);
+                holder.checkBox = (CheckBox) convertView.findViewById(R.id.checkout_checkBox);
+                holder.leftButton = (ImageView) convertView.findViewById(R.id.left);
+                holder.rightButton = (ImageView) convertView.findViewById(R.id.right);
+                holder.category = (TextView) convertView.findViewById(R.id.category);
+
+                convertView.setTag(holder);
+            }
+            else {
+                holder = (ViewHolder) convertView.getTag();
             }
 
-            itemName = (TextView) convertView.findViewById(R.id.checkout_itemName);
-            itemName.setText(theOrder.get(position).getTheItem().getItemName());
+            OrderDetail od = theOrder.get(position);
+            holder.itemId = od.getTheItem().getItemID();
 
-            itemPrice = (TextView) convertView.findViewById(R.id.checkout_itemPrice);
-            float price = theOrder.get(position)
-                    .getTheItem().getPrice() * (float)theOrder.get(position).getQuantity();
-            itemPrice.setText("$ " +String.format("%.2f", price));
+            holder.itemName.setText(od.getTheItem().getItemName());
 
-            quantity = (TextView) convertView.findViewById(R.id.checkout_quantityCounter);
-            quantity.setText(Integer.toString(theOrder.get(position).getQuantity()));
+            float price = od.getTheItem().getPrice() * (float)od.getQuantity();
+            holder.itemPrice.setText("$ " +String.format("%.2f", price));
 
-            checkBox = (CheckBox) convertView.findViewById(R.id.checkout_checkBox);
-            checkBox.setOnClickListener(myButtonListener);
-            leftButton = (ImageButton) convertView.findViewById(R.id.left);
-            leftButton.setImageResource(R.drawable.arrow_left);
-            leftButton.setOnClickListener(myButtonListener);
+            holder.quantity.setText(Integer.toString(theOrder.get(position).getQuantity()));
 
-            rightButton = (ImageButton) convertView.findViewById(R.id.right);
-            rightButton.setImageResource(R.drawable.arrow_right);
-            rightButton.setOnClickListener(myButtonListener);
+            holder.category.setText(cds.getCategoryName(od.getTheItem().getCategoryID()));
 
-            listView.add(convertView);
+            holder.checkBox.setOnClickListener(myButtonListener);
+
+            holder.leftButton.setImageResource(R.drawable.left_arrow);
+            holder.leftButton.setOnClickListener(myButtonListener);
+
+            holder.rightButton.setImageResource(R.drawable.right_arrow);
+            holder.rightButton.setOnClickListener(myButtonListener);
+
+            if(!validateUnique(holder.itemId)) {
+                my_holder.add(holder);
+            }
             return convertView;
         }
 
-        public void toggleSelection(int position) {
+        public void toggleSelected(int position) {
             selectedView(position, !mSelectedIds.get(position));
         }
-
+        //determines if the row is selected
         public void selectedView(int position, boolean value) {
             if(value)
                 mSelectedIds.put(position, value);
@@ -142,81 +216,128 @@ public class OrderFragment extends Fragment {
             notifyDataSetChanged();
         }
 
+        //returns the array
         public SparseBooleanArray getSelected() {
             return mSelectedIds;
         }
+
+        //check if any is selected
+        public boolean isAnySelected() {
+            if(mSelectedIds.size() > 0)
+                return true;
+            else
+                return false;
+        }
+
     }
 
+    //listener to removeSelected, submitOrder, check all, individual checkboxes, increment and
+    //decrement item quantity
     private class MyButtonListener implements View.OnClickListener{
         @Override
         public void onClick(View view) {
             int position = lv.getPositionForView((View) view.getParent());
-            TextView tx1 = (TextView)((View)listView.get(position+1)).findViewById(R.id.checkout_quantityCounter);
-            int Q = Integer.parseInt(tx1.getText().toString());
+            int Q = 0;
+            if(position != -1) {
+                TextView tx1 = my_holder.get(position).quantity;
+                Q = Integer.parseInt(tx1.getText().toString());
+            }
 
             switch (view.getId()) {
+                //shows a dialog confirming the removal of items
                 case R.id.CS_removeSelected:
-                    new AlertDialog.Builder(view.getContext())
-                            .setTitle("Remove Confirmation")
-                            .setMessage("Removing the following")
-                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    removeSelected();
-                                    setCheck();
-                                }
-                            })
-                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                 @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                }
-                            })
-                            .show();
+                    if(myAdapter.isAnySelected()) {
+                        new AlertDialog.Builder(view.getContext())
+                                .setTitle("Remove Confirmation")
+                                .setMessage("Removing Items: \n" +displaySelected())
+                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        CheckBox cb = (CheckBox) getActivity().findViewById(R.id.all_checkbox);
+                                        cb.setChecked(false);
+                                        removeSelected();
+                                        setBill();
+                                        TextView orderAmountTV = (TextView) getActivity().findViewById(R.id.MS_order_amount);
+                                        orderAmountTV.setText("(" +Integer.toString(Order.getSize()) +")");
+                                    }
+                                })
+                                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                    }
+                                })
+                                .show();
+                    }
+                    else
+                        Toast.makeText(getActivity(), "No Item Selected", Toast.LENGTH_SHORT).show();
                     break;
+                //submits the order
                 case R.id.CS_summitOrder:
-                    new AlertDialog.Builder(view.getContext())
-                            .setTitle("Submit Order")
-                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    //send order
-                                    //clear order
-                                    setCheck();
-                                }
-                            })
-                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                }
-                            })
-                            .show();
+                    if(theOrder.size() != 0) {
+                        new AlertDialog.Builder(view.getContext())
+                                .setTitle("Submit Order")
+                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        //send order
+                                        for(int j=my_holder.size()-1; j>=0; j--) {
+                                            OrderDetail temp = myAdapter.getItem(j);
+                                            myAdapter.remove(temp);
+                                        }
+                                        setBill();
+                                        TextView orderAmountTV = (TextView) getActivity().findViewById(R.id.MS_order_amount);
+                                        orderAmountTV.setText("(" +Integer.toString(Order.getSize()) +")");
+                                    }
+                                })
+                                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        dialogInterface.dismiss();
+                                    }
+                                })
+                                .show();
+                    }
+                    else
+                        Toast.makeText(getActivity(), "Order has no items", Toast.LENGTH_SHORT).show();
                     break;
+                //check all the checkboxes in the ListView
                 case R.id.all_checkbox:
                     CheckBox cb = (CheckBox) view;
-                    int itemCount = lv.getCount();
-                    for(int i=1; i<=itemCount; i++) {
-                        CheckBox c = (CheckBox) listView.get(i).findViewById(R.id.checkout_checkBox);
-                        c.setChecked(cb.isChecked());
-                        myAdapter.toggleSelection(i-1);
-                    }
+                    checkbox(cb.isChecked());
                     break;
+                //check the CheckBox in the corresponding row
                 case R.id.checkout_checkBox:
-                    myAdapter.toggleSelection(position);
+                    //CheckBox rCB = my_holder.get(position).checkBox;
+                    myAdapter.toggleSelected(position);
                     break;
+                //decrease the quantity, no less than 1, and updates the price, subtotal, tax, and
+                //total
                 case R.id.left:
                     if(Q != 1) {
                         int newQ = --Q;
                         theOrder.get(position).setQuantity(newQ);
-                        setCheck();
+                        setBill();
                     }
                     break;
+                //increase the quantity, and updates the price, subtotal, tax, and total
                 case R.id.right:
                     int newQ = ++Q;
                     theOrder.get(position).setQuantity(newQ);
-                    setCheck();
+                    setBill();
                     break;
             }
+            //method that updates the ListView
             myAdapter.notifyDataSetChanged();
         }
+
+
+    }
+
+    //pattern to optimize rendering
+    private class ViewHolder {
+        public TextView quantity, itemName, itemPrice, category;
+        public CheckBox checkBox;
+        public ImageView leftButton, rightButton;
+        public long itemId;
     }
 }

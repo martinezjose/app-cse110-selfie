@@ -15,8 +15,10 @@ import android.graphics.BitmapFactory;
 import java.util.ArrayList;
 import java.io.File;
 
+import classes.Category;
 import classes.SmallItem;
 import cse110.selfie.app.UI.R;
+import database.CategoryDataSource;
 import database.ItemDataSource;
 
 /**
@@ -28,49 +30,55 @@ import database.ItemDataSource;
  */
 public class SpecialTabFragment extends Fragment {
 
-    WeightController weightController;
-    ItemDataSource itemDataSource;
+    private WeightController weightController;
+    private ItemDataSource itemDataSource;
+    private CategoryDataSource cds;
 
     private LinearLayout specialGallery;
     private ImageView logo;
+
     private ArrayList<SmallItem> specials;
 
     @Override
+    //instantiate classes and populates the HorizontalScrollView and logo
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_special_tab, container, false);
 
         itemDataSource = new ItemDataSource(getActivity());
         specials = itemDataSource.getSpecialSmallItem();
 
+        cds = new CategoryDataSource(getActivity());
+        cds = new CategoryDataSource(getActivity());
+
         weightController = new WeightController(getActivity());
+
+        //there will be a function to retrieve the logo
         logo = (ImageView) view.findViewById(R.id.logo);
+        logo.setImageResource(R.drawable.lobster_nachos_logo);
+
         specialGallery = (LinearLayout) view.findViewById(R.id.imageGallery);
 
         for(int i=0; i<specials.size(); i++) {
             ImageView iv1 = new ImageView(specialGallery.getContext());
-            File img1 = new File(specials.get(i).getThumbnail());
-            if(img1.exists()) {
-                Bitmap pic1 = BitmapFactory.decodeFile(img1.getAbsolutePath());
-                iv1.setImageBitmap(pic1);
-            }
-            else
-                iv1.setImageResource(R.drawable.ic_launcher);
-
+            Helper.getImage(iv1, specials.get(i).getThumbnail());
             iv1.setLayoutParams(new ViewGroup.LayoutParams(100, 100));
             iv1.setId(i);
             iv1.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     int pos = view.getId();
+                    long id = specials.get(pos).getCategoryID();
+
                     Bundle argMenu = new Bundle();
-                    argMenu.putInt(MenuItemList.ARG_CATEGORY_ID, specials.get(pos).getCategoryID());
-                    argMenu.putInt(MenuItemList.ARG_ITEM_ID, specials.get(pos).getItemID());
+                    argMenu.putLong(MenuItemList.ARG_CATEGORY_ID, specials.get(pos).getCategoryID());
+                    argMenu.putLong(MenuItemList.ARG_ITEM_ID, specials.get(pos).getItemID());
+                    argMenu.putString(MenuItemList.ARG_CATEGORY_NAME, cds.getCategoryName(id));
                     MenuItemList m = new MenuItemList();
                     m.setArguments(argMenu);
 
                     FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
                     ft.replace(R.id.MSfragment_listContainer, m)
-                            .addToBackStack("Menu " + Integer.toString(pos))
+                            .addToBackStack("Detail " + Long.toString(id))
                             .commit();
                     weightController.changeLayoutWeight(1);
                 }
