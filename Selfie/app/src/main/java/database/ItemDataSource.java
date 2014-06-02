@@ -175,7 +175,7 @@ public class ItemDataSource {
 
         //create a cursor pointing to the item identified by this "id"
         Cursor cursor = db.query(SelfieDatabase.TABLE_ALL_ITEMS,allColumns,SelfieDatabase.KEY_ITEM_ID +
-        " = ?",new String[] {String.valueOf(id)},null,null,null);
+        "=?",new String[] {String.valueOf(id)},null,null,null,null);
 
         if(cursor==null)
             throw new RetrieveFromDatabaseException("Failed retrieving <"+id+"> from table " +
@@ -190,6 +190,10 @@ public class ItemDataSource {
         //close database
         close();
 
+        if(returnItem.getItemID() == 0){
+            throw new RetrieveFromDatabaseException("Failed retrieving <"+id+"> from table " +
+                    SelfieDatabase.TABLE_ALL_ITEMS);
+        }
         //return item
         return returnItem;
     }
