@@ -50,7 +50,7 @@ public class CategoryFragment extends ListFragment{
         Bundle argMenu = new Bundle();
         argMenu.putLong(MenuItemList.ARG_CATEGORY_ID, category.get(position).getCategoryID());
         argMenu.putString(MenuItemList.ARG_CATEGORY_NAME, category.get(position).getCategoryName());
-        argMenu.putLong(MenuItemList.ARG_ITEM_ID, -1l);
+        argMenu.putLong(MenuItemList.ARG_ITEM_ID, -1);
         MenuItemList menu = new MenuItemList();
         menu.setArguments(argMenu);
 

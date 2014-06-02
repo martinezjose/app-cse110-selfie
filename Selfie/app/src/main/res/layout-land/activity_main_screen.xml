@@ -1,4 +1,5 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -26,11 +27,11 @@
                 android:id="@+id/MS_order_button"
                 android:layout_width="70dp"
                 android:layout_height="60dp"
-                android:layout_marginRight="36dp"
-                android:layout_alignParentBottom="true"
+                android:layout_marginRight="96dp"
+                android:onClick="myButtonListener"
+                android:layout_alignParentTop="true"
                 android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:onClick="myButtonListener"/>
+                android:layout_alignParentEnd="true" />
             <ImageView
                 android:id="@+id/MS_home_button"
                 android:layout_width="70dp"
@@ -54,14 +55,14 @@
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Medium Text"
                 android:id="@+id/MS_order_amount"
-                android:layout_centerVertical="true"
-                android:layout_alignLeft="@+id/MS_order_button"
-                android:layout_alignStart="@+id/MS_order_button"
-                android:layout_marginLeft="48dp" />
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
         </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
+            android:background="#FFFFFF"
             android:layout_height="0dp"
             android:layout_weight="11"
             android:layout_gravity="bottom|center_horizontal"

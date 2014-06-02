@@ -54,13 +54,13 @@ public class HomeScreenActivity extends FragmentActivity {
         categoryName.setVisibility(TextView.INVISIBLE);
         //there is a comment
         ImageView homeIV = (ImageView) findViewById(R.id.MS_home_button);
-        homeIV.setImageResource(R.drawable.home);
+        homeIV.setImageResource(R.drawable.home_button);
 
         ImageView waiterIV = (ImageView) findViewById(R.id.MS_alert);
-        waiterIV.setImageResource(R.drawable.waiter);
+        waiterIV.setImageResource(R.drawable.waiter_button);
 
         ImageView orderIV = (ImageView) findViewById(R.id.MS_order_button);
-        orderIV.setImageResource(R.drawable.order);
+        orderIV.setImageResource(R.drawable.order_button);
 
         TextView orderAmountTV = (TextView) findViewById(R.id.MS_order_amount);
         orderAmountTV.setText("(" + Integer.toString(Order.getSize()) + ")");

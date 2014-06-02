@@ -139,7 +139,7 @@ public class MenuItemList extends ListFragment {
 
             Helper.getImage(holder.itemThumbnail, list.get(position).getThumbnail());
 
-            holder.specialStar.setImageResource(R.drawable.yellow_star);
+            holder.specialStar.setImageResource(R.drawable.star);
             if(list.get(position).isDailySpecial())
                 holder.specialStar.setAlpha(1f);
             else

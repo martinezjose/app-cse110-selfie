@@ -39,9 +39,8 @@ public class DetailFragment extends Fragment {
 
     private long itemId = -1;
 
-    private TextView itemName, itemDescription, quantityCounter, thumbsCounter, priceDisplay;
-    private ImageView thumbsUp, iv1, iv2, quantityUp, quantityDown;
-    private Button addToOrder;
+    private TextView itemName, itemDescription, quantityCounter, priceDisplay;
+    private ImageView iv1, iv2, quantityUp, quantityDown, addToOrder;
     private LinearLayout recommendedGallery;
 
     @Override
@@ -69,20 +68,17 @@ public class DetailFragment extends Fragment {
         itemName = (TextView) view.findViewById(R.id.itemDetail_itemName);
         quantityCounter = (TextView) view.findViewById(R.id.itemDetail_quantityDisplay);
         quantityCounter.setText("1");
-        thumbsCounter = (TextView) view.findViewById(R.id.itemDetail_thumbDisplay);
 
         MyButtonListener myButtonListener = new MyButtonListener();
         quantityUp = (ImageView) view.findViewById(R.id.itemDetail_quantityUpOne);
-        quantityUp.setImageResource(R.drawable.arrow_up2);
+        quantityUp.setImageResource(R.drawable.up_arrow);
         quantityUp.setOnClickListener(myButtonListener);
         quantityDown = (ImageView) view.findViewById(R.id.itemDetail_quantityDownOne);
-        quantityDown.setImageResource(R.drawable.arrow_down2);
+        quantityDown.setImageResource(R.drawable.down_arrow);
         quantityDown.setOnClickListener(myButtonListener);
-        addToOrder = (Button) view.findViewById(R.id.itemDetail_addToOrder);
+        addToOrder = (ImageView) view.findViewById(R.id.itemDetail_addToOrder);
+        addToOrder.setImageResource(R.drawable.add_to_order);
         addToOrder.setOnClickListener(myButtonListener);
-
-        thumbsUp = (ImageView) view.findViewById(R.id.itemDetail_thumbup);
-        thumbsUp.setImageResource(R.drawable.thumbs_up_pic);
 
         //Bottom Layout
         recommendedGallery = (LinearLayout) view.findViewById(R.id.itemDetail_recommendedGallery);
@@ -113,7 +109,6 @@ public class DetailFragment extends Fragment {
         itemDescription.setText(theItem.getDescription());
         priceDisplay.setText("$ " + String.format("%.2f", theItem.getPrice()));
         itemName.setText(theItem.getItemName());
-        thumbsCounter.setText(Integer.toString(theItem.getLikes()));
 
         final long[] recommendations = theItem.getRecommendations();
         for (int i = 0; i <recommendations.length; i++) {

@@ -105,8 +105,9 @@ public class OrderFragment extends Fragment {
             }
         }
 
-        for(int j=0; j<pos.length; j++) {
+        for(int j=pos.length-1; j>=0; j--) {
             checked.delete(pos[j]);
+            my_holder.remove(pos[j]);
         }
     }
 
@@ -174,10 +175,10 @@ public class OrderFragment extends Fragment {
 
             holder.checkBox.setOnClickListener(myButtonListener);
 
-            holder.leftButton.setImageResource(R.drawable.arrow_left2);
+            holder.leftButton.setImageResource(R.drawable.left_arrow);
             holder.leftButton.setOnClickListener(myButtonListener);
 
-            holder.rightButton.setImageResource(R.drawable.arrow_right2);
+            holder.rightButton.setImageResource(R.drawable.right_arrow);
             holder.rightButton.setOnClickListener(myButtonListener);
 
             if(!validateUnique(holder.itemId)) {
