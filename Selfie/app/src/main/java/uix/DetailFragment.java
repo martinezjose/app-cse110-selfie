@@ -112,6 +112,8 @@ public class DetailFragment extends Fragment {
 
         final long[] recommendations = theItem.getRecommendations();
         for (int i = 0; i <recommendations.length; i++) {
+
+
             ImageView rg1 = new ImageView(recommendedGallery.getContext());
             rg1.setLayoutParams(new ViewGroup.LayoutParams(100, 100));
             try {
