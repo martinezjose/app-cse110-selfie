@@ -32,9 +32,6 @@ public class MenuItemList extends ListFragment {
 
     private ItemDataSource itemDataSource;
     private ArrayList<SmallItem> list;
-    private ArrayList<ViewHolder> views;
-
-        MenuAdapter myAdapter;
     
     private long categoryId = -1, itemId = -1;
     private String categoryName;
@@ -56,7 +53,6 @@ public class MenuItemList extends ListFragment {
 
         itemDataSource = new ItemDataSource(getActivity());
         list = itemDataSource.getSmallItemFromCategory(categoryId);
-        views = new ArrayList<ViewHolder>();
 
         Bundle firstArgs = new Bundle();
         if(itemId == -1) {
@@ -74,7 +70,7 @@ public class MenuItemList extends ListFragment {
                 .addToBackStack("Detail " +Long.toString(itemId))
                 .commit();
 
-        myAdapter = new MenuAdapter(list);
+        MenuAdapter myAdapter = new MenuAdapter(list);
         setListAdapter(myAdapter);
     }
 
