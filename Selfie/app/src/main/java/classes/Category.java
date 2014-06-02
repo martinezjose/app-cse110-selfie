@@ -15,7 +15,7 @@ public class Category {
     private String created;
     @SerializedName("CategoryID")
     @Expose
-    private Long categoryID;
+    private long categoryID;
     @SerializedName("LastUpdated")
     @Expose
     private String lastUpdated;
@@ -37,7 +37,7 @@ public class Category {
         this.created = created;
     }
 
-    public Long getCategoryID() {
+    public long getCategoryID() {
         return categoryID;
     }
 

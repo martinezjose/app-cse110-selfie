@@ -21,8 +21,11 @@ public class CategoryDataSource {
     //CONSTRUCTOR
     public CategoryDataSource(Context context) {myDB = new SelfieDatabase(context);}
 
-    //open()
-    public void open(){db = myDB.getWritableDatabase();}
+    //open_read()
+    public void open_read(){db = myDB.getReadableDatabase();}
+
+    //open_write()
+    public void open_write(){db = myDB.getWritableDatabase();}
 
     //close()
     public void close(){ myDB.close(); }
@@ -40,10 +43,10 @@ public class CategoryDataSource {
     public long addCategory(Category category){
 
         //get a writable database
-        db = myDB.getWritableDatabase();
+        open_write();
 
-        ContentValues values = new ContentValues();
-        values.put(SelfieDatabase.KEY_CATEGORY_NAME,category.getCategoryName());
+        //populate ContentValues to add to database
+        ContentValues values = categoryToContentValues(category);
 
         long ReturnValue = db.insert(SelfieDatabase.TABLE_CATEGORIES,null,values);
 
@@ -53,18 +56,18 @@ public class CategoryDataSource {
         return ReturnValue;
     }
 
-    /* public Category getCategory(int id) -- Read
-    * Parameters: int id
+    /* public Category getCategory(long id) -- Read
+    * Parameters: long id
     * Description: reads from the database; returns a Category.
     * PRECONDITION: id for the target item is provided (somehow).
     * POSTCONDITION: Category object is returned
     * Returns: found category in the database is returned.
     * Status: works
     */
-    public Category getCategory(int id) {
+    public Category getCategory(long id) {
 
         //get a readable database
-        db = myDB.getReadableDatabase();
+        open_read();
 
         //create a cursor pointing to the category identified by this "id"
         Cursor cursor = db.query(SelfieDatabase.TABLE_CATEGORIES, allColumns,
@@ -105,7 +108,6 @@ public class CategoryDataSource {
         //get number of rows affected
         int affected = db.update(SelfieDatabase.TABLE_CATEGORIES,values,SelfieDatabase.KEY_CATEGORY_ID+"=?",
                 new String[] {String.valueOf(category.getCategoryID())});
-
         //close database
         db.close();
 
@@ -123,7 +125,7 @@ public class CategoryDataSource {
     public void deleteCategory(Category category){
 
         //get writable database
-        db = myDB.getWritableDatabase();
+        open_write();
 
         //may want to return # of rows affected...
         db.delete(SelfieDatabase.TABLE_CATEGORIES,SelfieDatabase.KEY_CATEGORY_ID + " =?",
@@ -199,10 +201,32 @@ public class CategoryDataSource {
         return count;
     }
 
+    /*
+     *
+     */
+    public String getCategoryName(long CategoryID){
+        //open database for read
+        open_read();
+
+        //query
+        Cursor cursor = db.query(SelfieDatabase.TABLE_CATEGORIES,allColumns,SelfieDatabase.KEY_CATEGORY_ID + " = ? ",
+                new String [] {String.valueOf(CategoryID)},null,null,null);
+
+        cursor.moveToFirst();
+
+        //retrieve CategoryName
+        String CategoryName = cursor.getString(cursor.getColumnIndex(SelfieDatabase.KEY_CATEGORY_NAME));
+
+        //close database
+        close();
+
+        return CategoryName;
+    }
+
 
     /************************************** HELPER METHODS ****************************************/
 
-    /* private Category cursorToItem(Cursor cursor)
+    /* private Category cursorToCategory(Cursor cursor)
      * Parameters: Cursor cursor
      * Description: returns a category object pointed at by the cursor in the database.
      * PRECONDITION: cursor points to a valid entry in the database.

@@ -1,7 +1,5 @@
 package uix;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
@@ -12,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.io.File;
 import java.util.ArrayList;
 
 import classes.SmallItem;
@@ -112,7 +109,7 @@ public class MenuItemList extends ListFragment {
 
         getActivity().getSupportFragmentManager().beginTransaction()
                 .replace(R.id.MSfragment_detailContainer, fragment)
-                .addToBackStack("Detail " +Integer.toString(list.get(position).getItemID()))
+                .addToBackStack("Detail " +Long.toString(list.get(position).getItemID()))
                 .commit();
     }
 

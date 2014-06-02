@@ -16,7 +16,7 @@ public class SmallItem extends Item {
     /* Getter Constructor
      * Description: used to retrieve data from the database.
      */
-    public SmallItem(int itemid, String name, int categoryid, boolean special, String Thumbnail){
+    public SmallItem(long itemid, String name, long categoryid, boolean special, String Thumbnail){
         this.itemID = itemid;
         this.itemName = name;
         this.categoryID = categoryid;
