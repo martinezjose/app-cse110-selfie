@@ -245,7 +245,6 @@ public class OrderFragment extends Fragment {
                                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
-                                        dialogInterface.dismiss();
                                     }
                                 })
                                 .show();

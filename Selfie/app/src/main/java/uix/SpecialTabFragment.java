@@ -32,6 +32,7 @@ public class SpecialTabFragment extends Fragment {
 
     private WeightController weightController;
     private ItemDataSource itemDataSource;
+    private CategoryDataSource cds;
 
     private LinearLayout specialGallery;
     private ImageView logo;
@@ -45,6 +46,9 @@ public class SpecialTabFragment extends Fragment {
 
         itemDataSource = new ItemDataSource(getActivity());
         specials = itemDataSource.getSpecialSmallItem();
+
+        cds = new CategoryDataSource(getActivity());
+        cds = new CategoryDataSource(getActivity());
 
         weightController = new WeightController(getActivity());
 
@@ -63,20 +67,18 @@ public class SpecialTabFragment extends Fragment {
                 @Override
                 public void onClick(View view) {
                     int pos = view.getId();
-                    int id = (int) specials.get(pos).getCategoryID();
-                    CategoryDataSource cds = new CategoryDataSource(getActivity());
-                    ArrayList<Category> catName = cds.getAllCategories();
+                    long id = specials.get(pos).getCategoryID();
 
                     Bundle argMenu = new Bundle();
                     argMenu.putLong(MenuItemList.ARG_CATEGORY_ID, specials.get(pos).getCategoryID());
-                    argMenu.putString(MenuItemList.ARG_CATEGORY_NAME, catName.get(id-1).getCategoryName());
                     argMenu.putLong(MenuItemList.ARG_ITEM_ID, specials.get(pos).getItemID());
+                    argMenu.putString(MenuItemList.ARG_CATEGORY_NAME, cds.getCategoryName(id));
                     MenuItemList m = new MenuItemList();
                     m.setArguments(argMenu);
 
                     FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
                     ft.replace(R.id.MSfragment_listContainer, m)
-                            .addToBackStack("Detail " + Integer.toString(pos))
+                            .addToBackStack("Detail " + Long.toString(id))
                             .commit();
                     weightController.changeLayoutWeight(1);
                 }
