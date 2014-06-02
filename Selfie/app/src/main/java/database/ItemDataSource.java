@@ -106,17 +106,13 @@ public class ItemDataSource {
 
         addItem(itemsList);
 
-        int i = 0;
         //handle imagepath and recommendations
-        for(Item item:itemsList){
-            ++i;    //increment counter
+        for(int i = 1; i<=numberOfItems; ++i){
             //add an ImagePath to odd Items
-               imageSource.addImage(item.getItemID(),imagePath);
-
-
+            imageSource.addImage(i,imagePath);
             //add recommendations to multiples of 3
             if(i%3==0){
-                recommendationSource.addRecommendation(item.getItemID(),recommendations);
+                recommendationSource.addRecommendation(i,recommendations);
             }
         }
 
@@ -475,7 +471,6 @@ public class ItemDataSource {
      */
     private ContentValues itemToContentValues(Item item){
         ContentValues values = new ContentValues();
-        values.put(SelfieDatabase.KEY_ITEM_ID,item.getItemID());
         values.put(SelfieDatabase.KEY_ITEM_NAME,item.getItemName());
         values.put(SelfieDatabase.KEY_PRICE,item.getPrice());
         values.put(SelfieDatabase.KEY_CATEGORY_ID,item.getCategoryID());

@@ -102,9 +102,11 @@ public class RecommendationDataSource {
         if(cursor.moveToFirst()){
             int i = 0; //counter
             do{
-                returnValue[i] = cursor.getInt(cursor.getColumnIndex(SelfieDatabase.KEY_RECOMMENDED_ITEM));
+                returnValue[i] = cursor.getLong(cursor.getColumnIndex(SelfieDatabase.KEY_RECOMMENDED_ITEM));
+                ++i;
             }while(cursor.moveToNext());
         }
+
         //close database
         close();
 

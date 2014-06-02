@@ -86,6 +86,7 @@ public class Item {
      public Item(long ItemID, String ItemName, float Price, long CategoryID, int Likes, boolean Active,
      int Calories, String LastUpdated, String Description, boolean DailySpecial,
      String [] ImagePath, String Thumbnail, long [] Recommendations) {
+         itemID = ItemID;
          itemName = ItemName;
          price = Price;
          categoryID = CategoryID;
