@@ -14,9 +14,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-
-import classes.Category;
 import classes.Item;
 import cse110.selfie.app.UI.R;
 import database.CategoryDataSource;
@@ -37,7 +34,7 @@ public class DetailFragment extends Fragment {
     final static String ARG_ITEM_ID = "ARG_ITEM_ID";
 
     private WeightController myController;
-    private ItemDataSource itemDataSource;
+    private ItemDataSource ids;
     private Item theItem, temp;
 
     private long itemId = -1;
@@ -55,9 +52,9 @@ public class DetailFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_detail_screen, container, false);
 
         myController = new WeightController(getActivity());
-        itemDataSource = new ItemDataSource(getActivity());
+        ids = new ItemDataSource(getActivity());
         try {
-            theItem = itemDataSource.getItem(itemId);
+            theItem = ids.getItem(itemId);
         } catch (Exception e) {
             Log.e("Retrieve Item Exception", "Item #" + Long.toString(itemId));
         }
@@ -118,22 +115,29 @@ public class DetailFragment extends Fragment {
         itemName.setText(theItem.getItemName());
         thumbsCounter.setText(Integer.toString(theItem.getLikes()));
 
-        long[] recommendations = theItem.getRecommendations();
+        final long[] recommendations = theItem.getRecommendations();
         for (int i = 0; i <recommendations.length; i++) {
             ImageView rg1 = new ImageView(recommendedGallery.getContext());
             rg1.setLayoutParams(new ViewGroup.LayoutParams(100, 100));
             try {
-                temp = itemDataSource.getItem(recommendations[i]);
+                temp = ids.getItem(recommendations[i]);
             } catch (Exception e) {
                 Log.e("Item Retrieve Exception", Long.toString(recommendations[i]));
             }
             Helper.getImage(rg1, temp.getThumbnail());
+            rg1.setId(i);
 
             rg1.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     CategoryDataSource cds = new CategoryDataSource(getActivity());
-                    ArrayList<Category> cat = cds.getAllCategories();
+
+                    int id = view.getId();
+                    try {
+                        temp = ids.getItem(recommendations[id]);
+                    } catch (Exception e) {
+                        Log.e("Item Retrieve Exception", Long.toString(recommendations[id]));
+                    }
 
                     Bundle argMenu = new Bundle();
                     argMenu.putLong(MenuItemList.ARG_CATEGORY_ID, temp.getCategoryID());
