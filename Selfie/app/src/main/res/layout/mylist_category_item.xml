@@ -9,6 +9,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Large Text"
+        android:textColor="#000000"
         android:textSize="50dp"
         android:id="@+id/categoryLabel"
         android:layout_alignParentTop="true"

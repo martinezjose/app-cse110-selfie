@@ -27,11 +27,11 @@
                 android:id="@+id/MS_order_button"
                 android:layout_width="70dp"
                 android:layout_height="60dp"
-                android:layout_marginRight="96dp"
+                android:layout_marginRight="69dp"
                 android:onClick="myButtonListener"
                 android:layout_alignParentTop="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true" />
+                android:layout_alignRight="@+id/MS_order_amount"
+                android:layout_alignEnd="@+id/MS_order_amount" />
             <ImageView
                 android:id="@+id/MS_home_button"
                 android:layout_width="70dp"
@@ -55,9 +55,10 @@
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Medium Text"
                 android:id="@+id/MS_order_amount"
-                android:layout_alignParentTop="true"
+                android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true" />
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="11dp" />
         </RelativeLayout>
 
         <LinearLayout

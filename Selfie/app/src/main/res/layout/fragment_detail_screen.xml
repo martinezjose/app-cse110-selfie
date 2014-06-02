@@ -41,9 +41,10 @@
             android:text="New Text"
             android:textColor="#000000"
             android:id="@+id/itemDetail_quantityDisplay"
-            android:layout_above="@+id/itemDetail_quantityDownOne"
-            android:layout_alignLeft="@+id/itemDetail_quantityUpOne"
-            android:layout_alignStart="@+id/itemDetail_quantityUpOne" />
+            android:layout_alignTop="@+id/itemDetail_price"
+            android:layout_alignLeft="@+id/itemDetail_quantityDownOne"
+            android:layout_alignStart="@+id/itemDetail_quantityDownOne"
+            android:layout_marginLeft="9dp" />
 
         <ImageView
             android:layout_width="25dp"
@@ -88,8 +89,9 @@
             android:text="New Text"
             android:textColor="#000000"
             android:id="@+id/itemDetail_price"
-            android:layout_alignTop="@+id/itemDetail_quantityDisplay"
-            android:layout_toRightOf="@+id/itemDetail_description" />
+            android:layout_marginLeft="18dp"
+            android:layout_alignTop="@+id/itemDetail_addToOrder"
+            android:layout_toRightOf="@+id/itemDetail_quantityDisplay" />
 
     </RelativeLayout>
     <HorizontalScrollView

@@ -84,7 +84,7 @@ public class DetailFragment extends Fragment {
         recommendedGallery = (LinearLayout) view.findViewById(R.id.itemDetail_recommendedGallery);
 
         updateDetail();
-        return view;
+            return view;
     }
 
     //fills the components with the corresponding information

@@ -54,7 +54,7 @@ public class SpecialTabFragment extends Fragment {
 
         //there will be a function to retrieve the logo
         logo = (ImageView) view.findViewById(R.id.logo);
-        logo.setImageResource(R.drawable.ic_launcher);
+        logo.setImageResource(R.drawable.lobster_nachos_logo);
 
         specialGallery = (LinearLayout) view.findViewById(R.id.imageGallery);
 

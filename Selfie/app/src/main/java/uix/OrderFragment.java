@@ -12,6 +12,8 @@ package uix;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -36,7 +38,6 @@ public class OrderFragment extends Fragment {
 
     private ArrayList<OrderDetail> theOrder;
     private ArrayList<ViewHolder> my_holder;
-    private ArrayList<Category> cat;
 
     private ListView lv;
     private OrderAdapter myAdapter;
@@ -55,11 +56,12 @@ public class OrderFragment extends Fragment {
         t.setVisibility(TextView.INVISIBLE);
 
         lv = (ListView)  view.findViewById(R.id.CS_selectedItems);
+        lv.setDivider(new ColorDrawable(Color.BLACK));
+        lv.setDividerHeight(6);
         theOrder = Order.getTheOrder();
         my_holder = new ArrayList<ViewHolder>();
 
         cds = new CategoryDataSource(getActivity());
-        cat = cds.getAllCategories();
 
         myAdapter = new OrderAdapter(theOrder);
         lv.setAdapter(myAdapter);
@@ -106,7 +108,9 @@ public class OrderFragment extends Fragment {
         }
 
         for(int j=pos.length-1; j>=0; j--) {
+            myAdapter.toggleSelected(pos[j]);
             checked.delete(pos[j]);
+            my_holder.get(pos[j]).checkBox.setChecked(false);
             my_holder.remove(pos[j]);
         }
     }
@@ -128,6 +132,19 @@ public class OrderFragment extends Fragment {
                 dup = true;
         }
         return dup;
+    }
+
+    //checks or unchecks all CheckBoxes
+    private void checkbox(boolean all) {
+        for(int i=0; i<my_holder.size(); i++) {
+            CheckBox cb = my_holder.get(i).checkBox;
+            if(cb.isChecked() != all) {
+                cb.setChecked(all);
+                myAdapter.selectedView(i, all);
+            }
+            myAdapter.notifyDataSetChanged();
+        }
+
     }
 
     //custom adapter for the ListView
@@ -187,6 +204,9 @@ public class OrderFragment extends Fragment {
             return convertView;
         }
 
+        public void toggleSelected(int position) {
+            selectedView(position, !mSelectedIds.get(position));
+        }
         //determines if the row is selected
         public void selectedView(int position, boolean value) {
             if(value)
@@ -203,11 +223,10 @@ public class OrderFragment extends Fragment {
 
         //check if any is selected
         public boolean isAnySelected() {
-            for(int i=0; i<mSelectedIds.size(); i++) {
-                if(mSelectedIds.valueAt(i))
-                    return true;
-            }
-            return false;
+            if(mSelectedIds.size() > 0)
+                return true;
+            else
+                return false;
         }
 
     }
@@ -237,7 +256,6 @@ public class OrderFragment extends Fragment {
                                         CheckBox cb = (CheckBox) getActivity().findViewById(R.id.all_checkbox);
                                         cb.setChecked(false);
                                         removeSelected();
-                                        checkbox(false);
                                         setBill();
                                         TextView orderAmountTV = (TextView) getActivity().findViewById(R.id.MS_order_amount);
                                         orderAmountTV.setText("(" +Integer.toString(Order.getSize()) +")");
@@ -267,6 +285,8 @@ public class OrderFragment extends Fragment {
                                             myAdapter.remove(temp);
                                         }
                                         setBill();
+                                        TextView orderAmountTV = (TextView) getActivity().findViewById(R.id.MS_order_amount);
+                                        orderAmountTV.setText("(" +Integer.toString(Order.getSize()) +")");
                                     }
                                 })
                                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -287,8 +307,8 @@ public class OrderFragment extends Fragment {
                     break;
                 //check the CheckBox in the corresponding row
                 case R.id.checkout_checkBox:
-                    CheckBox rCB = my_holder.get(position).checkBox;
-                    myAdapter.selectedView(position, rCB.isChecked());
+                    //CheckBox rCB = my_holder.get(position).checkBox;
+                    myAdapter.toggleSelected(position);
                     break;
                 //decrease the quantity, no less than 1, and updates the price, subtotal, tax, and
                 //total
@@ -310,17 +330,7 @@ public class OrderFragment extends Fragment {
             myAdapter.notifyDataSetChanged();
         }
 
-        //checks or unchecks all CheckBoxes
-        private void checkbox(boolean all) {
-            for(int i=0; i<my_holder.size(); i++) {
-                CheckBox cb = my_holder.get(i).checkBox;
-                if(cb.isChecked() != all) {
-                    cb.setChecked(all);
-                    myAdapter.selectedView(i, all);
-                }
-            }
 
-        }
     }
 
     //pattern to optimize rendering
