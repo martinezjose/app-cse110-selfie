@@ -108,8 +108,7 @@ public class OrderFragment extends Fragment {
         }
 
         for(int j=pos.length-1; j>=0; j--) {
-            myAdapter.toggleSelected(pos[j]);
-            checked.delete(pos[j]);
+            myAdapter.selectedView(pos[j], false);
             my_holder.get(pos[j]).checkBox.setChecked(false);
             my_holder.remove(pos[j]);
         }
@@ -144,7 +143,6 @@ public class OrderFragment extends Fragment {
             }
             myAdapter.notifyDataSetChanged();
         }
-
     }
 
     //custom adapter for the ListView
