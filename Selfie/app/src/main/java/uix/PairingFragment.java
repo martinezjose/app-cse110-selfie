@@ -63,8 +63,6 @@ public class PairingFragment extends FragmentActivity {
                     return;
                 }
 
-
-
                 //check if it's less than 4
                 if(input.length() < 4) {
                     errorMessage.setVisibility(TextView.VISIBLE);
@@ -96,9 +94,7 @@ public class PairingFragment extends FragmentActivity {
 
                                 itemDataSource.setUpFromWebAPI();
 
-
                                 errorMessage.setVisibility(TextView.INVISIBLE);
-
 
                                 Order.setTableId(tableID);
                                 Intent intent = new Intent(getApplicationContext(), HomeScreenActivity.class);
@@ -108,7 +104,6 @@ public class PairingFragment extends FragmentActivity {
                             catch (InterruptedException e) {
 
                                 final InterruptedException ex = e;
-
 
                                 // Get a handler that can be used to post to the main thread
                                 Handler mainHandler = new Handler(context.getMainLooper());
@@ -127,8 +122,6 @@ public class PairingFragment extends FragmentActivity {
                                     }
                                 }; // This is your code
                                 mainHandler.post(myRunnable);
-
-
                             }
                             catch (Exception e) {
                                 Log.e("ITEMDATASOURCE", "SETUP EXCEPTION");
@@ -136,9 +129,6 @@ public class PairingFragment extends FragmentActivity {
                         }
                     };
                     thread.start();
-
-
-
                 }
             }
         });
