@@ -40,9 +40,9 @@ public class TestItemDataSource extends AndroidTestCase{
         itemSource = new ItemDataSource(context);
 
         //populate the database
-        ArrayList<Item> itemsList = new ArrayList<Item>();
+        Item[] itemsList = new Item[MAX_RECORDS];
         for(int i =0; i<MAX_RECORDS; ++i){
-            itemsList.add(startItem());
+            itemsList[i] = startItem();
         }
         //add all items
         itemSource.addItem(itemsList);
@@ -67,9 +67,9 @@ public class TestItemDataSource extends AndroidTestCase{
      */
     public void testAddItem() {
 
-        ArrayList<Item> itemsList = new ArrayList<Item>();
+        Item[] itemsList = new Item[1];
         Item item = TestItemDataSource.startItem();
-        itemsList.add(item);
+        itemsList[0]= item;
         try{
             itemSource.addItem(itemsList);
         } catch (InsertToDatabaseException e){
@@ -181,6 +181,7 @@ public class TestItemDataSource extends AndroidTestCase{
         myItem.setDescription(EntreeDescriptions[randomDescriptionIndex]);
         myItem.setDailySpecial(myRandom.nextBoolean());
         myItem.setThumbnail("/res/drawables/thumb_image.jpeg");
+        myItem.setRemoteID(myRandom.nextLong());
         return myItem;
     }
 

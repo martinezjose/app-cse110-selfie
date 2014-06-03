@@ -14,6 +14,7 @@ import java.util.List;
 import classes.Category;
 import classes.Item;
 import classes.SmallItem;
+import classes.WebAPI;
 import tests.TestItemDataSource;
 
 /**
@@ -41,7 +42,7 @@ public class ItemDataSource {
             SelfieDatabase.KEY_LIKES,SelfieDatabase.KEY_ACTIVE,
             SelfieDatabase.KEY_CALORIES,SelfieDatabase.KEY_LAST_UPDATED,
             SelfieDatabase.KEY_DESCRIPTION,SelfieDatabase.KEY_DAILY_SPECIAL,
-            SelfieDatabase.KEY_THUMBNAIL};
+            SelfieDatabase.KEY_THUMBNAIL,SelfieDatabase.KEY_REMOTE_ID};
 
     //used to retrieve specific columns for getSmallItemFromCategory query
     private String [] smallColumns = {SelfieDatabase.KEY_ITEM_ID,SelfieDatabase.KEY_ITEM_NAME,
@@ -78,6 +79,23 @@ public class ItemDataSource {
         db.close();
     }
 
+
+    public void setUpFromWebAPI() throws InsertToDatabaseException{
+
+        Category[] categories = WebAPI.getAllCategories();
+
+        for(int i = 0; i < categories.length; i++)
+        {
+            categorySource.addCategory(categories[i]);
+        }
+
+
+        Item[] items = WebAPI.getAllItems();
+
+
+        addItem(items);
+    }
+
     /////////////////////////////////////////////////////////////////
     //setUp() TODO: INSERT IMAGE PATHS
     //THIS IS ONLY FOR TESTING PURPOSES!!!!! DELETE THIS METHOD AFTER WE ACTUALLY HAVE A DATABASE...
@@ -97,11 +115,11 @@ public class ItemDataSource {
         }
 
         //
-        ArrayList<Item> itemsList = new ArrayList<Item>();
+        Item[] itemsList = new Item[numberOfItems];
 
         //loop numberOfItems times.
         for(int i =0; i<numberOfItems; ++i) {
-            itemsList.add(TestItemDataSource.startItem());
+            itemsList[i] = TestItemDataSource.startItem();
         }
 
         addItem(itemsList);
@@ -141,7 +159,7 @@ public class ItemDataSource {
      * Returns: none
      * Status: works and tested!
      */
-    public void addItem(ArrayList<Item> items) throws InsertToDatabaseException{
+    public void addItem(Item[] items) throws InsertToDatabaseException{
 
         //get writable database
         open_write();
@@ -442,6 +460,7 @@ public class ItemDataSource {
                 (IsSpecial==1)?true:false,
                 imageSource.getImage(cursor.getLong(cursor.getColumnIndex(SelfieDatabase.KEY_ITEM_ID))),
                 cursor.getString(cursor.getColumnIndex(SelfieDatabase.KEY_THUMBNAIL)),
+                cursor.getLong(cursor.getColumnIndex(SelfieDatabase.KEY_REMOTE_ID)),
                 recommendationSource.getRecommendations(cursor.getLong(cursor.getColumnIndex(SelfieDatabase.KEY_ITEM_ID)))
         );
     }
@@ -457,7 +476,7 @@ public class ItemDataSource {
         int IsSpecial = cursor.getInt(cursor.getColumnIndex(SelfieDatabase.KEY_DAILY_SPECIAL));
         //getter Constructor
         return new SmallItem(
-                cursor.getInt(cursor.getColumnIndex(SelfieDatabase.KEY_ITEM_ID)),
+                cursor.getLong(cursor.getColumnIndex(SelfieDatabase.KEY_ITEM_ID)),
                 cursor.getString(cursor.getColumnIndex(SelfieDatabase.KEY_ITEM_NAME)),
                 cursor.getInt(cursor.getColumnIndex(SelfieDatabase.KEY_CATEGORY_ID)),
                 (IsSpecial==1)?true:false,
@@ -475,6 +494,7 @@ public class ItemDataSource {
      */
     private ContentValues itemToContentValues(Item item){
         ContentValues values = new ContentValues();
+        values.put(SelfieDatabase.KEY_ITEM_ID,item.getItemID());
         values.put(SelfieDatabase.KEY_ITEM_NAME,item.getItemName());
         values.put(SelfieDatabase.KEY_PRICE,item.getPrice());
         values.put(SelfieDatabase.KEY_CATEGORY_ID,item.getCategoryID());
@@ -485,6 +505,7 @@ public class ItemDataSource {
         values.put(SelfieDatabase.KEY_DESCRIPTION,item.getDescription());
         values.put(SelfieDatabase.KEY_DAILY_SPECIAL,item.isDailySpecial());
         values.put(SelfieDatabase.KEY_THUMBNAIL,item.getThumbnail());
+        values.put(SelfieDatabase.KEY_REMOTE_ID, item.getRemoteID());
         //ID is automatically incremented (PRIMARY KEY)
         return values;
     }

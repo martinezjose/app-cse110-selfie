@@ -66,10 +66,15 @@ public class Item {
     @Expose
     protected long categoryID;
 
+    @SerializedName("Thumbnail")
+    @Expose
     protected String thumbnail;
 
     private long [] recommendations;
 
+    @SerializedName("RemoteID")
+    @Expose
+    private  long remoteID;
 
     /*
      * Default constructor
@@ -85,7 +90,7 @@ public class Item {
      */
      public Item(long ItemID, String ItemName, float Price, long CategoryID, int Likes, boolean Active,
      int Calories, String LastUpdated, String Description, boolean DailySpecial,
-     String [] ImagePath, String Thumbnail, long [] Recommendations) {
+     String [] ImagePath, String Thumbnail, long RemoteID, long [] Recommendations) {
          itemID = ItemID;
          itemName = ItemName;
          price = Price;
@@ -99,6 +104,7 @@ public class Item {
          dailySpecial = DailySpecial;
          imagePath = ImagePath;
          thumbnail = Thumbnail;
+         remoteID = RemoteID;
          recommendations = Recommendations;
     }
 
@@ -110,7 +116,7 @@ public class Item {
      */
     public Item(String ItemName, float Price, long CategoryID, int Likes, boolean Active,
                 int Calories, String Description, boolean DailySpecial,
-                String [] ImagePath, String Thumbnail) {
+                String [] ImagePath, String Thumbnail, long RemoteID) {
         itemName = ItemName;
         price = Price;
         categoryID = CategoryID;
@@ -123,6 +129,7 @@ public class Item {
         dailySpecial = DailySpecial;
         imagePath = ImagePath;
         thumbnail = Thumbnail;
+        remoteID = RemoteID;
     }
 
 
@@ -230,6 +237,14 @@ public class Item {
     public String getThumbnail()
     {
         return this.thumbnail;
+    }
+
+    public long getRemoteID() {
+        return remoteID;
+    }
+
+    public void setRemoteID(long remoteID) {
+        this.remoteID = remoteID;
     }
 
     public long[] getRecommendations() {

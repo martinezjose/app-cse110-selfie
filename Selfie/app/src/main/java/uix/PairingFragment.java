@@ -2,6 +2,7 @@ package uix;
 
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -9,6 +10,7 @@ import android.widget.Button;
 import android.content.Intent;
 
 import cse110.selfie.app.UI.R;
+import database.ItemDataSource;
 
 /**
  * Created by JuanJ on 5/23/2014.
@@ -34,6 +36,9 @@ public class PairingFragment extends FragmentActivity {
         linkCodeET = (EditText) findViewById(R.id.pairingId);
 
         linkButton = (Button) findViewById(R.id.link_button);
+
+        final ItemDataSource itemDataSource = new ItemDataSource(this);
+
         linkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -50,6 +55,8 @@ public class PairingFragment extends FragmentActivity {
                     return;
                 }
 
+
+
                 //check if it's less than 4
                 if(input.length() < 4) {
                     errorMessage.setVisibility(TextView.VISIBLE);
@@ -64,11 +71,30 @@ public class PairingFragment extends FragmentActivity {
                 }
                 //right answer
                 else {
-                    errorMessage.setVisibility(TextView.INVISIBLE);
-                    linkCode = linkCodeET.getText().toString();
-                    Order.setPairing_Code(Integer.parseInt(linkCode));
-                    Intent intent = new Intent(getApplicationContext(), HomeScreenActivity.class);
-                    startActivity(intent);
+
+
+                    Thread thread = new Thread() {
+                        public void run() {
+                            try {
+
+                                itemDataSource.setUpFromWebAPI();
+
+
+                                errorMessage.setVisibility(TextView.INVISIBLE);
+                                linkCode = linkCodeET.getText().toString();
+                                Order.setTableId(Integer.parseInt(linkCode));
+                                Intent intent = new Intent(getApplicationContext(), HomeScreenActivity.class);
+                                startActivity(intent);
+
+                            } catch (Exception e) {
+                                Log.e("ITEMDATASOURCE", "SETUP EXCEPTION");
+                            }
+                        }
+                    };
+                    thread.start();
+
+
+
                 }
             }
         });
