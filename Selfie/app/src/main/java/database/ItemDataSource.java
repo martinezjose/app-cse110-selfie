@@ -13,6 +13,7 @@ import java.util.List;
 
 import classes.Category;
 import classes.Item;
+import classes.Recommendation;
 import classes.SmallItem;
 import classes.WebAPI;
 import tests.TestItemDataSource;
@@ -117,6 +118,14 @@ public class ItemDataSource {
             }
 
             imageSource.addImage(item.getItemID(),imagePaths);
+
+
+        }
+
+
+        Recommendation[] recs = WebAPI.getAllRecommendedItems();
+        for (Recommendation rec:recs){
+            recommendationSource.addRecommendation(rec.getItemID(),new long[]{rec.getRecommendedItemID()});
 
         }
 
