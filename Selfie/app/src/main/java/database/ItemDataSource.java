@@ -451,7 +451,7 @@ public class ItemDataSource {
                 cursor.getLong(cursor.getColumnIndex(SelfieDatabase.KEY_ITEM_ID)),
                 cursor.getString(cursor.getColumnIndex(SelfieDatabase.KEY_ITEM_NAME)),
                 cursor.getFloat((cursor.getColumnIndex(SelfieDatabase.KEY_PRICE))),
-                cursor.getInt((cursor.getColumnIndex(SelfieDatabase.KEY_CATEGORY_ID))),
+                cursor.getLong((cursor.getColumnIndex(SelfieDatabase.KEY_CATEGORY_ID))),
                 cursor.getInt((cursor.getColumnIndex(SelfieDatabase.KEY_LIKES))),
                 (IsActive==1)?true:false,
                 cursor.getInt((cursor.getColumnIndex(SelfieDatabase.KEY_CALORIES))),

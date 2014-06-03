@@ -22,12 +22,27 @@ package classes;
         import uix.Order;
         import uix.OrderDetail;
 
+        import android.content.Context;
+        import android.net.ConnectivityManager;
+        import android.net.NetworkInfo;
         import android.util.Log;
 
 /**
  * Created by marvin on 5/18/14.
  */
 public class WebAPI {
+
+    public boolean isNetworkAvailable(Context mContext) {
+        ConnectivityManager cm = (ConnectivityManager)
+                mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+        // if no network is available networkInfo will be null
+        // otherwise check if we are connected
+        if (networkInfo != null && networkInfo.isConnected()) {
+            return true;
+        }
+        return false;
+    }
 
     /* getAllCategories()
      * Description: retrieves JSON responses for categories and creates Category objects
@@ -129,11 +144,12 @@ public class WebAPI {
 
             // make POST request to lobster-nachos
             //TODO add the correct url
-            HttpPost httpPost = new HttpPost("http://lobster-nachos.appspot.com/tables?pairingCode="+code);
+            //HttpPost httpPost = new HttpPost("http://lobster-nachos.appspot.com/webapi/tables?pairingCode="+code);
+            HttpGet httpGet = new HttpGet("http://lobster-nachos.appspot.com/webapi/tables?pairingCode=" + code);
 
 
             // Execute POST request to the given URL
-            HttpResponse httpResponse = httpclient.execute(httpPost);
+            HttpResponse httpResponse = httpclient.execute(httpGet);
 
             // receive response as inputStream
             inputStream = httpResponse.getEntity().getContent();
@@ -145,9 +161,12 @@ public class WebAPI {
                 builder.append(result);
             }
 
-            JSONObject jObj = new JSONObject(builder.toString());
-            tableID = jObj.getLong("TableID"); //TODO check that this is correct key name
+            if(builder.toString().contains("TableID")){
 
+                JSONObject jObj = new JSONObject(builder.toString());
+
+                tableID = jObj.getLong("TableID"); //TODO check that this is correct key name
+            }
 
         } catch (ClientProtocolException e) {
             e.printStackTrace();

@@ -13,7 +13,7 @@ import classes.Item;
 
 public class Order {
     private static ArrayList<OrderDetail> theOrder = new ArrayList<OrderDetail>();
-    private static int TABLE_ID = 1;
+    private static long TABLE_ID = 1;
     private static int PAIRING_CODE = 0;
     private static float TAX = 0.0825f;
 
@@ -59,11 +59,11 @@ public class Order {
 
     public static float getTax () { return TAX; }
 
-    public static void setTableId (int tableId) {
+    public static void setTableId (long tableId) {
         TABLE_ID = tableId;
     }
 
-    public static int getTableId () { return TABLE_ID; }
+    public static long getTableId () { return TABLE_ID; }
 
     public static void setPairing_Code (int pairing_code) { PAIRING_CODE = pairing_code; }
 
