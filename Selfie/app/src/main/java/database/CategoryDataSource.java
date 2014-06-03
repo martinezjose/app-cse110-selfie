@@ -213,6 +213,8 @@ public class CategoryDataSource {
                 new String [] {String.valueOf(CategoryID)},null,null,null);
         //move cursor to first result
         cursor.moveToFirst();
+
+
         //retrieve CategoryName
         String CategoryName = cursor.getString(cursor.getColumnIndex(SelfieDatabase.KEY_CATEGORY_NAME));
 
@@ -237,7 +239,7 @@ public class CategoryDataSource {
 
         //Getter constructor
         return new Category(
-                cursor.getInt(cursor.getColumnIndex(SelfieDatabase.KEY_CATEGORY_ID)),
+                cursor.getLong(cursor.getColumnIndex(SelfieDatabase.KEY_CATEGORY_ID)),
                 cursor.getString(cursor.getColumnIndex(SelfieDatabase.KEY_CATEGORY_NAME))
         );
     }
@@ -252,6 +254,7 @@ public class CategoryDataSource {
      */
     private ContentValues categoryToContentValues(Category category){
         ContentValues values = new ContentValues();
+        values.put(SelfieDatabase.KEY_CATEGORY_ID,category.getCategoryID());
 
         values.put(SelfieDatabase.KEY_CATEGORY_NAME,category.getCategoryName());
 

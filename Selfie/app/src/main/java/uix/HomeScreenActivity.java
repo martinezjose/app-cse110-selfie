@@ -42,12 +42,12 @@ public class HomeScreenActivity extends FragmentActivity {
         setContentView(R.layout.activity_main_screen);
 
         weightController = new WeightController(this);
-        ItemDataSource itemDataSource = new ItemDataSource(this);
-        try {
-            itemDataSource.setUp();
-        } catch (Exception e) {
-            Log.e("ITEMDATASOURCE", "SETUP EXCEPTION");
-        }
+        //ItemDataSource itemDataSource = new ItemDataSource(this);
+        //try {
+        //    itemDataSource.setUp();
+        //} catch (Exception e) {
+        //    Log.e("ITEMDATASOURCE", "SETUP EXCEPTION");z
+        //}
 
         categoryName = (TextView) findViewById(R.id.MS_caterogory_name);
         categoryName.setTypeface(Helper.getFont(this, 0));

@@ -46,9 +46,9 @@ public class TestRecommendationDataSource extends AndroidTestCase {
 
         //populate the database with objects first
         //
-        ArrayList<Item> itemsList = new ArrayList<Item>();
+        Item[] itemsList = new Item[MAX_RECORDS];
         for (int i = 0; i < MAX_RECORDS; ++i) {
-            itemsList.add(TestItemDataSource.startItem());
+            itemsList[i] = TestItemDataSource.startItem();
         }
         //add all items
         itemSource.addItem(itemsList);
