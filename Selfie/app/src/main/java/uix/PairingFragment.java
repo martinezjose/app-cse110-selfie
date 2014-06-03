@@ -89,6 +89,18 @@ public class PairingFragment extends FragmentActivity {
                         public void run() {
                             try {
 
+
+
+
+
+                                long tableID = WebAPI.sendPairingCode(Integer.parseInt(
+                                        linkCodeET.getText().toString()));
+
+                                if(tableID == -1)
+                                    throw  new InterruptedException("Pairing code is not mapped to " +
+                                            "a table, please try again.");
+
+
                                 // Get a handler that can be used to post to the main thread
                                 Handler mainHandler = new Handler(context.getMainLooper());
 
@@ -105,16 +117,6 @@ public class PairingFragment extends FragmentActivity {
                                     }
                                 }; // This is your code
                                 mainHandler.post(myRunnable);
-
-
-
-                                long tableID = WebAPI.sendPairingCode(Integer.parseInt(
-                                        linkCodeET.getText().toString()));
-
-                                if(tableID == -1)
-                                    throw  new InterruptedException("Pairing code is not mapped to " +
-                                            "a table, please try again.");
-
 
                                 itemDataSource.setUpFromWebAPI(context);
 

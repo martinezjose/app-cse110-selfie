@@ -178,6 +178,40 @@ public class WebAPI {
         return tableID;
     }
 
+    public static Recommendation[] getAllRecommendedItems() {
+
+        StringBuilder builder = new StringBuilder();
+        HttpClient client = new DefaultHttpClient();
+        HttpGet httpGet = new HttpGet("http://lobster-nachos.appspot.com/webapi/recommendations");
+
+        Gson gson = new Gson();
+
+
+            try {
+                HttpResponse response = client.execute(httpGet);
+                HttpEntity entity = response.getEntity();
+                InputStream content = entity.getContent();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(content));
+                String category;
+
+                //retrieves string from json response
+                while ((category = reader.readLine()) != null) {
+                    builder.append(category);
+                }
+
+            } catch (ClientProtocolException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+            //creates a java object from json response
+       return gson.fromJson(builder.toString(), Recommendation[].class);
+
+    }
+
     public static void pingWaiter()
     {
         InputStream inputStream;
