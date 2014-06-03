@@ -38,7 +38,7 @@ public class CategoryDataSource {
      * PRECONDITION: category is created with no ID (through setter/insert constructor)
      * POSTCONDITION: category is added to the database
      * Returns: long CategoryID
-     * Status: works
+     * Status: works and tested.
      */
     public long addCategory(Category category){
 
@@ -62,7 +62,7 @@ public class CategoryDataSource {
     * PRECONDITION: id for the target item is provided (somehow).
     * POSTCONDITION: Category object is returned
     * Returns: found category in the database is returned.
-    * Status: works
+    * Status: works and tested
     */
     public Category getCategory(long id) {
 
@@ -88,6 +88,7 @@ public class CategoryDataSource {
     }
 
     /* public int updateCategory(Category category) -- Update
+     * Parameters: Category category
      * Description: updates the category in the database.
      * PRECONDITION:  The following conditions apply:
      *          (1) category must have been obtained through getCategory() method
@@ -95,7 +96,7 @@ public class CategoryDataSource {
      *          (3) CategoryID must not be modified
      * POSTCONDITION: category in database is updated.
      * Returns: number of rows affected
-     * Status: not thoroughly tested
+     * Status: unused and untested
      */
     public int updateCategory(Category category){
 
@@ -120,7 +121,7 @@ public class CategoryDataSource {
      * PRECONDITION: category was obtained through getCategory()--guarantees that item has an ItemID
      * POSTCONDITION: category has been deleted from the database.
      * Returns: None
-     * STATUS: TODO what happens to Items that are in this deleted category?
+     * STATUS: unused and untested
      */
     public void deleteCategory(Category category){
 
@@ -131,6 +132,7 @@ public class CategoryDataSource {
         db.delete(SelfieDatabase.TABLE_CATEGORIES,SelfieDatabase.KEY_CATEGORY_ID + " =?",
                 new String[] {String.valueOf(category.getCategoryID())});
 
+        //close database
         db.close();
     }
 
@@ -201,8 +203,13 @@ public class CategoryDataSource {
         return count;
     }
 
-    /*
-     *
+    /* public String getCategoryName(long CategoryID)
+     * Parameters: long CategoryID
+     * Description: retrieves the CategoryName for a Category with CategoryID
+     * PRECONDITION: CategoryID is a valid ID from the Categories Table
+     * POSTCONDITION: the name of the matching Category is returned.
+     * Returns: String of category name
+     * Status: untested, works
      */
     public String getCategoryName(long CategoryID){
         //open database for read

@@ -61,7 +61,6 @@ public class SelfieDatabase extends SQLiteOpenHelper {
     public static final String KEY_DESCRIPTION = "description";
     public static final String KEY_DAILY_SPECIAL = "daily_special";
     public static final String KEY_THUMBNAIL = "thumbnail";
-    public static  final String KEY_REMOTE_ID = "remote_id";
 
     //TABLE_CATEGORIES column names
     //public static final String KEY_CATEGORY_ID = "category_id"; //same as KEY_CATEGORY_ID above
@@ -97,9 +96,8 @@ public class SelfieDatabase extends SQLiteOpenHelper {
                 + KEY_LAST_UPDATED + " TEXT,"
                 + KEY_DESCRIPTION + " TEXT,"
                 + KEY_DAILY_SPECIAL + " INTEGER,"
-                + KEY_THUMBNAIL + " TEXT,"
-                + KEY_REMOTE_ID + " INTEGER" +
-                ");";
+                + KEY_THUMBNAIL + " TEXT"
+                + ");";
 
         //TABLE_CATEGORIES
         String CREATE_CATEGORIES_TABLE = "CREATE TABLE " + TABLE_CATEGORIES + "("

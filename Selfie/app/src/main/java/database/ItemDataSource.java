@@ -5,9 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
-import android.util.Log;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +13,6 @@ import classes.Category;
 import classes.Item;
 import classes.SmallItem;
 import classes.WebAPI;
-import tests.TestItemDataSource;
 
 /**
  * Data Access Object (DAO)-- Handles Record insertion and retrieval with Database.
@@ -33,7 +30,7 @@ public class ItemDataSource {
                                         //check
 
 
-    private CategoryDataSource categorySource;  //TODO: DELETE THIS
+    private CategoryDataSource categorySource;  //used by WebAPI
     private ImageDataSource imageSource; //DAO to return image path for a specific item
     private RecommendationDataSource recommendationSource;  //DAO to return recommendations for item
 
@@ -43,7 +40,7 @@ public class ItemDataSource {
             SelfieDatabase.KEY_LIKES,SelfieDatabase.KEY_ACTIVE,
             SelfieDatabase.KEY_CALORIES,SelfieDatabase.KEY_LAST_UPDATED,
             SelfieDatabase.KEY_DESCRIPTION,SelfieDatabase.KEY_DAILY_SPECIAL,
-            SelfieDatabase.KEY_THUMBNAIL,SelfieDatabase.KEY_REMOTE_ID};
+            SelfieDatabase.KEY_THUMBNAIL};
 
     //used to retrieve specific columns for getSmallItemFromCategory query
     private String [] smallColumns = {SelfieDatabase.KEY_ITEM_ID,SelfieDatabase.KEY_ITEM_NAME,
@@ -55,7 +52,7 @@ public class ItemDataSource {
         //instantiate a SelfieDatabase from this context
         myDB = new SelfieDatabase(context);
 
-        categorySource = new CategoryDataSource(context); //TODO: DELETE THIS
+        categorySource = new CategoryDataSource(context);
 
         imageSource = new ImageDataSource(context);     //instantiate an ImageDataSource
         recommendationSource = new RecommendationDataSource(context,this); //instantiate RecommendationsDataSource
@@ -121,59 +118,6 @@ public class ItemDataSource {
         }
 
     }
-
-    /////////////////////////////////////////////////////////////////
-    //setUp() TODO: INSERT IMAGE PATHS
-    //THIS IS ONLY FOR TESTING PURPOSES!!!!! DELETE THIS METHOD AFTER WE ACTUALLY HAVE A DATABASE...
-    public void setUp() throws InsertToDatabaseException{
-
-        int numberOfItems = 100;
-        final String [] imagePath = {"/res/image1","www.locomoco.com/what.jpg"};
-        final long [] recommendations = {3,4,1,6};
-
-        //check whether a database exists already
-        File database = new File(databasePath);
-
-        //if the database already exists, do nothing and return.
-        if(database.exists() && !database.isDirectory()) {
-            Log.d("setUp()","Database exists already!");
-            return;
-        }
-
-        //
-        Item[] itemsList = new Item[numberOfItems];
-
-        //loop numberOfItems times.
-        for(int i =0; i<numberOfItems; ++i) {
-            itemsList[i] = TestItemDataSource.startItem();
-        }
-
-        addItem(itemsList);
-
-        //handle imagepath and recommendations
-        for(int i = 1; i<=numberOfItems; ++i){
-            //add an ImagePath to odd Items
-            imageSource.addImage(i,imagePath);
-            //add recommendations to multiples of 3
-            if(i%3==0){
-                recommendationSource.addRecommendation(i,recommendations);
-            }
-        }
-
-        Category appetizers = new Category(1,"Appetizers");
-        Category entrees = new Category(2,"Entrees");
-        Category dessert = new Category(3,"Dessert");
-        Category drinks = new Category(4,"Drinks");
-
-        categorySource.addCategory(appetizers);
-        categorySource.addCategory(entrees);
-        categorySource.addCategory(dessert);
-        categorySource.addCategory(drinks);
-    }
-    //TODO: DELETE THIS
-    ////////////////////////////////////////////////////////////////
-
-
 
     /******************************************* CRUD *********************************************/
 
@@ -486,7 +430,6 @@ public class ItemDataSource {
                 (IsSpecial==1)?true:false,
                 imageSource.getImage(cursor.getLong(cursor.getColumnIndex(SelfieDatabase.KEY_ITEM_ID))),
                 cursor.getString(cursor.getColumnIndex(SelfieDatabase.KEY_THUMBNAIL)),
-                cursor.getLong(cursor.getColumnIndex(SelfieDatabase.KEY_REMOTE_ID)),
                 recommendationSource.getRecommendations(cursor.getLong(cursor.getColumnIndex(SelfieDatabase.KEY_ITEM_ID)))
         );
     }
@@ -531,7 +474,6 @@ public class ItemDataSource {
         values.put(SelfieDatabase.KEY_DESCRIPTION,item.getDescription());
         values.put(SelfieDatabase.KEY_DAILY_SPECIAL,item.isDailySpecial());
         values.put(SelfieDatabase.KEY_THUMBNAIL,item.getThumbnail());
-        values.put(SelfieDatabase.KEY_REMOTE_ID, item.getRemoteID());
         //ID is automatically incremented (PRIMARY KEY)
         return values;
     }
