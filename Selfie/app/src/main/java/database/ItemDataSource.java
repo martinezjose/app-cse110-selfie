@@ -32,6 +32,7 @@ public class ItemDataSource {
     public String databasePath;        //storing the path where the database exists for existence
                                         //check
 
+
     private CategoryDataSource categorySource;  //TODO: DELETE THIS
     private ImageDataSource imageSource; //DAO to return image path for a specific item
     private RecommendationDataSource recommendationSource;  //DAO to return recommendations for item
@@ -80,7 +81,7 @@ public class ItemDataSource {
     }
 
 
-    public void setUpFromWebAPI() throws InsertToDatabaseException{
+    public void setUpFromWebAPI(Context context) throws InsertToDatabaseException{
 
         Category[] categories = WebAPI.getAllCategories();
 
@@ -92,8 +93,33 @@ public class ItemDataSource {
 
         Item[] items = WebAPI.getAllItems();
 
+        for (int i =0; i<items.length;i++){
+
+            items[i].setThumbnail(Download.saveImageFromURL(context, items[i].getThumbnail(), items[i].getItemID()+"ThumbI"+i));
+        }
 
         addItem(items);
+
+
+        for(Item item:items){
+
+            String[] imagePaths = new String[item.getImagePath().length];
+
+            for (int i=0; i<imagePaths.length;i++){
+
+
+                String url = item.getImagePath()[i];
+
+                if(i == 0)
+                    imagePaths[i] = item.getThumbnail();
+                else
+                    imagePaths[i] = Download.saveImageFromURL(context, url, item.getItemID()+"I"+i);
+            }
+
+            imageSource.addImage(item.getItemID(),imagePaths);
+
+        }
+
     }
 
     /////////////////////////////////////////////////////////////////
@@ -478,7 +504,7 @@ public class ItemDataSource {
         return new SmallItem(
                 cursor.getLong(cursor.getColumnIndex(SelfieDatabase.KEY_ITEM_ID)),
                 cursor.getString(cursor.getColumnIndex(SelfieDatabase.KEY_ITEM_NAME)),
-                cursor.getInt(cursor.getColumnIndex(SelfieDatabase.KEY_CATEGORY_ID)),
+                cursor.getLong(cursor.getColumnIndex(SelfieDatabase.KEY_CATEGORY_ID)),
                 (IsSpecial==1)?true:false,
                 cursor.getString(cursor.getColumnIndex(SelfieDatabase.KEY_THUMBNAIL))
         );
