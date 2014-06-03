@@ -1,6 +1,7 @@
 package uix;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Handler;
@@ -82,10 +83,30 @@ public class PairingFragment extends FragmentActivity {
                     SelfieDatabase database = new SelfieDatabase(context);
                     context.deleteDatabase(database.getDatabaseName());
 
+                    linkButton.setEnabled(false);
 
                     Thread thread = new Thread() {
                         public void run() {
                             try {
+
+                                // Get a handler that can be used to post to the main thread
+                                Handler mainHandler = new Handler(context.getMainLooper());
+
+                                Runnable myRunnable = new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        ProgressDialog dialog;
+
+                                        dialog = new ProgressDialog(context);
+                                        dialog.setCancelable(false);
+                                        dialog.setMessage("Downloading database, please wait.");
+                                        dialog.show();
+
+                                    }
+                                }; // This is your code
+                                mainHandler.post(myRunnable);
+
+
 
                                 long tableID = WebAPI.sendPairingCode(Integer.parseInt(
                                         linkCodeET.getText().toString()));
@@ -94,7 +115,8 @@ public class PairingFragment extends FragmentActivity {
                                     throw  new InterruptedException("Pairing code is not mapped to " +
                                             "a table, please try again.");
 
-                                itemDataSource.setUpFromWebAPI();
+
+                                itemDataSource.setUpFromWebAPI(context);
 
 
                                 errorMessage.setVisibility(TextView.INVISIBLE);
@@ -132,6 +154,19 @@ public class PairingFragment extends FragmentActivity {
                             }
                             catch (Exception e) {
                                 Log.e("ITEMDATASOURCE", "SETUP EXCEPTION");
+                            }
+                            finally {
+                                // Get a handler that can be used to post to the main thread
+                                Handler mainHandler = new Handler(context.getMainLooper());
+                                Runnable myRunnable = new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        linkButton.setEnabled(true);
+
+                                    }
+                                }; // This is your code
+                                mainHandler.post(myRunnable);
+
                             }
                         }
                     };
