@@ -48,7 +48,6 @@ public class SpecialTabFragment extends Fragment {
         specials = itemDataSource.getSpecialSmallItem();
 
         cds = new CategoryDataSource(getActivity());
-        cds = new CategoryDataSource(getActivity());
 
         weightController = new WeightController(getActivity());
 

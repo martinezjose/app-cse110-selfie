@@ -7,10 +7,7 @@ import android.graphics.Typeface;
 import android.widget.ImageView;
 
 import java.io.File;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 
-import classes.Category;
 import cse110.selfie.app.UI.R;
 
 /**
@@ -22,7 +19,7 @@ public class Helper {
         String font = "fonts/ADayinSeptember.otf";
         switch (i) {
             case 0:
-                font = "fonts/ADayinSeptember.otf";
+                font = "fonts/Lobster.otf";
                 break;
             case 1:
                 font = "fonts/AYearWithoutRain.ttf";
