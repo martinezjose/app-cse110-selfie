@@ -6,9 +6,12 @@ package classes;
         import java.io.InputStreamReader;
         import java.util.ArrayList;
         import java.lang.Exception;import java.lang.String;import java.lang.StringBuilder;
+        import java.util.List;
+
         import com.google.gson.Gson;
 
         import org.apache.http.HttpEntity;
+        import org.apache.http.client.entity.UrlEncodedFormEntity;
         import org.apache.http.client.methods.HttpPost;
         import org.apache.http.HttpResponse;
         import org.apache.http.client.ClientProtocolException;
@@ -17,6 +20,7 @@ package classes;
         import org.apache.http.impl.client.DefaultHttpClient;
         import org.apache.http.entity.StringEntity;
 
+        import org.apache.http.message.BasicNameValuePair;
         import org.json.JSONArray;
         import org.json.JSONObject;
         import uix.Order;
@@ -178,6 +182,50 @@ public class WebAPI {
         return tableID;
     }
 
+    public static int sendPing()
+    {
+        InputStream inputStream;
+        int resultCode = -1;
+        String result;
+
+        StringBuilder builder = new StringBuilder();
+        try {
+
+
+            HttpClient httpclient = new DefaultHttpClient();
+
+            // make Get request to lobster-nachos
+            HttpPost httpGet = new HttpPost("http://lobster-nachos.appspot.com/webapi/pings/create?tableID=" + Order.getTableId());
+
+
+            // Execute POST request to the given URL
+            HttpResponse httpResponse = httpclient.execute(httpGet);
+
+            // receive response as inputStream
+            inputStream = httpResponse.getEntity().getContent();
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+
+            //retrieves string from json response
+            while ((result = reader.readLine()) != null) {
+                builder.append(result);
+            }
+
+            if(builder.toString().contains("PingID")){
+
+                resultCode = 0;
+            }
+
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return resultCode;
+    }
+
     public static Recommendation[] getAllRecommendedItems() {
 
         StringBuilder builder = new StringBuilder();
@@ -212,8 +260,10 @@ public class WebAPI {
 
     }
 
-    public static void pingWaiter()
+    public static  int  pingWaiter()
     {
+
+        int res = -1;
         InputStream inputStream;
         String result;
         StringBuilder builder = new StringBuilder();
@@ -223,26 +273,15 @@ public class WebAPI {
             HttpClient httpclient = new DefaultHttpClient();
 
             // make POST request to lobster-nachos
-            HttpPost httpPost = new HttpPost("http://lobster-nachos.appspot.com/pings");
+            HttpPost httpPost = new HttpPost("http://lobster-nachos.appspot.com/webapi/pings/create");
+            // create HttpClient
+            List nameValuePairs = new ArrayList();
+
+            nameValuePairs.add(new BasicNameValuePair("tableID",  String.valueOf(Order.getTableId())));
+
+            httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
             String json = "";
-
-            // build jsonObject
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("TableID", Order.getTableId());
-
-
-            json = jsonObject.toString();
-
-            // set json to StringEntity
-            StringEntity se = new StringEntity(json);
-
-
-            httpPost.setEntity(se);
-
-            // Set some headers to inform server about the type of the content
-            httpPost.setHeader("Accept", "application/json");
-            httpPost.setHeader("Content-type", "application/json");
 
 
             // Execute POST request to the given URL
@@ -256,7 +295,10 @@ public class WebAPI {
             //retrieves string from json response
             while ((result = reader.readLine()) != null) {
                 builder.append(result);
-            }
+            }// add an HTTP variable and value pair
+
+            if(builder.toString().contains("PingID"))
+                res = 0;
 
         } catch (ClientProtocolException e) {
             e.printStackTrace();
@@ -265,6 +307,7 @@ public class WebAPI {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        return  res;
     }
 
     public static void postOrders()
