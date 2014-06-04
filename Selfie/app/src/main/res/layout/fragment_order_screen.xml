@@ -54,7 +54,6 @@
             android:layout_alignTop="@+id/textView4" />
     </RelativeLayout>
     <ListView
-        android:background="#CAB9FF"
         android:id="@+id/CS_selectedItems"
         android:layout_width="match_parent"
         android:layout_height="0dp"

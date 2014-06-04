@@ -8,6 +8,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
@@ -32,7 +33,6 @@ import database.ItemDataSource;
 
 public class HomeScreenActivity extends FragmentActivity {
 
-    private WeightController weightController;
     private FragmentTransaction fTransaction;
 
     private CategoryFragment categoryFragment = new CategoryFragment();
@@ -47,7 +47,6 @@ public class HomeScreenActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_screen);
 
-        weightController = new WeightController(this);
         //ItemDataSource itemDataSource = new ItemDataSource(this);
         //try {
         //    itemDataSource.setUp();
@@ -55,8 +54,9 @@ public class HomeScreenActivity extends FragmentActivity {
         //    Log.e("ITEMDATASOURCE", "SETUP EXCEPTION");z
         //}
 
+        Typeface tf = Typeface.createFromAsset(getAssets(), "fonts/Lobster.otf");
         categoryName = (TextView) findViewById(R.id.MS_caterogory_name);
-        categoryName.setTypeface(Helper.getFont(this, 0));
+        categoryName.setTypeface(tf);
         categoryName.setVisibility(TextView.INVISIBLE);
         //there is a comment
         ImageView homeIV = (ImageView) findViewById(R.id.MS_home_button);
@@ -66,7 +66,7 @@ public class HomeScreenActivity extends FragmentActivity {
         waiterIV.setImageResource(R.drawable.waiter_button);
 
         ImageView orderIV = (ImageView) findViewById(R.id.MS_order_button);
-        orderIV.setImageResource(R.drawable.order_button);
+        orderIV.setImageResource(R.drawable.new_order_button);
 
         TextView orderAmountTV = (TextView) findViewById(R.id.MS_order_amount);
         orderAmountTV.setText("(" + Integer.toString(Order.getSize()) + ")");
@@ -104,17 +104,17 @@ public class HomeScreenActivity extends FragmentActivity {
 
             if(mPrevious.getName() == "Home") {
                 fManager.popBackStack();
-                weightController.changeLayoutWeight(0);
+                Helper.changeWeight(this, 0);
                 categoryName.setVisibility(TextView.INVISIBLE);
             }
             else if(mPrevious.getName().startsWith("Menu ")) {
-                weightController.changeLayoutWeight(1);
+                Helper.changeWeight(this, 1);
             }
             else if(mPrevious.getName() == "Order") {
-                weightController.changeLayoutWeight(2);
+                Helper.changeWeight(this, 2);
             }
             else if(mPrevious.getName().startsWith("Detail ")) {
-                weightController.changeLayoutWeight(1);
+                Helper.changeWeight(this, 1);
             }
 
             //deletes the back history if it gets over 10 (arbitrary number)
@@ -122,7 +122,7 @@ public class HomeScreenActivity extends FragmentActivity {
             if (fManager.getBackStackEntryCount() > 10) {
                 for(int i=0;i<fManager.getBackStackEntryCount()-2;i++)
                     fManager.popBackStack();
-                weightController.changeLayoutWeight(0);
+                Helper.changeWeight(this, 0);
             }
         }
         else {
@@ -257,7 +257,7 @@ public class HomeScreenActivity extends FragmentActivity {
                             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                             .addToBackStack("Home")
                             .commit();
-                    weightController.changeLayoutWeight(0);
+                    Helper.changeWeight(this, 0);
                     categoryName.setVisibility(TextView.INVISIBLE);
                 }
                 break;
@@ -269,7 +269,7 @@ public class HomeScreenActivity extends FragmentActivity {
                             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                             .addToBackStack("Order")
                             .commit();
-                    weightController.changeLayoutWeight(2);
+                    Helper.changeWeight(this, 2);
                 }
                 break;
         }

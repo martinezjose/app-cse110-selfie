@@ -152,7 +152,7 @@ public class MenuItemList extends ListFragment {
     }
 
     //optimize render
-    private class ViewHolder {
+    static private class ViewHolder {
         public TextView itemName;
         public ImageView specialStar, itemThumbnail;
     }
