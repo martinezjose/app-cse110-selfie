@@ -33,7 +33,6 @@ public class DetailFragment extends Fragment {
 
     final static String ARG_ITEM_ID = "ARG_ITEM_ID";
 
-    private WeightController myController;
     private ItemDataSource ids;
     private Item theItem, temp;
 
@@ -50,7 +49,6 @@ public class DetailFragment extends Fragment {
         itemId = args.getLong(ARG_ITEM_ID);
         View view = inflater.inflate(R.layout.fragment_detail_screen, container, false);
 
-        myController = new WeightController(getActivity());
         ids = new ItemDataSource(getActivity());
         try {
             theItem = ids.getItem(itemId);
@@ -183,7 +181,7 @@ public class DetailFragment extends Fragment {
                                             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                                             .addToBackStack("Order")
                                             .commit();
-                                    myController.changeLayoutWeight(2);
+                                    Helper.changeWeight(getActivity(), 2);
                                 }
                             })
                             .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -192,8 +190,7 @@ public class DetailFragment extends Fragment {
                                 }
                             })
                             .show();
-                    TextView orderAmountTV = (TextView) getActivity().findViewById(R.id.MS_order_amount);
-                    orderAmountTV.setText("(" +Integer.toString(Order.getSize()) +")");
+                    Helper.updateOrderQuantity(getActivity());
                     break;
                 //increments the quantity and updates the price accordingly
                 case R.id.itemDetail_quantityUpOne:

@@ -1,5 +1,6 @@
 package uix;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
@@ -134,8 +135,9 @@ public class MenuItemList extends ListFragment {
             else
                 holder = (ViewHolder) convertView.getTag();
 
+            Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Lobster.otf");
             holder.itemName.setText(list.get(position).getItemName());
-            holder.itemName.setTypeface(Helper.getFont(getActivity(), 1));
+            holder.itemName.setTypeface(tf);
 
             Helper.getImage(holder.itemThumbnail, list.get(position).getThumbnail());
 

@@ -91,31 +91,23 @@ public class PairingFragment extends FragmentActivity {
                     Thread thread = new Thread() {
                         public void run() {
                             try {
-
                                 long tableID = WebAPI.sendPairingCode(Integer.parseInt(
                                         linkCodeET.getText().toString()));
-
                                 if(tableID == -1)
                                     throw  new InterruptedException("Pairing code is not mapped to " +
                                             "a table, please try again.");
 
-
                                 // Get a handler that can be used to post to the main thread
                                 Handler mainHandler = new Handler(context.getMainLooper());
-
                                 Runnable myRunnable = new Runnable() {
                                     @Override
                                     public void run() {
-
                                         dialog.show();
-
                                     }
-                                }; // This is your code
+                                };
+                                // This is your code
                                 mainHandler.post(myRunnable);
-
                                 itemDataSource.setUpFromWebAPI(context);
-
-
                                 myRunnable = new Runnable() {
                                     @Override
                                     public void run() {
@@ -123,25 +115,19 @@ public class PairingFragment extends FragmentActivity {
                                         dialog.hide();
 
                                     }
-                                }; // This is your code
+                                };
+                                // This is your code
                                 mainHandler.post(myRunnable);
-
                                 errorMessage.setVisibility(TextView.INVISIBLE);
-
-
                                 Order.setTableId(tableID);
                                 Intent intent = new Intent(getApplicationContext(), HomeScreenActivity.class);
                                 startActivity(intent);
-
                             }
                             catch (InterruptedException e) {
-
                                 final InterruptedException ex = e;
-
 
                                 // Get a handler that can be used to post to the main thread
                                 Handler mainHandler = new Handler(context.getMainLooper());
-
                                 Runnable myRunnable = new Runnable() {
                                     @Override
                                     public void run() {
@@ -156,8 +142,6 @@ public class PairingFragment extends FragmentActivity {
                                     }
                                 }; // This is your code
                                 mainHandler.post(myRunnable);
-
-
                             }
                             catch (InsertToDatabaseException e) {
                                 Log.e("ITEMDATASOURCE", "SETUP EXCEPTION");
@@ -173,14 +157,10 @@ public class PairingFragment extends FragmentActivity {
                                     }
                                 }; // This is your code
                                 mainHandler.post(myRunnable);
-
                             }
                         }
                     };
                     thread.start();
-
-
-
                 }
             }
         });

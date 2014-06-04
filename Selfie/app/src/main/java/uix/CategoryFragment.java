@@ -1,5 +1,6 @@
 package uix;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
@@ -26,7 +27,6 @@ import database.CategoryDataSource;
  */
 public class CategoryFragment extends ListFragment{
 
-    private WeightController weightController;
     private CategoryDataSource categoryDataSource;
 
     ArrayList<Category> category;
@@ -35,7 +35,6 @@ public class CategoryFragment extends ListFragment{
     //instantiation of classes
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        weightController = new WeightController(getActivity());
         categoryDataSource = new CategoryDataSource(getActivity());
 
         category = categoryDataSource.getAllCategories();
@@ -60,7 +59,7 @@ public class CategoryFragment extends ListFragment{
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 .addToBackStack("Menu " +Integer.toString(position))
                 .commit();
-        weightController.changeLayoutWeight(1);
+        Helper.changeWeight(getActivity(), 1);
     }
 
     //custom adapter contains 1 textview
@@ -84,14 +83,16 @@ public class CategoryFragment extends ListFragment{
             else
                 holder = (ViewHolder)convertView.getTag();
 
+            Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Lobster.otf");
             holder.t.setText(category.get(position).getCategoryName());
-            holder.t.setTypeface(Helper.getFont(getActivity(), 2));
+            holder.t.setTypeface(tf);
+
 
             return convertView;
         }
     }
 
-    private class ViewHolder {
+    static private class ViewHolder {
         public TextView t;
     }
 }

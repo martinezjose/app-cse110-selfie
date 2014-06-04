@@ -54,11 +54,12 @@
             android:layout_alignTop="@+id/textView4" />
     </RelativeLayout>
     <ListView
+        android:background="#CAB9FF"
         android:id="@+id/CS_selectedItems"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="7"
-        android:divider="#FFFFFF"
+        android:divider="#000000"
         android:dividerHeight="3dp">
     </ListView>
     <RelativeLayout
@@ -95,9 +96,10 @@
             android:layout_height="wrap_content"
             android:text="Tax: "
             android:textColor="#000000"
-            android:layout_centerVertical="true"
+            android:layout_below="@+id/textView2"
             android:layout_alignLeft="@+id/textView2"
-            android:layout_alignStart="@+id/textView2" />
+            android:layout_alignStart="@+id/textView2"
+            android:layout_marginTop="15dp" />
 
         <TextView
             android:id="@+id/CS_tax"
@@ -115,7 +117,7 @@
             android:layout_height="wrap_content"
             android:text="Total: "
             android:textColor="#000000"
-            android:layout_alignParentBottom="true"
+            android:layout_alignTop="@+id/CS_total"
             android:layout_alignLeft="@+id/textView3"
             android:layout_alignStart="@+id/textView3" />
 
@@ -125,9 +127,10 @@
             android:layout_height="wrap_content"
             android:text="0.0"
             android:textColor="#000000"
-            android:layout_alignParentBottom="true"
+            android:layout_below="@+id/CS_tax"
             android:layout_alignLeft="@+id/CS_tax"
-            android:layout_alignStart="@+id/CS_tax" />
+            android:layout_alignStart="@+id/CS_tax"
+            android:layout_marginTop="10dp" />
     </RelativeLayout>
     <LinearLayout
         android:layout_width="match_parent"
