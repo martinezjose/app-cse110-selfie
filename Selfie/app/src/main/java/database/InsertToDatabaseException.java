@@ -1,7 +1,7 @@
 package database;
 
 /**
- * Custom-created Exception. Very basic!!!
+ * Custom-created Exception for errors when inserting to database
  * Created by edwinmo on 5/27/14.
  */
 public class InsertToDatabaseException extends Exception {

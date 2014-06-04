@@ -181,7 +181,6 @@ public class TestItemDataSource extends AndroidTestCase{
         myItem.setDescription(EntreeDescriptions[randomDescriptionIndex]);
         myItem.setDailySpecial(myRandom.nextBoolean());
         myItem.setThumbnail("/res/drawables/thumb_image.jpeg");
-        myItem.setRemoteID(myRandom.nextLong());
         return myItem;
     }
 
