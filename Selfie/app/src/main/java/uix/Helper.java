@@ -25,7 +25,7 @@ public class Helper {
             Bitmap pic1 = BitmapFactory.decodeFile(img1.getAbsolutePath());
             place.setImageBitmap(pic1);
         } else
-            place.setImageResource(R.drawable.ic_launcher);
+            place.setImageResource(R.drawable.no_image_available);
     }
 
     public static void updateOrderQuantity(Activity activity) {

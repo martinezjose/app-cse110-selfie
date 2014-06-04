@@ -60,6 +60,7 @@ public class OrderFragment extends Fragment {
         lv = (ListView)  view.findViewById(R.id.CS_selectedItems);
         lv.setDivider(new ColorDrawable(Color.BLACK));
         lv.setDividerHeight(6);
+
         theOrder = Order.getTheOrder();
         my_holder = new ArrayList<ViewHolder>();
 
@@ -212,6 +213,7 @@ public class OrderFragment extends Fragment {
         public void toggleSelected(int position) {
             selectedView(position, !mSelectedIds.get(position));
         }
+
         //determines if the row is selected
         public void selectedView(int position, boolean value) {
             if(value)
