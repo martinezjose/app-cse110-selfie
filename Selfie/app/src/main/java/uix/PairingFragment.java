@@ -80,18 +80,17 @@ public class PairingFragment extends FragmentActivity {
                 }
                 //right answer
                 else {
-                    SelfieDatabase database = new SelfieDatabase(context);
+                    final SelfieDatabase database = new SelfieDatabase(context);
                     context.deleteDatabase(database.getDatabaseName());
 
                     linkButton.setEnabled(false);
+                   final ProgressDialog dialog = new ProgressDialog(context);
+                    dialog.setCancelable(false);
+                    dialog.setMessage("Downloading database, please wait.");
 
                     Thread thread = new Thread() {
                         public void run() {
                             try {
-
-
-
-
 
                                 long tableID = WebAPI.sendPairingCode(Integer.parseInt(
                                         linkCodeET.getText().toString()));
@@ -107,11 +106,7 @@ public class PairingFragment extends FragmentActivity {
                                 Runnable myRunnable = new Runnable() {
                                     @Override
                                     public void run() {
-                                        ProgressDialog dialog;
 
-                                        dialog = new ProgressDialog(context);
-                                        dialog.setCancelable(false);
-                                        dialog.setMessage("Downloading database, please wait.");
                                         dialog.show();
 
                                     }
@@ -120,6 +115,16 @@ public class PairingFragment extends FragmentActivity {
 
                                 itemDataSource.setUpFromWebAPI(context);
 
+
+                                myRunnable = new Runnable() {
+                                    @Override
+                                    public void run() {
+
+                                        dialog.hide();
+
+                                    }
+                                }; // This is your code
+                                mainHandler.post(myRunnable);
 
                                 errorMessage.setVisibility(TextView.INVISIBLE);
 

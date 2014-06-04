@@ -4,8 +4,12 @@
 package uix;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentManager;
@@ -13,7 +17,9 @@ import android.view.View;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import classes.WebAPI;
 import cse110.selfie.app.UI.R;
 import database.ItemDataSource;
 
@@ -133,14 +139,108 @@ public class HomeScreenActivity extends FragmentActivity {
         switch (view.getId()) {
             //sends a ping to the POS with the tableId
             case R.id.MS_alert:
-                new AlertDialog.Builder(this)
-                        .setTitle("Confirmation").setMessage("A Waiter Has Been Notified")
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                final Context context = this;
+                final ImageView waiterIV = (ImageView) findViewById(R.id.MS_alert);
+                waiterIV.setEnabled(false);
+                final  ProgressDialog dialog;
+
+                dialog = new ProgressDialog(context);
+                dialog.setCancelable(false);
+                dialog.setMessage("Pinging a waiter, please wait.");
+                dialog.show();
+
+
+                Thread thread = new Thread() {
+                    public void run() {
+                        try {
+
+                            // Get a handler that can be used to post to the main thread
+                            Handler mainHandler = new Handler(context.getMainLooper());
+
+
+                            long result = WebAPI.pingWaiter();
+
+                            Runnable myRunnable = new Runnable() {
+                                @Override
+                                public void run() {
+
+                                    dialog.hide();
+
+                                }
+                            }; // This is your code
+                            mainHandler.post(myRunnable);
+
+
+                            if(result == -1)
+                                throw  new InterruptedException("This is embarrassing, but we couldn't ask" +
+                                        " for a waiter, please try again or ask for assistance.");
+                            else
+                            {
+                                myRunnable = new Runnable() {
+                                    @Override
+                                    public void run() {
+
+                                        Toast.makeText(context, "Thanks! A waiter will be with you shortly", Toast.LENGTH_SHORT).show();
+
+                                    }
+                                }; // This is your code
+                                mainHandler.post(myRunnable);
+
+
                             }
-                        })
-                        .show();
+
+                        }
+                        catch (InterruptedException e) {
+
+                            final InterruptedException ex = e;
+
+
+                            // Get a handler that can be used to post to the main thread
+                            Handler mainHandler = new Handler(context.getMainLooper());
+
+                            Runnable myRunnable = new Runnable() {
+                                @Override
+                                public void run() {
+                                    new AlertDialog.Builder(context)
+                                            .setTitle("Oops!").setMessage(ex.getMessage())
+                                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialogInterface, int i) {
+                                                }
+                                            })
+                                            .show();
+                                }
+                            }; // This is your code
+                            mainHandler.post(myRunnable);
+
+
+                        }
+                        catch (Exception e) {
+                            Log.e("ITEMDATASOURCE", "SETUP EXCEPTION");
+                        }
+                        finally {
+                            // Get a handler that can be used to post to the main thread
+                            Handler mainHandler = new Handler(context.getMainLooper());
+                            Runnable myRunnable = new Runnable() {
+                                @Override
+                                public void run() {
+                                    waiterIV.setEnabled(true);
+
+                                }
+                            }; // This is your code
+                            mainHandler.post(myRunnable);
+
+                        }
+                    }
+                };
+                thread.start();
+
+
+
+
+
+
                 break;
             //takes the user to the "home screen" unless it's already there
             case R.id.MS_home_button:
