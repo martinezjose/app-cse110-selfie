@@ -11,11 +11,15 @@ package uix;
  */
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +35,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import classes.Category;
+import classes.WebAPI;
 import cse110.selfie.app.UI.R;
 import database.CategoryDataSource;
 
@@ -274,19 +279,132 @@ public class OrderFragment extends Fragment {
                 //submits the order
                 case R.id.CS_summitOrder:
                     if(theOrder.size() != 0) {
+
+                        final Context context = view.getContext();
+                        final Button submitButton = (Button) view;
+
+
                         new AlertDialog.Builder(view.getContext())
                                 .setTitle("Submit Order")
                                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
-                                        //send order
-                                        for(int j=my_holder.size()-1; j>=0; j--) {
-                                            OrderDetail temp = myAdapter.getItem(j);
-                                            myAdapter.remove(temp);
-                                        }
-                                        setBill();
-                                        TextView orderAmountTV = (TextView) getActivity().findViewById(R.id.MS_order_amount);
-                                        orderAmountTV.setText("(" +Integer.toString(Order.getSize()) +")");
+
+                                        submitButton.setEnabled(false);
+                                        final ProgressDialog dialog;
+
+                                        dialog = new ProgressDialog(context);
+                                        dialog.setCancelable(false);
+                                        dialog.setMessage("Pinging a waiter, please wait.");
+                                        dialog.show();
+
+
+                                        Thread thread = new Thread() {
+                                            public void run() {
+                                                try {
+
+                                                    // Get a handler that can be used to post to the main thread
+                                                    Handler mainHandler = new Handler(context.getMainLooper());
+
+
+                                                    long result = WebAPI.postOrders();
+
+                                                    Runnable myRunnable = new Runnable() {
+                                                        @Override
+                                                        public void run() {
+
+                                                            dialog.hide();
+
+                                                        }
+                                                    }; // This is your code
+                                                    mainHandler.post(myRunnable);
+
+
+                                                    if(result == -1)
+                                                        throw  new InterruptedException("This is embarrassing, but we couldn't ask" +
+                                                                " for a waiter, please try again or ask for assistance.");
+                                                    else
+                                                    {
+                                                        myRunnable = new Runnable() {
+                                                            @Override
+                                                            public void run() {
+                                                                new AlertDialog.Builder(context)
+                                                                        .setTitle("Thanks!").setMessage("A server will be with you shortly")
+                                                                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                                                            @Override
+                                                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                                            }
+                                                                        })
+                                                                        .show();
+
+
+                                                                //send order
+                                                                for(int j=my_holder.size()-1; j>=0; j--) {
+                                                                    OrderDetail temp = myAdapter.getItem(j);
+                                                                    myAdapter.remove(temp);
+                                                                }
+                                                                setBill();
+                                                                TextView orderAmountTV = (TextView) getActivity().findViewById(R.id.MS_order_amount);
+                                                                orderAmountTV.setText("(" +Integer.toString(Order.getSize()) +")");
+
+                                                            }
+                                                        }; // This is your code
+                                                        mainHandler.post(myRunnable);
+
+
+
+                                                    }
+
+                                                }
+                                                catch (InterruptedException e) {
+
+                                                    final InterruptedException ex = e;
+
+
+                                                    // Get a handler that can be used to post to the main thread
+                                                    Handler mainHandler = new Handler(context.getMainLooper());
+
+                                                    Runnable myRunnable = new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            new AlertDialog.Builder(context)
+                                                                    .setTitle("Oops!").setMessage(ex.getMessage())
+                                                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                                                        @Override
+                                                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                                                        }
+                                                                    })
+                                                                    .show();
+                                                        }
+                                                    }; // This is your code
+                                                    mainHandler.post(myRunnable);
+
+
+                                                }
+                                                catch (Exception e) {
+                                                    Log.e("ITEMDATASOURCE", "SETUP EXCEPTION");
+                                                }
+                                                finally {
+                                                    // Get a handler that can be used to post to the main thread
+                                                    Handler mainHandler = new Handler(context.getMainLooper());
+                                                    Runnable myRunnable = new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            submitButton.setEnabled(true);
+
+                                                        }
+                                                    }; // This is your code
+                                                    mainHandler.post(myRunnable);
+
+                                                }
+                                            }
+                                        };
+                                        thread.start();
+
+
+
+
+
                                     }
                                 })
                                 .setNegativeButton("No", new DialogInterface.OnClickListener() {

@@ -310,18 +310,23 @@ public class WebAPI {
         return  res;
     }
 
-    public static void postOrders()
-    {
+    public static int postOrders() {
+
+        int res = -1;
         InputStream inputStream;
         String result;
         StringBuilder builder = new StringBuilder();
         try {
 
-            // create HttpClient
+
             HttpClient httpclient = new DefaultHttpClient();
 
             // make POST request to lobster-nachos
-            HttpPost httpPost = new HttpPost("http://lobster-nachos.appspot.com/pings");
+            HttpPost httpPost = new HttpPost("http://lobster-nachos.appspot.com/webapi/orders/create");
+            // create HttpClient
+            List nameValuePairs = new ArrayList();
+
+            nameValuePairs.add(new BasicNameValuePair("tableID", String.valueOf(Order.getTableId())));
 
             String json = "";
 
@@ -331,13 +336,18 @@ public class WebAPI {
 
             ArrayList<OrderDetail> theOrder = Order.getTheOrder();
             JSONObject jObj = new JSONObject();
-            for(OrderDetail od: theOrder)
-            {
-                jObj.accumulate("Item", od.getTheItem());
-                jObj.accumulate("Quantity", od.getQuantity());
+            for (OrderDetail od : theOrder) {
+                JSONObject detailObj = new JSONObject();
+                detailObj.put("ItemID",  od.getTheItem().getItemID());
+                detailObj.put("Quantity",   od.getQuantity());
+
+                jsonObject.accumulate("OrderDetails",  detailObj);
             }
 
-            jsonObject.put("Order", jObj);
+
+
+            //httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
 
             // convert JSONObject to JSON to String
             json = jsonObject.toString();
@@ -363,8 +373,12 @@ public class WebAPI {
 
             //retrieves string from json response
             while ((result = reader.readLine()) != null) {
+                System.out.println(result);
                 builder.append(result);
-            }
+            }// add an HTTP variable and value pair
+
+            if (builder.toString().contains("OrderID"))
+                res = 0;
 
         } catch (ClientProtocolException e) {
             e.printStackTrace();
@@ -373,6 +387,9 @@ public class WebAPI {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        return res;
+
+
     }
 
 

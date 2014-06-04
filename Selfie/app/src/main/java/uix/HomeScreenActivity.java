@@ -180,8 +180,14 @@ public class HomeScreenActivity extends FragmentActivity {
                                 myRunnable = new Runnable() {
                                     @Override
                                     public void run() {
-
-                                        Toast.makeText(context, "Thanks! A waiter will be with you shortly", Toast.LENGTH_SHORT).show();
+                                        new AlertDialog.Builder(context)
+                                                .setTitle("Thanks!").setMessage("A server will be with you shortly")
+                                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                                    }
+                                                })
+                                                .show();
 
                                     }
                                 }; // This is your code
