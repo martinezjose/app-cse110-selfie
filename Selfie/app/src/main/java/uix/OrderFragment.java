@@ -15,6 +15,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -42,7 +43,7 @@ import database.CategoryDataSource;
 public class OrderFragment extends Fragment {
 
     private ArrayList<OrderDetail> theOrder;
-    private ArrayList<ViewHolder> my_holder;
+    private ArrayList<myView> myViews;
 
     private ListView lv;
     private OrderAdapter myAdapter;
@@ -63,8 +64,10 @@ public class OrderFragment extends Fragment {
         lv = (ListView)  view.findViewById(R.id.CS_selectedItems);
         lv.setDivider(new ColorDrawable(Color.BLACK));
         lv.setDividerHeight(6);
+
         theOrder = Order.getTheOrder();
-        my_holder = new ArrayList<ViewHolder>();
+        myViews = new ArrayList<myView>();
+        fillHolders(theOrder);
 
         cds = new CategoryDataSource(getActivity());
 
@@ -88,11 +91,10 @@ public class OrderFragment extends Fragment {
 
     //gets the name of the items selected to be removed
     private String displaySelected() {
-        SparseBooleanArray checked = myAdapter.getSelected();
         String m = new String();
-        for(int i=0; i<checked.size(); i++) {
-            if(checked.valueAt(i)) {
-                OrderDetail temp = myAdapter.getItem(checked.keyAt(i));
+        for(int i=0; i<myViews.size(); i++) {
+            if(myViews.get(i).check) {
+                OrderDetail temp = myViews.get(i).orderDetail;
                 m += "\n";
                 m += temp.getTheItem().getItemName();
             }
@@ -102,21 +104,14 @@ public class OrderFragment extends Fragment {
 
     //helper function that remove the rows in the ListView that are checked
     private void removeSelected() {
-        SparseBooleanArray checked = myAdapter.getSelected();
-        int[] pos = new int[checked.size()];
-        for(int i=checked.size()-1; i>=0; i--) {
-            if(checked.valueAt(i)) {
-                OrderDetail temp = myAdapter.getItem(checked.keyAt(i));
-                pos[i] = checked.keyAt(i);
+        int[] pos = new int[myViews.size()];
+        for(int i=myViews.size()-1; i>=0; i--) {
+            if(myViews.get(i).check) {
+                OrderDetail temp = myAdapter.getItem(i);
+                pos[i] = i;
                 myAdapter.remove(temp);
+                myViews.remove(i);
             }
-        }
-
-        for(int j=pos.length-1; j>=0; j--) {
-            myAdapter.toggleSelected(pos[j]);
-            checked.delete(pos[j]);
-            my_holder.get(pos[j]).checkBox.setChecked(false);
-            my_holder.remove(pos[j]);
         }
     }
 
@@ -129,33 +124,32 @@ public class OrderFragment extends Fragment {
         total.setText(String.format("%.2f", Total));
     }
 
-    //validate uniqueness of id
-    public boolean validateUnique(long itemId) {
-        boolean dup = false;
-        for(int i=0; i<my_holder.size(); i++) {
-            if(itemId == my_holder.get(i).itemId)
-                dup = true;
-        }
-        return dup;
-    }
-
     //checks or unchecks all CheckBoxes
     private void checkbox(boolean all) {
-        for(int i=0; i<my_holder.size(); i++) {
-            CheckBox cb = my_holder.get(i).checkBox;
-            if(cb.isChecked() != all) {
-                cb.setChecked(all);
-                myAdapter.selectedView(i, all);
+        for(int i=0; i<myViews.size(); i++) {
+            if(myViews.get(i).check != all) {
+                myViews.get(i).check = all;
             }
             myAdapter.notifyDataSetChanged();
         }
+    }
 
+    private void fillHolders(ArrayList<OrderDetail> order) {
+        for(int i=0; i<order.size(); i++)
+            myViews.add(i, new myView(order.get(i), false));
+    }
+
+    private boolean isAnySelected() {
+        for(int i=0; i<myViews.size(); i++) {
+            if(myViews.get(i).check == true)
+                return true;
+        }
+        return false;
     }
 
     //custom adapter for the ListView
     private class OrderAdapter extends ArrayAdapter<OrderDetail> {
         private ViewHolder holder = null;
-        private SparseBooleanArray mSelectedIds = new SparseBooleanArray();
 
         public OrderAdapter(ArrayList<OrderDetail> order) {
             super(getActivity(), android.R.layout.simple_list_item_1, order);
@@ -183,19 +177,26 @@ public class OrderFragment extends Fragment {
                 holder = (ViewHolder) convertView.getTag();
             }
 
-            OrderDetail od = theOrder.get(position);
+            OrderDetail od = myViews.get(position).orderDetail;
+            Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Lobster.otf");
+
             holder.itemId = od.getTheItem().getItemID();
 
             holder.itemName.setText(od.getTheItem().getItemName());
+            holder.itemName.setTypeface(tf);
 
             float price = od.getTheItem().getPrice() * (float)od.getQuantity();
             holder.itemPrice.setText("$ " +String.format("%.2f", price));
+            holder.itemPrice.setTypeface(tf);
 
             holder.quantity.setText(Integer.toString(theOrder.get(position).getQuantity()));
+            holder.quantity.setTypeface(tf);
 
             holder.category.setText(cds.getCategoryName(od.getTheItem().getCategoryID()));
+            holder.category.setTypeface(tf);
 
             holder.checkBox.setOnClickListener(myButtonListener);
+            holder.checkBox.setChecked(myViews.get(position).check);
 
             holder.leftButton.setImageResource(R.drawable.left_arrow);
             holder.leftButton.setOnClickListener(myButtonListener);
@@ -203,37 +204,8 @@ public class OrderFragment extends Fragment {
             holder.rightButton.setImageResource(R.drawable.right_arrow);
             holder.rightButton.setOnClickListener(myButtonListener);
 
-            if(!validateUnique(holder.itemId)) {
-                my_holder.add(holder);
-            }
             return convertView;
         }
-
-        public void toggleSelected(int position) {
-            selectedView(position, !mSelectedIds.get(position));
-        }
-        //determines if the row is selected
-        public void selectedView(int position, boolean value) {
-            if(value)
-                mSelectedIds.put(position, value);
-            else
-                mSelectedIds.delete(position);
-            notifyDataSetChanged();
-        }
-
-        //returns the array
-        public SparseBooleanArray getSelected() {
-            return mSelectedIds;
-        }
-
-        //check if any is selected
-        public boolean isAnySelected() {
-            if(mSelectedIds.size() > 0)
-                return true;
-            else
-                return false;
-        }
-
     }
 
     //listener to removeSelected, submitOrder, check all, individual checkboxes, increment and
@@ -244,14 +216,13 @@ public class OrderFragment extends Fragment {
             int position = lv.getPositionForView((View) view.getParent());
             int Q = 0;
             if(position != -1) {
-                TextView tx1 = my_holder.get(position).quantity;
-                Q = Integer.parseInt(tx1.getText().toString());
+                Q = myViews.get(position).orderDetail.getQuantity();
             }
 
             switch (view.getId()) {
                 //shows a dialog confirming the removal of items
                 case R.id.CS_removeSelected:
-                    if(myAdapter.isAnySelected()) {
+                    if(isAnySelected()) {
                         new AlertDialog.Builder(view.getContext())
                                 .setTitle("Remove Confirmation")
                                 .setMessage("Removing Items: \n" +displaySelected())
@@ -298,27 +269,20 @@ public class OrderFragment extends Fragment {
                                         dialog.setMessage("Pinging a waiter, please wait.");
                                         dialog.show();
 
-
                                         Thread thread = new Thread() {
                                             public void run() {
                                                 try {
-
                                                     // Get a handler that can be used to post to the main thread
                                                     Handler mainHandler = new Handler(context.getMainLooper());
-
-
                                                     long result = WebAPI.postOrders();
 
                                                     Runnable myRunnable = new Runnable() {
                                                         @Override
                                                         public void run() {
-
                                                             dialog.hide();
-
                                                         }
                                                     }; // This is your code
                                                     mainHandler.post(myRunnable);
-
 
                                                     if(result == -1)
                                                         throw  new InterruptedException("This is embarrassing, but we couldn't ask" +
@@ -336,13 +300,8 @@ public class OrderFragment extends Fragment {
                                                                             }
                                                                         })
                                                                         .show();
-
-
-                                                                //send order
-                                                                for(int j=my_holder.size()-1; j>=0; j--) {
-                                                                    OrderDetail temp = myAdapter.getItem(j);
-                                                                    myAdapter.remove(temp);
-                                                                }
+                                                                checkbox(true);
+                                                                removeSelected();
                                                                 setBill();
                                                                 TextView orderAmountTV = (TextView) getActivity().findViewById(R.id.MS_order_amount);
                                                                 orderAmountTV.setText("(" +Integer.toString(Order.getSize()) +")");
@@ -350,17 +309,10 @@ public class OrderFragment extends Fragment {
                                                             }
                                                         }; // This is your code
                                                         mainHandler.post(myRunnable);
-
-
-
                                                     }
-
                                                 }
                                                 catch (InterruptedException e) {
-
                                                     final InterruptedException ex = e;
-
-
                                                     // Get a handler that can be used to post to the main thread
                                                     Handler mainHandler = new Handler(context.getMainLooper());
 
@@ -378,8 +330,6 @@ public class OrderFragment extends Fragment {
                                                         }
                                                     }; // This is your code
                                                     mainHandler.post(myRunnable);
-
-
                                                 }
                                                 catch (Exception e) {
                                                     Log.e("ITEMDATASOURCE", "SETUP EXCEPTION");
@@ -391,20 +341,13 @@ public class OrderFragment extends Fragment {
                                                         @Override
                                                         public void run() {
                                                             submitButton.setEnabled(true);
-
                                                         }
                                                     }; // This is your code
                                                     mainHandler.post(myRunnable);
-
                                                 }
                                             }
                                         };
                                         thread.start();
-
-
-
-
-
                                     }
                                 })
                                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -425,8 +368,8 @@ public class OrderFragment extends Fragment {
                     break;
                 //check the CheckBox in the corresponding row
                 case R.id.checkout_checkBox:
-                    //CheckBox rCB = my_holder.get(position).checkBox;
-                    myAdapter.toggleSelected(position);
+                    CheckBox rcb = (CheckBox) view;
+                    myViews.get(position).check = rcb.isChecked();
                     break;
                 //decrease the quantity, no less than 1, and updates the price, subtotal, tax, and
                 //total
@@ -447,15 +390,23 @@ public class OrderFragment extends Fragment {
             //method that updates the ListView
             myAdapter.notifyDataSetChanged();
         }
-
-
     }
 
     //pattern to optimize rendering
-    private class ViewHolder {
+    static private class ViewHolder {
         public TextView quantity, itemName, itemPrice, category;
         public CheckBox checkBox;
         public ImageView leftButton, rightButton;
         public long itemId;
+    }
+
+    private class myView {
+        public OrderDetail orderDetail;
+        public boolean check;
+
+        public myView (OrderDetail od, boolean c) {
+            this.orderDetail = od;
+            this.check = c;
+        }
     }
 }

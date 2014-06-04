@@ -28,6 +28,8 @@ public class Helper {
             place.setImageResource(R.drawable.no_image_available);
     }
 
+    //updates the number next to order button that indicates the number of items that have been
+    //added to the order
     public static void updateOrderQuantity(Activity activity) {
         Activity ac = activity;
         TextView tx = (TextView) ac.findViewById(R.id.MS_order_amount);
