@@ -27,7 +27,6 @@ import database.CategoryDataSource;
  */
 public class CategoryFragment extends ListFragment{
 
-    private WeightController weightController;
     private CategoryDataSource categoryDataSource;
 
     ArrayList<Category> category;
@@ -36,7 +35,6 @@ public class CategoryFragment extends ListFragment{
     //instantiation of classes
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        weightController = new WeightController(getActivity());
         categoryDataSource = new CategoryDataSource(getActivity());
 
         category = categoryDataSource.getAllCategories();
@@ -61,7 +59,7 @@ public class CategoryFragment extends ListFragment{
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 .addToBackStack("Menu " +Integer.toString(position))
                 .commit();
-        weightController.changeLayoutWeight(1);
+        Helper.changeWeight(getActivity(), 1);
     }
 
     //custom adapter contains 1 textview
@@ -94,7 +92,7 @@ public class CategoryFragment extends ListFragment{
         }
     }
 
-    private class ViewHolder {
+    static private class ViewHolder {
         public TextView t;
     }
 }

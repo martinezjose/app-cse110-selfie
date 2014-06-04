@@ -27,7 +27,6 @@ import database.ItemDataSource;
 
 public class HomeScreenActivity extends FragmentActivity {
 
-    private WeightController weightController;
     private FragmentTransaction fTransaction;
 
     private CategoryFragment categoryFragment = new CategoryFragment();
@@ -41,8 +40,6 @@ public class HomeScreenActivity extends FragmentActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_screen);
-
-        weightController = new WeightController(this);
 
         Typeface tf = Typeface.createFromAsset(getAssets(), "fonts/Lobster.otf");
 
@@ -95,17 +92,17 @@ public class HomeScreenActivity extends FragmentActivity {
 
             if(mPrevious.getName() == "Home") {
                 fManager.popBackStack();
-                weightController.changeLayoutWeight(0);
+                Helper.changeWeight(this, 0);
                 categoryName.setVisibility(TextView.INVISIBLE);
             }
             else if(mPrevious.getName().startsWith("Menu ")) {
-                weightController.changeLayoutWeight(1);
+                Helper.changeWeight(this, 1);
             }
             else if(mPrevious.getName() == "Order") {
-                weightController.changeLayoutWeight(2);
+                Helper.changeWeight(this, 2);
             }
             else if(mPrevious.getName().startsWith("Detail ")) {
-                weightController.changeLayoutWeight(1);
+                Helper.changeWeight(this, 1);
             }
 
             //deletes the back history if it gets over 10 (arbitrary number)
@@ -113,7 +110,7 @@ public class HomeScreenActivity extends FragmentActivity {
             if (fManager.getBackStackEntryCount() > 10) {
                 for(int i=0;i<fManager.getBackStackEntryCount()-2;i++)
                     fManager.popBackStack();
-                weightController.changeLayoutWeight(0);
+                Helper.changeWeight(this, 0);
             }
         }
         else {
@@ -148,7 +145,7 @@ public class HomeScreenActivity extends FragmentActivity {
                             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                             .addToBackStack("Home")
                             .commit();
-                    weightController.changeLayoutWeight(0);
+                    Helper.changeWeight(this, 0);
                     categoryName.setVisibility(TextView.INVISIBLE);
                 }
                 break;
@@ -160,7 +157,7 @@ public class HomeScreenActivity extends FragmentActivity {
                             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                             .addToBackStack("Order")
                             .commit();
-                    weightController.changeLayoutWeight(2);
+                    Helper.changeWeight(this, 2);
                 }
                 break;
         }

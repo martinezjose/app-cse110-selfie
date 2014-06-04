@@ -262,13 +262,13 @@ public class OrderFragment extends Fragment {
                                         cb.setChecked(false);
                                         removeSelected();
                                         setBill();
-                                        TextView orderAmountTV = (TextView) getActivity().findViewById(R.id.MS_order_amount);
-                                        orderAmountTV.setText("(" +Integer.toString(Order.getSize()) +")");
+                                        Helper.updateOrderQuantity(getActivity());
                                     }
                                 })
                                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
+                                        dialogInterface.dismiss();
                                     }
                                 })
                                 .show();
@@ -285,14 +285,12 @@ public class OrderFragment extends Fragment {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
                                         //send order
-                                        for(int j=my_holder.size()-1; j>=0; j--) {
-                                            OrderDetail temp = myAdapter.getItem(j);
-                                            myAdapter.remove(temp);
-                                        }
-                                        Log.e("laksjdflksdF", Integer.toString(theOrder.size()));
+                                        CheckBox cb = (CheckBox) getActivity().findViewById(R.id.all_checkbox);
+                                        cb.setChecked(false);
+                                        checkbox(true);
+                                        removeSelected();
                                         setBill();
-                                        TextView orderAmountTV = (TextView) getActivity().findViewById(R.id.MS_order_amount);
-                                        orderAmountTV.setText("(" +Integer.toString(Order.getSize()) +")");
+                                        Helper.updateOrderQuantity(getActivity());
                                     }
                                 })
                                 .setNegativeButton("No", new DialogInterface.OnClickListener() {

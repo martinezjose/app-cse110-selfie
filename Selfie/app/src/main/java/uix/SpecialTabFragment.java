@@ -30,7 +30,6 @@ import database.ItemDataSource;
  */
 public class SpecialTabFragment extends Fragment {
 
-    private WeightController weightController;
     private ItemDataSource itemDataSource;
     private CategoryDataSource cds;
 
@@ -48,8 +47,6 @@ public class SpecialTabFragment extends Fragment {
         specials = itemDataSource.getSpecialSmallItem();
 
         cds = new CategoryDataSource(getActivity());
-
-        weightController = new WeightController(getActivity());
 
         //there will be a function to retrieve the logo
         logo = (ImageView) view.findViewById(R.id.logo);
@@ -79,7 +76,7 @@ public class SpecialTabFragment extends Fragment {
                     ft.replace(R.id.MSfragment_listContainer, m)
                             .addToBackStack("Detail " + Long.toString(id))
                             .commit();
-                    weightController.changeLayoutWeight(1);
+                    Helper.changeWeight(getActivity(), 1);
                 }
             });
             specialGallery.addView(iv1);
