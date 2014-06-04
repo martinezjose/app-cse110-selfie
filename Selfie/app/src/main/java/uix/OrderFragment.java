@@ -11,11 +11,13 @@ package uix;
  */
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,6 +35,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import classes.Category;
+import classes.WebAPI;
 import cse110.selfie.app.UI.R;
 import database.CategoryDataSource;
 
@@ -60,7 +63,6 @@ public class OrderFragment extends Fragment {
         lv = (ListView)  view.findViewById(R.id.CS_selectedItems);
         lv.setDivider(new ColorDrawable(Color.BLACK));
         lv.setDividerHeight(6);
-
         theOrder = Order.getTheOrder();
         my_holder = new ArrayList<ViewHolder>();
 
@@ -111,7 +113,8 @@ public class OrderFragment extends Fragment {
         }
 
         for(int j=pos.length-1; j>=0; j--) {
-            myAdapter.selectedView(pos[j], false);
+            myAdapter.toggleSelected(pos[j]);
+            checked.delete(pos[j]);
             my_holder.get(pos[j]).checkBox.setChecked(false);
             my_holder.remove(pos[j]);
         }
@@ -146,6 +149,7 @@ public class OrderFragment extends Fragment {
             }
             myAdapter.notifyDataSetChanged();
         }
+
     }
 
     //custom adapter for the ListView
@@ -179,22 +183,17 @@ public class OrderFragment extends Fragment {
                 holder = (ViewHolder) convertView.getTag();
             }
 
-            Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Lobster.otf");
             OrderDetail od = theOrder.get(position);
             holder.itemId = od.getTheItem().getItemID();
 
             holder.itemName.setText(od.getTheItem().getItemName());
-            holder.itemName.setTypeface(tf);
 
             float price = od.getTheItem().getPrice() * (float)od.getQuantity();
             holder.itemPrice.setText("$ " +String.format("%.2f", price));
-            holder.itemPrice.setTypeface(tf);
 
             holder.quantity.setText(Integer.toString(theOrder.get(position).getQuantity()));
-            holder.quantity.setTypeface(tf);
 
             holder.category.setText(cds.getCategoryName(od.getTheItem().getCategoryID()));
-            holder.category.setTypeface(tf);
 
             holder.checkBox.setOnClickListener(myButtonListener);
 
@@ -213,7 +212,6 @@ public class OrderFragment extends Fragment {
         public void toggleSelected(int position) {
             selectedView(position, !mSelectedIds.get(position));
         }
-
         //determines if the row is selected
         public void selectedView(int position, boolean value) {
             if(value)
@@ -264,13 +262,13 @@ public class OrderFragment extends Fragment {
                                         cb.setChecked(false);
                                         removeSelected();
                                         setBill();
-                                        Helper.updateOrderQuantity(getActivity());
+                                        TextView orderAmountTV = (TextView) getActivity().findViewById(R.id.MS_order_amount);
+                                        orderAmountTV.setText("(" +Integer.toString(Order.getSize()) +")");
                                     }
                                 })
                                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
-                                        dialogInterface.dismiss();
                                     }
                                 })
                                 .show();
@@ -281,18 +279,132 @@ public class OrderFragment extends Fragment {
                 //submits the order
                 case R.id.CS_summitOrder:
                     if(theOrder.size() != 0) {
+
+                        final Context context = view.getContext();
+                        final Button submitButton = (Button) view;
+
+
                         new AlertDialog.Builder(view.getContext())
                                 .setTitle("Submit Order")
                                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
-                                        //send order
-                                        CheckBox cb = (CheckBox) getActivity().findViewById(R.id.all_checkbox);
-                                        cb.setChecked(false);
-                                        checkbox(true);
-                                        removeSelected();
-                                        setBill();
-                                        Helper.updateOrderQuantity(getActivity());
+
+                                        submitButton.setEnabled(false);
+                                        final ProgressDialog dialog;
+
+                                        dialog = new ProgressDialog(context);
+                                        dialog.setCancelable(false);
+                                        dialog.setMessage("Pinging a waiter, please wait.");
+                                        dialog.show();
+
+
+                                        Thread thread = new Thread() {
+                                            public void run() {
+                                                try {
+
+                                                    // Get a handler that can be used to post to the main thread
+                                                    Handler mainHandler = new Handler(context.getMainLooper());
+
+
+                                                    long result = WebAPI.postOrders();
+
+                                                    Runnable myRunnable = new Runnable() {
+                                                        @Override
+                                                        public void run() {
+
+                                                            dialog.hide();
+
+                                                        }
+                                                    }; // This is your code
+                                                    mainHandler.post(myRunnable);
+
+
+                                                    if(result == -1)
+                                                        throw  new InterruptedException("This is embarrassing, but we couldn't ask" +
+                                                                " for a waiter, please try again or ask for assistance.");
+                                                    else
+                                                    {
+                                                        myRunnable = new Runnable() {
+                                                            @Override
+                                                            public void run() {
+                                                                new AlertDialog.Builder(context)
+                                                                        .setTitle("Thanks!").setMessage("A server will be with you shortly")
+                                                                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                                                            @Override
+                                                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                                            }
+                                                                        })
+                                                                        .show();
+
+
+                                                                //send order
+                                                                for(int j=my_holder.size()-1; j>=0; j--) {
+                                                                    OrderDetail temp = myAdapter.getItem(j);
+                                                                    myAdapter.remove(temp);
+                                                                }
+                                                                setBill();
+                                                                TextView orderAmountTV = (TextView) getActivity().findViewById(R.id.MS_order_amount);
+                                                                orderAmountTV.setText("(" +Integer.toString(Order.getSize()) +")");
+
+                                                            }
+                                                        }; // This is your code
+                                                        mainHandler.post(myRunnable);
+
+
+
+                                                    }
+
+                                                }
+                                                catch (InterruptedException e) {
+
+                                                    final InterruptedException ex = e;
+
+
+                                                    // Get a handler that can be used to post to the main thread
+                                                    Handler mainHandler = new Handler(context.getMainLooper());
+
+                                                    Runnable myRunnable = new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            new AlertDialog.Builder(context)
+                                                                    .setTitle("Oops!").setMessage(ex.getMessage())
+                                                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                                                        @Override
+                                                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                                                        }
+                                                                    })
+                                                                    .show();
+                                                        }
+                                                    }; // This is your code
+                                                    mainHandler.post(myRunnable);
+
+
+                                                }
+                                                catch (Exception e) {
+                                                    Log.e("ITEMDATASOURCE", "SETUP EXCEPTION");
+                                                }
+                                                finally {
+                                                    // Get a handler that can be used to post to the main thread
+                                                    Handler mainHandler = new Handler(context.getMainLooper());
+                                                    Runnable myRunnable = new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            submitButton.setEnabled(true);
+
+                                                        }
+                                                    }; // This is your code
+                                                    mainHandler.post(myRunnable);
+
+                                                }
+                                            }
+                                        };
+                                        thread.start();
+
+
+
+
+
                                     }
                                 })
                                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
