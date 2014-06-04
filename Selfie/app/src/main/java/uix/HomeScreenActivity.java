@@ -8,6 +8,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
@@ -32,7 +33,6 @@ import database.ItemDataSource;
 
 public class HomeScreenActivity extends FragmentActivity {
 
-    private WeightController weightController;
     private FragmentTransaction fTransaction;
 
     private CategoryFragment categoryFragment = new CategoryFragment();
@@ -47,18 +47,11 @@ public class HomeScreenActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_screen);
 
-        weightController = new WeightController(this);
-        //ItemDataSource itemDataSource = new ItemDataSource(this);
-        //try {
-        //    itemDataSource.setUp();
-        //} catch (Exception e) {
-        //    Log.e("ITEMDATASOURCE", "SETUP EXCEPTION");z
-        //}
-
+        Typeface tf = Typeface.createFromAsset(getAssets(), "fonts/Lobster.otf");
         categoryName = (TextView) findViewById(R.id.MS_caterogory_name);
-        categoryName.setTypeface(Helper.getFont(this, 0));
+        categoryName.setTypeface(tf);
         categoryName.setVisibility(TextView.INVISIBLE);
-        //there is a comment
+
         ImageView homeIV = (ImageView) findViewById(R.id.MS_home_button);
         homeIV.setImageResource(R.drawable.home_button);
 
@@ -66,7 +59,7 @@ public class HomeScreenActivity extends FragmentActivity {
         waiterIV.setImageResource(R.drawable.waiter_button);
 
         ImageView orderIV = (ImageView) findViewById(R.id.MS_order_button);
-        orderIV.setImageResource(R.drawable.order_button);
+        orderIV.setImageResource(R.drawable.new_order_button);
 
         TextView orderAmountTV = (TextView) findViewById(R.id.MS_order_amount);
         orderAmountTV.setText("(" + Integer.toString(Order.getSize()) + ")");
@@ -104,17 +97,17 @@ public class HomeScreenActivity extends FragmentActivity {
 
             if(mPrevious.getName() == "Home") {
                 fManager.popBackStack();
-                weightController.changeLayoutWeight(0);
+                Helper.changeWeight(this, 0);
                 categoryName.setVisibility(TextView.INVISIBLE);
             }
             else if(mPrevious.getName().startsWith("Menu ")) {
-                weightController.changeLayoutWeight(1);
+                Helper.changeWeight(this, 1);
             }
             else if(mPrevious.getName() == "Order") {
-                weightController.changeLayoutWeight(2);
+                Helper.changeWeight(this, 2);
             }
             else if(mPrevious.getName().startsWith("Detail ")) {
-                weightController.changeLayoutWeight(1);
+                Helper.changeWeight(this, 1);;
             }
 
             //deletes the back history if it gets over 10 (arbitrary number)
@@ -122,7 +115,7 @@ public class HomeScreenActivity extends FragmentActivity {
             if (fManager.getBackStackEntryCount() > 10) {
                 for(int i=0;i<fManager.getBackStackEntryCount()-2;i++)
                     fManager.popBackStack();
-                weightController.changeLayoutWeight(0);
+                Helper.changeWeight(this, 0);
             }
         }
         else {
@@ -139,39 +132,28 @@ public class HomeScreenActivity extends FragmentActivity {
         switch (view.getId()) {
             //sends a ping to the POS with the tableId
             case R.id.MS_alert:
-
                 final Context context = this;
                 final ImageView waiterIV = (ImageView) findViewById(R.id.MS_alert);
                 waiterIV.setEnabled(false);
-                final  ProgressDialog dialog;
+                final ProgressDialog dialog = new ProgressDialog(context);
 
-                dialog = new ProgressDialog(context);
                 dialog.setCancelable(false);
                 dialog.setMessage("Pinging a waiter, please wait.");
                 dialog.show();
 
-
                 Thread thread = new Thread() {
                     public void run() {
                         try {
-
                             // Get a handler that can be used to post to the main thread
                             Handler mainHandler = new Handler(context.getMainLooper());
-
-
                             long result = WebAPI.pingWaiter();
-
                             Runnable myRunnable = new Runnable() {
                                 @Override
                                 public void run() {
-
                                     dialog.hide();
-
                                 }
                             }; // This is your code
                             mainHandler.post(myRunnable);
-
-
                             if(result == -1)
                                 throw  new InterruptedException("This is embarrassing, but we couldn't ask" +
                                         " for a waiter, please try again or ask for assistance.");
@@ -180,22 +162,14 @@ public class HomeScreenActivity extends FragmentActivity {
                                 myRunnable = new Runnable() {
                                     @Override
                                     public void run() {
-
                                         Toast.makeText(context, "Thanks! A waiter will be with you shortly", Toast.LENGTH_SHORT).show();
-
                                     }
                                 }; // This is your code
                                 mainHandler.post(myRunnable);
-
-
                             }
-
                         }
                         catch (InterruptedException e) {
-
                             final InterruptedException ex = e;
-
-
                             // Get a handler that can be used to post to the main thread
                             Handler mainHandler = new Handler(context.getMainLooper());
 
@@ -213,8 +187,6 @@ public class HomeScreenActivity extends FragmentActivity {
                                 }
                             }; // This is your code
                             mainHandler.post(myRunnable);
-
-
                         }
                         catch (Exception e) {
                             Log.e("ITEMDATASOURCE", "SETUP EXCEPTION");
@@ -226,21 +198,13 @@ public class HomeScreenActivity extends FragmentActivity {
                                 @Override
                                 public void run() {
                                     waiterIV.setEnabled(true);
-
                                 }
                             }; // This is your code
                             mainHandler.post(myRunnable);
-
                         }
                     }
                 };
                 thread.start();
-
-
-
-
-
-
                 break;
             //takes the user to the "home screen" unless it's already there
             case R.id.MS_home_button:
@@ -251,7 +215,7 @@ public class HomeScreenActivity extends FragmentActivity {
                             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                             .addToBackStack("Home")
                             .commit();
-                    weightController.changeLayoutWeight(0);
+                    Helper.changeWeight(this, 0);
                     categoryName.setVisibility(TextView.INVISIBLE);
                 }
                 break;
@@ -263,7 +227,7 @@ public class HomeScreenActivity extends FragmentActivity {
                             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                             .addToBackStack("Order")
                             .commit();
-                    weightController.changeLayoutWeight(2);
+                    Helper.changeWeight(this, 2);
                 }
                 break;
         }
