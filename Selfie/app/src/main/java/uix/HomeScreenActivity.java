@@ -5,6 +5,7 @@ package uix;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
@@ -42,17 +43,13 @@ public class HomeScreenActivity extends FragmentActivity {
         setContentView(R.layout.activity_main_screen);
 
         weightController = new WeightController(this);
-        //ItemDataSource itemDataSource = new ItemDataSource(this);
-        //try {
-        //    itemDataSource.setUp();
-        //} catch (Exception e) {
-        //    Log.e("ITEMDATASOURCE", "SETUP EXCEPTION");z
-        //}
+
+        Typeface tf = Typeface.createFromAsset(getAssets(), "fonts/Lobster.otf");
 
         categoryName = (TextView) findViewById(R.id.MS_caterogory_name);
-        categoryName.setTypeface(Helper.getFont(this, 0));
+        categoryName.setTypeface(tf);
         categoryName.setVisibility(TextView.INVISIBLE);
-        //there is a comment
+
         ImageView homeIV = (ImageView) findViewById(R.id.MS_home_button);
         homeIV.setImageResource(R.drawable.home_button);
 
@@ -60,7 +57,7 @@ public class HomeScreenActivity extends FragmentActivity {
         waiterIV.setImageResource(R.drawable.waiter_button);
 
         ImageView orderIV = (ImageView) findViewById(R.id.MS_order_button);
-        orderIV.setImageResource(R.drawable.order_button);
+        orderIV.setImageResource(R.drawable.new_order_button);
 
         TextView orderAmountTV = (TextView) findViewById(R.id.MS_order_amount);
         orderAmountTV.setText("(" + Integer.toString(Order.getSize()) + ")");

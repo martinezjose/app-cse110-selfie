@@ -15,24 +15,6 @@ import cse110.selfie.app.UI.R;
  */
 public class Helper {
 
-    public static Typeface getFont(Activity mainActivity, int i) {
-        String font = "fonts/ADayinSeptember.otf";
-        switch (i) {
-            case 0:
-                font = "fonts/Lobster.otf";
-                break;
-            case 1:
-                font = "fonts/AYearWithoutRain.ttf";
-                break;
-            case 2:
-                font = "fonts/JeNeTOublieraiJamais.ttf";
-                break;
-        }
-
-        Typeface face = Typeface.createFromAsset(mainActivity.getAssets(), font);
-        return face;
-    }
-
     public static void getImage(ImageView place, String path) {
         File img1 = new File(path);
         if (img1.exists()) {

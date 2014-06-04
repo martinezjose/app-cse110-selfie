@@ -25,8 +25,8 @@
                 android:singleLine="true" />
             <ImageView
                 android:id="@+id/MS_order_button"
-                android:layout_width="70dp"
-                android:layout_height="60dp"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
                 android:layout_marginRight="69dp"
                 android:onClick="myButtonListener"
                 android:layout_alignParentTop="true"

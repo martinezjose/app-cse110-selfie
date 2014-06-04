@@ -13,9 +13,11 @@ package uix;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -176,17 +178,22 @@ public class OrderFragment extends Fragment {
                 holder = (ViewHolder) convertView.getTag();
             }
 
+            Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Lobster.otf");
             OrderDetail od = theOrder.get(position);
             holder.itemId = od.getTheItem().getItemID();
 
             holder.itemName.setText(od.getTheItem().getItemName());
+            holder.itemName.setTypeface(tf);
 
             float price = od.getTheItem().getPrice() * (float)od.getQuantity();
             holder.itemPrice.setText("$ " +String.format("%.2f", price));
+            holder.itemPrice.setTypeface(tf);
 
             holder.quantity.setText(Integer.toString(theOrder.get(position).getQuantity()));
+            holder.quantity.setTypeface(tf);
 
             holder.category.setText(cds.getCategoryName(od.getTheItem().getCategoryID()));
+            holder.category.setTypeface(tf);
 
             holder.checkBox.setOnClickListener(myButtonListener);
 
@@ -282,6 +289,7 @@ public class OrderFragment extends Fragment {
                                             OrderDetail temp = myAdapter.getItem(j);
                                             myAdapter.remove(temp);
                                         }
+                                        Log.e("laksjdflksdF", Integer.toString(theOrder.size()));
                                         setBill();
                                         TextView orderAmountTV = (TextView) getActivity().findViewById(R.id.MS_order_amount);
                                         orderAmountTV.setText("(" +Integer.toString(Order.getSize()) +")");

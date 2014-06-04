@@ -1,5 +1,6 @@
 package uix;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
@@ -84,8 +85,10 @@ public class CategoryFragment extends ListFragment{
             else
                 holder = (ViewHolder)convertView.getTag();
 
+            Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Lobster.otf");
             holder.t.setText(category.get(position).getCategoryName());
-            holder.t.setTypeface(Helper.getFont(getActivity(), 2));
+            holder.t.setTypeface(tf);
+
 
             return convertView;
         }
