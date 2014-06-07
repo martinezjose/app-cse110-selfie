@@ -143,12 +143,13 @@ public class HomeScreenActivity extends FragmentActivity {
                 final Context context = this;
                 final ImageView waiterIV = (ImageView) findViewById(R.id.MS_alert);
                 waiterIV.setEnabled(false);
-                final  ProgressDialog dialog;
+                final ProgressDialog dialog;
 
                 dialog = new ProgressDialog(context);
                 dialog.setCancelable(false);
-                dialog.setMessage("Pinging a waiter, please wait.");
+                dialog.setMessage("Pinging a waiter, please wait");
                 dialog.show();
+
 
 
                 Thread thread = new Thread() {
@@ -172,11 +173,11 @@ public class HomeScreenActivity extends FragmentActivity {
                             mainHandler.post(myRunnable);
 
 
-                            if(result == -1)
-                                throw  new InterruptedException("This is embarrassing, but we couldn't ask" +
-                                        " for a waiter, please try again or ask for assistance.");
-                            else
-                            {
+                            if (result == -1)
+                                throw new InterruptedException("" +
+                                        "We couldn't ask for a waiter\n Please try again or ask for assistance"
+                                        );
+                            else {
                                 myRunnable = new Runnable() {
                                     @Override
                                     public void run() {
@@ -196,8 +197,7 @@ public class HomeScreenActivity extends FragmentActivity {
 
                             }
 
-                        }
-                        catch (InterruptedException e) {
+                        } catch (InterruptedException e) {
 
                             final InterruptedException ex = e;
 
@@ -221,11 +221,9 @@ public class HomeScreenActivity extends FragmentActivity {
                             mainHandler.post(myRunnable);
 
 
-                        }
-                        catch (Exception e) {
+                        } catch (Exception e) {
                             Log.e("ITEMDATASOURCE", "SETUP EXCEPTION");
-                        }
-                        finally {
+                        } finally {
                             // Get a handler that can be used to post to the main thread
                             Handler mainHandler = new Handler(context.getMainLooper());
                             Runnable myRunnable = new Runnable() {
@@ -241,8 +239,6 @@ public class HomeScreenActivity extends FragmentActivity {
                     }
                 };
                 thread.start();
-
-
 
 
 
@@ -275,3 +271,8 @@ public class HomeScreenActivity extends FragmentActivity {
         }
     }
 }
+
+
+/*
+    This is the app launcher point.
+ */

@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="1_gson-2.2.4">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/app/Users/edwinmo/Development/Android Studio Projects/algo-selfie/Selfie/.idea/libraries/gson-2.2.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../edwinmo/Development/Android Studio Projects/algo-selfie/Selfie/.idea/libraries/gson-2.2.4.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

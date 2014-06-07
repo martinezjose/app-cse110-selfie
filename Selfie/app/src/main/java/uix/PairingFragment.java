@@ -86,7 +86,7 @@ public class PairingFragment extends FragmentActivity {
                     linkButton.setEnabled(false);
                    final ProgressDialog dialog = new ProgressDialog(context);
                     dialog.setCancelable(false);
-                    dialog.setMessage("Downloading database, please wait.");
+                    dialog.setMessage("Downloading database, please wait");
 
                     Thread thread = new Thread() {
                         public void run() {
@@ -94,8 +94,7 @@ public class PairingFragment extends FragmentActivity {
                                 long tableID = WebAPI.sendPairingCode(Integer.parseInt(
                                         linkCodeET.getText().toString()));
                                 if(tableID == -1)
-                                    throw  new InterruptedException("Pairing code is not mapped to " +
-                                            "a table, please try again.");
+                                    throw  new InterruptedException("Error trying to connect to a table, please try again");
 
                                 // Get a handler that can be used to post to the main thread
                                 Handler mainHandler = new Handler(context.getMainLooper());
@@ -132,7 +131,7 @@ public class PairingFragment extends FragmentActivity {
                                     @Override
                                     public void run() {
                                         new AlertDialog.Builder(context)
-                                                .setTitle("Invalid Pairing Code").setMessage(ex.getMessage())
+                                                .setTitle("Data Error").setMessage(ex.getMessage())
                                                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                                     @Override
                                                     public void onClick(DialogInterface dialogInterface, int i) {

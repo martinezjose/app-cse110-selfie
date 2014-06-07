@@ -266,7 +266,7 @@ public class OrderFragment extends Fragment {
 
                                         dialog = new ProgressDialog(context);
                                         dialog.setCancelable(false);
-                                        dialog.setMessage("Pinging a waiter, please wait.");
+                                        dialog.setMessage("Sending order, please wait");
                                         dialog.show();
 
                                         Thread thread = new Thread() {
@@ -285,15 +285,14 @@ public class OrderFragment extends Fragment {
                                                     mainHandler.post(myRunnable);
 
                                                     if(result == -1)
-                                                        throw  new InterruptedException("This is embarrassing, but we couldn't ask" +
-                                                                " for a waiter, please try again or ask for assistance.");
+                                                        throw  new InterruptedException("We couldn't send your order, please try again or ask for assistance");
                                                     else
                                                     {
                                                         myRunnable = new Runnable() {
                                                             @Override
                                                             public void run() {
                                                                 new AlertDialog.Builder(context)
-                                                                        .setTitle("Thanks!").setMessage("A server will be with you shortly")
+                                                                        .setTitle("Thanks!").setMessage("Your order was successfully submitted")
                                                                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                                                             @Override
                                                                             public void onClick(DialogInterface dialogInterface, int i) {
