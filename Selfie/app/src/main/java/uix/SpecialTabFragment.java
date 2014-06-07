@@ -48,7 +48,6 @@ public class SpecialTabFragment extends Fragment {
 
         cds = new CategoryDataSource(getActivity());
 
-        //there will be a function to retrieve the logo
         logo = (ImageView) view.findViewById(R.id.logo);
         logo.setImageResource(R.drawable.lobster_nachos_logo);
 
