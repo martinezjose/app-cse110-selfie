@@ -113,7 +113,8 @@ public class DetailFragment extends Fragment {
 
 
             ImageView rg1 = new ImageView(recommendedGallery.getContext());
-            rg1.setLayoutParams(new ViewGroup.LayoutParams(100, 100));
+            rg1.setLayoutParams(new ViewGroup.LayoutParams(200, 200));
+            rg1.setPadding(5,0,5,20);
             try {
                 temp = ids.getItem(recommendations[i]);
             } catch (Exception e) {

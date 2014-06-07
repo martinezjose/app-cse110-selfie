@@ -56,7 +56,8 @@ public class SpecialTabFragment extends Fragment {
         for(int i=0; i<specials.size(); i++) {
             ImageView iv1 = new ImageView(specialGallery.getContext());
             Helper.getImage(iv1, specials.get(i).getThumbnail());
-            iv1.setLayoutParams(new ViewGroup.LayoutParams(100, 100));
+            iv1.setLayoutParams(new ViewGroup.LayoutParams(200, 200));
+            iv1.setPadding(5,0,5,0);
             iv1.setId(i);
             iv1.setOnClickListener(new View.OnClickListener() {
                 @Override
