@@ -127,8 +127,6 @@ public class TestItemDataSource extends AndroidTestCase{
      * Instantiates an object of the Item class for testing purposes
      * The Item object is instantiated from a predefined set of possible
      * fields.
-     * TODO make private and not static after we actually have a database (this method should ONLY
-     * TODO be used in this package for testing)
      */
     public static Item startItem(){
         int LikesLimit = 100;

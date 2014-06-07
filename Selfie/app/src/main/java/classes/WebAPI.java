@@ -1,35 +1,32 @@
 package classes;
 
-        import java.io.BufferedReader;
-        import java.io.IOException;
-        import java.io.InputStream;
-        import java.io.InputStreamReader;
-        import java.util.ArrayList;
-        import java.lang.Exception;import java.lang.String;import java.lang.StringBuilder;
-        import java.util.List;
-
-        import com.google.gson.Gson;
-
-        import org.apache.http.HttpEntity;
-        import org.apache.http.client.entity.UrlEncodedFormEntity;
-        import org.apache.http.client.methods.HttpPost;
-        import org.apache.http.HttpResponse;
-        import org.apache.http.client.ClientProtocolException;
-        import org.apache.http.client.HttpClient;
-        import org.apache.http.client.methods.HttpGet;
-        import org.apache.http.impl.client.DefaultHttpClient;
-        import org.apache.http.entity.StringEntity;
-
-        import org.apache.http.message.BasicNameValuePair;
-        import org.json.JSONArray;
-        import org.json.JSONObject;
-        import uix.Order;
-        import uix.OrderDetail;
-
         import android.content.Context;
-        import android.net.ConnectivityManager;
-        import android.net.NetworkInfo;
-        import android.util.Log;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+
+import com.google.gson.Gson;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+
+import uix.Order;
+import uix.OrderDetail;
 
 /**
  * Created by marvin on 5/18/14.
@@ -147,8 +144,6 @@ public class WebAPI {
             HttpClient httpclient = new DefaultHttpClient();
 
             // make POST request to lobster-nachos
-            //TODO add the correct url
-            //HttpPost httpPost = new HttpPost("http://lobster-nachos.appspot.com/webapi/tables?pairingCode="+code);
             HttpGet httpGet = new HttpGet("http://lobster-nachos.appspot.com/webapi/tables?pairingCode=" + code);
 
 
@@ -169,7 +164,7 @@ public class WebAPI {
 
                 JSONObject jObj = new JSONObject(builder.toString());
 
-                tableID = jObj.getLong("TableID"); //TODO check that this is correct key name
+                tableID = jObj.getLong("TableID");
             }
 
         } catch (ClientProtocolException e) {
