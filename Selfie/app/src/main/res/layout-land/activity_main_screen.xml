@@ -29,7 +29,7 @@
                 android:layout_height="50dp"
                 android:layout_marginRight="69dp"
                 android:onClick="myButtonListener"
-                android:layout_alignParentTop="true"
+                android:layout_alignParentBottom="true"
                 android:layout_alignRight="@+id/MS_order_amount"
                 android:layout_alignEnd="@+id/MS_order_amount" />
             <ImageView
