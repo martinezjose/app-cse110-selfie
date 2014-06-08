@@ -26,16 +26,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.CheckBox;
-import android.util.SparseBooleanArray;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import classes.Category;
 import classes.WebAPI;
 import cse110.selfie.app.UI.R;
 import database.CategoryDataSource;
@@ -104,11 +102,9 @@ public class OrderFragment extends Fragment {
 
     //helper function that remove the rows in the ListView that are checked
     private void removeSelected() {
-        int[] pos = new int[myViews.size()];
         for(int i=myViews.size()-1; i>=0; i--) {
             if(myViews.get(i).check) {
                 OrderDetail temp = myAdapter.getItem(i);
-                pos[i] = i;
                 myAdapter.remove(temp);
                 myViews.remove(i);
             }

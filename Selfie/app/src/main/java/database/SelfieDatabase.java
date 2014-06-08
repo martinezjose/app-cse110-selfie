@@ -23,10 +23,10 @@ import android.database.sqlite.SQLiteOpenHelper;
  * |         |           |       |             |       |        |          |             |             |               |            |
  *
  * TABLE_CATEGORIES
- * --------------*---------------*--------------*
- * | category_id | category_name | last_updated |
- * +-------------+---------------+--------------+
- * |             |               |              |
+ * --------------*---------------*
+ * | category_id | category_name |
+ * +-------------+---------------+
+ * |             |               |
  *
  * TABLE_RECOMMENDATIONS
  * --------------------*------------------*---------------*
@@ -39,6 +39,12 @@ import android.database.sqlite.SQLiteOpenHelper;
  * | image_id | image_path | item_track_id | <--- parent_key
  * +----------+------------+---------------+
  * |          |            |               |
+ *
+ * TABLE_RECOMMENDATIONS
+ * --------------------*------------------*---------------*
+ * | recommendation_id | recommended_item | item_track_id | <--- parent_key
+ * +-------------------+------------------+---------------+
+ * |                   |                  |               |
  */
 public class SelfieDatabase extends SQLiteOpenHelper {
     //All static variables
